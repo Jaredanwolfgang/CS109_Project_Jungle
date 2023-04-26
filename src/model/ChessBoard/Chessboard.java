@@ -165,6 +165,11 @@ public class Chessboard {
         }
         ChessPiece srcPiece = getChessPieceAt(src);
         Move move = srcPiece.moveTo(src, dest, this.grid);
+        if(move.getCapturedPiece().getOwner() == PlayerColor.BLUE) {
+            bluePieces.remove(move.getCapturedPiece());
+        }else{
+            redPieces.remove(move.getCapturedPiece());
+        }
         gameController.addMove(move);
         getGridAt(dest).removePiece();
         setChessPiece(dest, removeChessPiece(src));
@@ -236,5 +241,11 @@ public class Chessboard {
                 lastMove.getCapturedPiece().setTrapped(false);
             }
         }
+    }
+    public boolean isGameOver(){
+        if(this.bluePieces.size() == 0 || this.redPieces.size() == 0){
+            return true;
+        }
+        return false;
     }
 }
