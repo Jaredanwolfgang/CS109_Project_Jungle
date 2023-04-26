@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Cell {
     // the position for chess
     private ChessPiece piece = null;
-    private PlayerColor owner;
+    private PlayerColor owner = null;
 
     private boolean isTrap = false;
     private boolean isRiver = false;

@@ -13,6 +13,7 @@ public class Main {
             mainFrame.setVisible(true);
 
             //testing code
+            System.out.println(gameController.AIMoveTest());
             Scanner input = new Scanner(System.in);
             while(true){
                 System.out.println("Enter -1 to exit");

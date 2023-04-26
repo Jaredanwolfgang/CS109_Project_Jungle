@@ -2,6 +2,7 @@ package controller;
 
 
 import listener.GameListener;
+import model.AI.AI_MCTS;
 import model.ChessBoard.Move;
 import model.ChessPieces.ChessPiece;
 import model.Enum.Constant;
@@ -148,11 +149,14 @@ public class GameController implements GameListener {
         }else{
             onPlayerClickChessPiece(point,null);
         }
-        model.printChessBoard();
+        Chessboard.printChessBoard(model.getGrid());
         if(selectedPoint != null){
             System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
         }else{
             System.out.println("No point is selected");
         }
+    }
+    public Move AIMoveTest(){
+        return AI_MCTS.findBestOneMove(model.getGrid(), currentPlayer.getColor());
     }
 }

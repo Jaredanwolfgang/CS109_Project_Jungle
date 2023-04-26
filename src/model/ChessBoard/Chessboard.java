@@ -2,9 +2,11 @@ package model.ChessBoard;
 
 import controller.GameController;
 import model.ChessPieces.*;
+import model.Enum.Category;
 import model.Enum.Constant;
 import model.Enum.PlayerColor;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -210,15 +212,15 @@ public class Chessboard {
     }
 
     //This method is only for testing.
-    public void printChessBoard(){
+    public static void printChessBoard(Cell[][] board){
         System.out.println("    0  1  2  3  4  5  6 ");
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             System.out.printf(" %d ",i);
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-                if(this.grid[i][j].getPiece() == null) {
+                if(board[i][j].getPiece() == null) {
                     System.out.print(" * ");
                 }else{
-                    System.out.printf(" %c ",this.grid[i][j].getPiece().getName().charAt(0));
+                    System.out.printf(" %c ",board[i][j].getPiece().getName().charAt(0));
                 }
             }
             System.out.println();
@@ -249,5 +251,50 @@ public class Chessboard {
             return true;
         }
         return false;
+    }
+    public static ArrayList<Move> getAllPossibleMoveOnBoard(Cell[][] board, Color PlayerColor){
+        ArrayList<Move> moves = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                if(board[i][j].getPiece() != null && board[i][j].getPiece().getOwner().getColor() == PlayerColor){
+                    ArrayList<Move> possibleMoves = board[i][j].getPiece().getAvailableMoves(new ChessboardPoint(i,j),board);
+                    moves.addAll(possibleMoves);
+                }
+            }
+        }
+        return moves;
+    }
+    public static Cell[][] cloneBoard(Cell[][] board){
+        Cell[][] newBoard = new Cell[9][7];
+        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                newBoard[i][j] = new Cell();
+                if(board[i][j].getPiece() != null){
+                    Category category = board[i][j].getPiece().getCategory();
+                    if(category == Category.ELEPHANT) {
+                        newBoard[i][j].setPiece(new ElephantChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.LION){
+                        newBoard[i][j].setPiece(new LionChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.TIGER) {
+                        newBoard[i][j].setPiece(new TigerChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.LEOPARD){
+                        newBoard[i][j].setPiece(new LeopardChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.WOLF){
+                        newBoard[i][j].setPiece(new WolfChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.DOG){
+                        newBoard[i][j].setPiece(new DogChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.CAT){
+                        newBoard[i][j].setPiece(new CatChessPiece(board[i][j].getPiece().getOwner()));
+                    }else if(category == Category.RAT){
+                        newBoard[i][j].setPiece(new RatChessPiece(board[i][j].getPiece().getOwner()));
+                    }
+                }
+                newBoard[i][j].setOwner(board[i][j].getOwner());
+                newBoard[i][j].setDen(board[i][j].isDen());
+                newBoard[i][j].setTrap(board[i][j].isTrap());
+                newBoard[i][j].setRiver(board[i][j].isRiver());
+            }
+        }
+        return newBoard;
     }
 }
