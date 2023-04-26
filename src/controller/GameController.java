@@ -28,7 +28,9 @@ public class GameController implements GameListener {
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
 
+    // Record all moves on the board.
     private ArrayList<Move> allMovesOnBoard;
+
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
 
@@ -68,18 +70,23 @@ public class GameController implements GameListener {
         }
         return false;
     }
-
-
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-        if (selectedPoint != null && model.isValidMove(selectedPoint, point)) {
-            model.moveChessPiece(selectedPoint, point);
-            view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
-            selectedPoint = null;
-            swapColor();
-            view.repaint();
+        if (selectedPoint != null) {
+            try{
+                model.moveChessPiece(selectedPoint, point);
+                selectedPoint = null;
+                this.swapColor();
+            }catch (IllegalArgumentException e){
+                System.out.println(e);
+            }
+            //view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+            //view.repaint();
             // TODO: if the chess enter Dens or Traps and so on
+        }
+        if(win()){
+            //
         }
     }
 
@@ -89,8 +96,8 @@ public class GameController implements GameListener {
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
                 selectedPoint = point;
-                component.setSelected(true);
-                component.repaint();
+                //component.setSelected(true);
+                //component.repaint();
 
                 //Following code is just for debugging.
                 //It will print all valid moves of the selected chess piece, once a piece is selected.
@@ -103,10 +110,36 @@ public class GameController implements GameListener {
         } else{
             if (selectedPoint.equals(point)) {
                 selectedPoint = null;
-                component.setSelected(false);
-                component.repaint();
+                //component.setSelected(false);
+                //component.repaint();
+            }else{
+                if(model.getChessPieceAt(point).getOwner() == currentPlayer){
+                    selectedPoint = point;
+                }else{
+                    try{
+                        model.captureChessPiece(selectedPoint,point);
+                        selectedPoint = null;
+                        this.swapColor();
+                    }catch (IllegalArgumentException e){
+                        System.out.println(e);
+                    }
+                }
             }
         }
-        // TODO: Implement capture function
+    }
+
+    public void testViaKeyboard(int x,int y){
+        ChessboardPoint point = new ChessboardPoint(x,y);
+        if(model.getChessPieceAt(point) == null){
+            onPlayerClickCell(point,null);
+        }else{
+            onPlayerClickChessPiece(point,null);
+        }
+        model.printChessBoard();
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
     }
 }

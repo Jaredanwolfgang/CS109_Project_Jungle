@@ -37,6 +37,11 @@ public class ChessPiece {
         return null;
     }
 
+    public Move moveTo(ChessboardPoint fromPoint, ChessboardPoint toPoint, Cell[][] board) {
+        //This method should be overridden in each subclass
+        return null;
+    }
+
     public boolean isTrapped() {
         return isTrapped;
     }

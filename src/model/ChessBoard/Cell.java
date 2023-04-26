@@ -1,20 +1,30 @@
 package model.ChessBoard;
 
 import model.ChessPieces.ChessPiece;
+import model.Enum.PlayerColor;
 
 import java.io.Serializable;
 /**
  * This class describe the slot for Chess in Chessboard
  * */
-public class Cell implements Serializable {
+public class Cell {
     // the position for chess
     private ChessPiece piece = null;
+    private PlayerColor owner;
 
     private boolean isTrap = false;
     private boolean isRiver = false;
     private boolean isDen = false;
 
     public Cell() {
+    }
+
+    public PlayerColor getOwner() {
+        return owner;
+    }
+
+    public void setOwner(PlayerColor owner) {
+        this.owner = owner;
     }
 
     public boolean isTrap() {

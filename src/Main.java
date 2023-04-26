@@ -3,6 +3,7 @@ import model.ChessBoard.Chessboard;
 import view.Frame.ChessGameFrame;
 
 import javax.swing.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,6 +11,18 @@ public class Main {
             ChessGameFrame mainFrame = new ChessGameFrame(1100, 810);
             GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard());
             mainFrame.setVisible(true);
+
+            //testing code
+            Scanner input = new Scanner(System.in);
+            while(true){
+                System.out.println("Enter -1 to exit");
+                int x = input.nextInt();
+                if(x == -1){
+                    System.exit(0);
+                }
+                int y = input.nextInt();
+                gameController.testViaKeyboard(x, y);
+            }
         });
     }
 }

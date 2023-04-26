@@ -1,10 +1,12 @@
 package model.ChessPieces;
 import model.ChessBoard.Cell;
+import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessBoard.Move;
 import model.Enum.*;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class LionChessPiece extends ChessPiece{
     public LionChessPiece(PlayerColor owner) {
@@ -13,73 +15,157 @@ public class LionChessPiece extends ChessPiece{
 
     @Override
     public boolean canCapture(ChessPiece target) {
+        if(this.getOwner() == target.getOwner()){
+            return false;
+        }
+        if(this.isTrapped()){
+            return false;
+        }
+        if(target.isTrapped()){
+            return true;
+        }
         return (7 >= target.getRank());
     }
 
     @Override
+    public Move moveTo(ChessboardPoint fromPoint, ChessboardPoint toPoint, Cell[][] board){
+        if(Chessboard.getDistance(fromPoint, toPoint) == 1){
+            //This branch is for normal moves.
+
+            //Check if the target point is in the river.
+            if(board[toPoint.getRow()][toPoint.getCol()].isRiver()){
+                return null;
+            }
+
+            //Check if the target point is in the same den as this piece's owner.
+            if(board[toPoint.getRow()][toPoint.getCol()].isDen() && board[toPoint.getRow()][toPoint.getCol()].getOwner() == this.getOwner()){
+                return null;
+            }
+
+            ChessPiece toPiece = board[toPoint.getRow()][toPoint.getCol()].getPiece();
+
+            if(toPiece != null){
+                if(this.canCapture(toPiece)){
+                    return new Move(this, fromPoint, toPoint, true, toPiece);
+                }else{
+                    return null;
+                }
+            }else{
+                return new Move(this, fromPoint, toPoint, false, null);
+            }
+        }else{
+            //This branch is for jumping over the river.
+
+            //Check if the target point is in the river.
+            if(board[toPoint.getRow()][toPoint.getCol()].isRiver()){
+                return null;
+            }
+
+            //Check if the target point is the same as the current point.
+            if(Chessboard.getDistance(fromPoint, toPoint) == 1){
+                return null;
+            }
+
+            //Check if the target point is in the same row or column as the current point.
+            if(fromPoint.getRow() != toPoint.getRow() && fromPoint.getCol() != toPoint.getCol()){
+                return null;
+            }
+
+            //Check if the river-jumping is valid.
+            boolean isValidJump = true;
+            if(fromPoint.getRow() == toPoint.getRow()){
+                if(fromPoint.getCol() < toPoint.getCol()){
+                    for (int i = fromPoint.getCol(); i < toPoint.getCol(); i++) {
+                        if(!board[fromPoint.getRow()][i].isRiver() || board[fromPoint.getRow()][i].getPiece() != null){
+                            isValidJump = false;
+                            break;
+                        }
+                    }
+                }else{
+                    for (int i = toPoint.getCol(); i < fromPoint.getCol(); i++) {
+                        if(!board[fromPoint.getRow()][i].isRiver() || board[fromPoint.getRow()][i].getPiece() != null){
+                            isValidJump = false;
+                            break;
+                        }
+                    }
+                }
+            }else if(fromPoint.getCol() == toPoint.getCol()){
+                if(fromPoint.getRow() < toPoint.getRow()){
+                    for (int i = fromPoint.getRow(); i < toPoint.getRow(); i++) {
+                        if(!board[i][fromPoint.getCol()].isRiver() || board[i][fromPoint.getCol()].getPiece() != null){
+                            isValidJump = false;
+                            break;
+                        }
+                    }
+                }else{
+                    for (int i = toPoint.getRow(); i < fromPoint.getRow(); i++) {
+                        if(!board[i][fromPoint.getCol()].isRiver() || board[i][fromPoint.getCol()].getPiece() != null){
+                            isValidJump = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(!isValidJump){
+                return null;
+            }else{
+                ChessPiece toPiece = board[toPoint.getRow()][toPoint.getCol()].getPiece();
+                if(toPiece != null){
+                    if(this.canCapture(toPiece)){
+                        return new Move(this, fromPoint, toPoint, true, toPiece);
+                    }else{
+                        return null;
+                    }
+                }else{
+                    return new Move(this, fromPoint, toPoint, false, null);
+                }
+            }
+        }
+    }
+    @Override
     public ArrayList<Move> getAvailableMoves(ChessboardPoint point, Cell[][] board) {
 
         ArrayList<Move> possibleMoves = new ArrayList<>();
-        int[] moveX = {0, 1, 0, -1};
-        int[] moveY = {1, 0, -1, 0};
+        ArrayList<ChessboardPoint> targetPoints = new ArrayList<>();
         int currentRow = point.getRow();
         int currentCol = point.getCol();
-        Cell currentCell = board[currentRow][currentCol];
+        int[] moveX = {0, 1, 0, -1};
+        int[] moveY = {1, 0, -1, 0};
 
         for (int i = 0; i < 4; i++) {
             if(currentRow + moveX[i] >= 0 && currentRow + moveX[i] < Constant.CHESSBOARD_ROW_SIZE.getNum() &&
                     currentCol + moveY[i] >= 0 && currentCol + moveY[i] < Constant.CHESSBOARD_COL_SIZE.getNum()){
-
-                ChessboardPoint targetPoint = new ChessboardPoint(currentRow + moveX[i], currentCol + moveY[i]);
-                int targetRow = currentRow + moveX[i];
-                int targetCol = currentCol + moveY[i];
-
-                if(board[targetRow][targetCol].isRiver()){
-                    if(currentRow == 2){
-                        targetRow = 6;
-                    }else if(currentRow == 6){
-                        targetRow = 2;
-                    }else if(currentCol == 0){
-                        targetCol = 3;
-                    }else if(currentCol == 6){
-                        targetCol = 3;
-                    }else if(currentCol == 3){
-                        targetCol = 0;
-
-                        Cell targetCell = board[targetRow][targetCol];
-                        ChessPiece targetPiece = targetCell.getPiece();
-
-                        if(targetPiece == null){
-                            possibleMoves.add(new Move(this, point, targetPoint, false ,null));
-                        }else if(targetPiece.getOwner() != this.getOwner() && this.canCapture(targetPiece)){
-                            possibleMoves.add(new Move(this, point, targetPoint, true, targetPiece));
-                        }
-
-                        targetCol = 6;
-
-                        targetCell = board[targetRow][targetCol];
-                        targetPiece = targetCell.getPiece();
-
-                        if(targetPiece == null){
-                            possibleMoves.add(new Move(this, point, targetPoint, false ,null));
-                        }else if(targetPiece.getOwner() != this.getOwner() && this.canCapture(targetPiece)){
-                            possibleMoves.add(new Move(this, point, targetPoint, true, targetPiece));
-                        }
-
-                        continue;
-                    }
-                }
-
-                Cell targetCell = board[targetRow][targetCol];
-                ChessPiece targetPiece = targetCell.getPiece();
-
-                if(targetPiece == null){
-                    possibleMoves.add(new Move(this, point, targetPoint, false ,null));
-                }else if(targetPiece.getOwner() != this.getOwner() && this.canCapture(targetPiece)){
-                    possibleMoves.add(new Move(this, point, targetPoint, true, targetPiece));
-                }
+                targetPoints.add(new ChessboardPoint(currentRow + moveX[i], currentCol + moveY[i]));
             }
         }
+
+        //Jumping over the river (up and down)
+        if(currentRow == 2 && currentCol != 0 && currentCol != 3 && currentCol != 6){
+            targetPoints.add(new ChessboardPoint(6, currentCol));
+        }
+        if(currentRow == 6 && currentCol != 0 && currentCol != 3 && currentCol != 6){
+            targetPoints.add(new ChessboardPoint(2, currentCol));
+        }
+
+        //Jumping over the river (left and right)
+        if(currentCol == 0 && (currentRow == 3 || currentRow == 4 || currentRow == 5)){
+            targetPoints.add(new ChessboardPoint(currentRow, 3));
+        }
+        if(currentCol == 6 && (currentRow == 3 || currentRow == 4 || currentRow == 5)){
+            targetPoints.add(new ChessboardPoint(currentRow, 3));
+        }
+        if(currentCol == 3 && (currentRow == 3 || currentRow == 4 || currentRow == 5)){
+            targetPoints.add(new ChessboardPoint(currentRow, 0));
+            targetPoints.add(new ChessboardPoint(currentRow, 6));
+        }
+
+        for (int i = 0; i < targetPoints.size(); i++) {
+            possibleMoves.add(moveTo(point, targetPoints.get(i), board));
+        }
+
+        //This line removes all null elements in the list.
+        possibleMoves.removeIf(Objects::isNull);
+
         return possibleMoves;
     }
 }
