@@ -8,6 +8,7 @@ import model.Enum.Constant;
 import model.Enum.PlayerColor;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
+import model.User.User;
 import view.CellComponent;
 import view.ChessComponent.ElephantChessComponent;
 import view.ChessboardComponent;
@@ -22,8 +23,6 @@ import java.util.ArrayList;
  *
 */
 public class GameController implements GameListener {
-
-
     private Chessboard model;
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
