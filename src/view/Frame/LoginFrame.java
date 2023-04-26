@@ -3,6 +3,7 @@ package view.Frame;
 import model.User.User;
 
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
@@ -50,8 +51,12 @@ public class LoginFrame extends JFrame implements ActionListener{
     }
 
     public void initTextArea() {
+        Color backGroundColor = new Color(0,0,0,128);
+
         userText = new JTextField("Enter your Username here", 20);
         userText.setFont(new Font("Calibri", Font.ITALIC, 8));
+//        userText.setOpaque(false);
+        userText.setBackground(backGroundColor);
         userText.setForeground(Color.WHITE);
         userText.addFocusListener(new FocusListener() {
             @Override
@@ -59,6 +64,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                 userText.setText("");
                 userText.setFont(new Font("Calibri", Font.BOLD, 12));
                 userText.setForeground(Color.WHITE);
+                userText.setBackground(backGroundColor);
             }
 
             @Override
@@ -67,15 +73,18 @@ public class LoginFrame extends JFrame implements ActionListener{
                     userText.setText("Enter your Username here");
                     userText.setFont(new Font("Calibri", Font.ITALIC, 8));
                     userText.setForeground(Color.WHITE);
+                    userText.setBackground(backGroundColor);
                 }
             }
         });
-        userText.setBorder(new RoundBorder());
+        userText.setBorder(new RoundBorder(10,Color.WHITE));
         userText.setBounds(50, 20, 200, 50);
-        userText.setOpaque(false);
 
         passText = new JTextField("Enter your Password here", 20);
         passText.setFont(new Font("Calibri", Font.ITALIC, 8));
+
+//        passText.setOpaque(false);
+        passText.setBackground(backGroundColor);
         passText.setForeground(Color.WHITE);
         passText.addFocusListener(new FocusListener() {
             @Override
@@ -83,6 +92,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                 passText.setText("");
                 passText.setFont(new Font("Calibri", Font.BOLD, 12));
                 passText.setForeground(Color.WHITE);
+                userText.setBackground(backGroundColor);
             }
 
             @Override
@@ -91,12 +101,12 @@ public class LoginFrame extends JFrame implements ActionListener{
                     passText.setText("Enter your Password here");
                     passText.setFont(new Font("Calibri", Font.ITALIC, 8));
                     passText.setForeground(Color.WHITE);
+                    userText.setBackground(backGroundColor);
                 }
             }
         });
-        passText.setBorder(new RoundBorder());
+        passText.setBorder(new RoundBorder(10,Color.WHITE));
         passText.setBounds(50, 90, 200, 50);
-        passText.setOpaque(false);
 
         this.getContentPane().add(userText);
         this.getContentPane().add(passText);
@@ -175,20 +185,35 @@ public class LoginFrame extends JFrame implements ActionListener{
 
 
 
-    private static class RoundBorder implements Border {
-        private final int radius = 10;
+    private static class RoundBorder extends AbstractBorder {
+        private final int radius;
+        private final Color color;
 
-        public Insets getBorderInsets(Component c) {
-            return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+        public RoundBorder(int radius, Color color) {
+            this.radius = radius;
+            this.color = color;
         }
 
-        public boolean isBorderOpaque() {
-            return true;
-        }
-
+        @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.setColor(Color.WHITE);
-            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(color);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+            g2d.dispose();
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(radius + 1, radius + 1, radius + 2, radius);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c, Insets insets) {
+            insets.left = insets.right = radius + 1;
+            insets.top = radius + 1;
+            insets.bottom = radius + 2;
+            return insets;
         }
     }
 }

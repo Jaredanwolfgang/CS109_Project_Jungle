@@ -8,10 +8,10 @@ import java.awt.event.MouseListener;
 public class InitFrame extends JFrame {
     private final int WIDTH;
     private final int HEIGHT;
-    private JButton loginButton = new JButton();
-    private JButton registerButton = new JButton();
-    private JButton musicButton = new JButton();
-    private JButton exitButton = new JButton();
+    private final JButton loginButton = new JButton();
+    private final JButton registerButton = new JButton();
+    private final JButton musicButton = new JButton();
+    private final JButton exitButton = new JButton();
 
     public InitFrame(int width, int height) {
         this.WIDTH = width;
@@ -79,7 +79,7 @@ public class InitFrame extends JFrame {
                 if (index == 0) {
                     new LoginFrame(300, 250);
                 } else if (index == 1) {
-                    new RegisterFrame();
+                    new RegisterFrame(300,320);
                 } else if (index == 2) {
                     new MusicPlayerFrame();
                 } else if (index == 3) {
