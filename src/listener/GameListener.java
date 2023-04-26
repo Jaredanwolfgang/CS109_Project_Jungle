@@ -10,4 +10,5 @@ public interface GameListener {
 
     void onPlayerClickChessPiece(ChessboardPoint point, ElephantChessComponent component);
 
+    void onPlayerClickUndoButton();
 }

@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 public class Chessboard {
     private Cell[][] grid;
+    private ArrayList<ChessPiece> bluePieces;
+    private ArrayList<ChessPiece> redPieces;
 
     private GameController gameController;
 
@@ -63,23 +65,56 @@ public class Chessboard {
 
     private void initPieces() {
         //This method place all chess pieces on the chessboard.
-        grid[0][0].setPiece(new LionChessPiece(PlayerColor.BLUE));
-        grid[0][6].setPiece(new TigerChessPiece(PlayerColor.BLUE));
-        grid[1][1].setPiece(new DogChessPiece(PlayerColor.BLUE));
-        grid[1][5].setPiece(new CatChessPiece(PlayerColor.BLUE));
-        grid[2][0].setPiece(new RatChessPiece(PlayerColor.BLUE));
-        grid[2][2].setPiece(new LeopardChessPiece(PlayerColor.BLUE));
-        grid[2][4].setPiece(new WolfChessPiece(PlayerColor.BLUE));
-        grid[2][6].setPiece(new ElephantChessPiece(PlayerColor.BLUE));
+        ChessPiece piece;
+        piece = new LionChessPiece(PlayerColor.BLUE);
+        grid[0][0].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new TigerChessPiece(PlayerColor.BLUE);
+        grid[0][6].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new DogChessPiece(PlayerColor.BLUE);
+        grid[1][1].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new CatChessPiece(PlayerColor.BLUE);
+        grid[1][5].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new RatChessPiece(PlayerColor.BLUE);
+        grid[2][0].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new LeopardChessPiece(PlayerColor.BLUE);
+        grid[2][2].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new WolfChessPiece(PlayerColor.BLUE);
+        grid[2][4].setPiece(piece);
+        bluePieces.add(piece);
+        piece = new ElephantChessPiece(PlayerColor.BLUE);
+        grid[2][6].setPiece(piece);
+        bluePieces.add(piece);
 
-        grid[8][0].setPiece(new TigerChessPiece(PlayerColor.RED));
-        grid[8][6].setPiece(new LionChessPiece(PlayerColor.RED));
-        grid[7][1].setPiece(new CatChessPiece(PlayerColor.RED));
-        grid[7][5].setPiece(new DogChessPiece(PlayerColor.RED));
-        grid[6][0].setPiece(new ElephantChessPiece(PlayerColor.RED));
-        grid[6][2].setPiece(new WolfChessPiece(PlayerColor.RED));
-        grid[6][4].setPiece(new LeopardChessPiece(PlayerColor.RED));
-        grid[6][6].setPiece(new RatChessPiece(PlayerColor.RED));
+        piece = new TigerChessPiece(PlayerColor.RED);
+        grid[8][0].setPiece(piece);
+        redPieces.add(piece);
+        piece = new LionChessPiece(PlayerColor.RED);
+        grid[8][6].setPiece(piece);
+        redPieces.add(piece);
+        piece = new CatChessPiece(PlayerColor.RED);
+        grid[7][1].setPiece(piece);
+        redPieces.add(piece);
+        piece = new DogChessPiece(PlayerColor.RED);
+        grid[7][5].setPiece(piece);
+        redPieces.add(piece);
+        piece = new ElephantChessPiece(PlayerColor.RED);
+        grid[6][0].setPiece(piece);
+        redPieces.add(piece);
+        piece = new WolfChessPiece(PlayerColor.RED);
+        grid[6][2].setPiece(piece);
+        redPieces.add(piece);
+        piece = new LeopardChessPiece(PlayerColor.RED);
+        grid[6][4].setPiece(piece);
+        redPieces.add(piece);
+        piece = new RatChessPiece(PlayerColor.RED);
+        grid[6][6].setPiece(piece);
+        redPieces.add(piece);
     }
 
     public void registerController(GameController gameController){
@@ -129,15 +164,14 @@ public class Chessboard {
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         ChessPiece srcPiece = getChessPieceAt(src);
-        ArrayList<Move> moves = srcPiece.getAvailableMoves(src , grid);
-        for (Move move : moves) {
-            if (move.getToPoint().equals(dest)){
-                gameController.addMove(move);
-                break;
-            }
-        }
+        Move move = srcPiece.moveTo(src, dest, this.grid);
+        gameController.addMove(move);
         getGridAt(dest).removePiece();
         setChessPiece(dest, removeChessPiece(src));
+
+        if(getGridAt(dest).isTrap() && getGridAt(dest).getOwner() != srcPiece.getOwner()){
+            srcPiece.setTrapped(true);
+        }
     }
 
     public Cell[][] getGrid() {
@@ -181,6 +215,26 @@ public class Chessboard {
                 }
             }
             System.out.println();
+        }
+    }
+
+    public void undoMove(Move lastMove) {
+        setChessPiece(lastMove.getFromPoint(), removeChessPiece(lastMove.getToPoint()));
+        if(this.getGridAt(lastMove.getFromPoint()).isTrap()){
+            lastMove.getMovingPiece().setTrapped(true);
+        }
+        if(!this.getGridAt(lastMove.getFromPoint()).isTrap()){
+            lastMove.getMovingPiece().setTrapped(false);
+        }
+
+        if(lastMove.isDoesCapture()) {
+            setChessPiece(lastMove.getToPoint(), lastMove.getCapturedPiece());
+            if(this.getGridAt(lastMove.getToPoint()).isTrap()){
+                lastMove.getCapturedPiece().setTrapped(true);
+            }
+            if(!this.getGridAt(lastMove.getToPoint()).isTrap()){
+                lastMove.getCapturedPiece().setTrapped(false);
+            }
         }
     }
 }

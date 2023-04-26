@@ -128,6 +128,17 @@ public class GameController implements GameListener {
         }
     }
 
+    @Override
+    public void onPlayerClickUndoButton() {
+        if (allMovesOnBoard.size() > 0) {
+            Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
+            model.undoMove(lastMove);
+            //view.setChessComponentAtGrid(lastMove.getFrom(), view.removeChessComponentAtGrid(lastMove.getTo()));
+            //view.setChessComponentAtGrid(lastMove.getTo(), view.removeChessComponentAtGrid(lastMove.getFrom()));
+            //view.repaint();
+        }
+    }
+
     public void testViaKeyboard(int x,int y){
         ChessboardPoint point = new ChessboardPoint(x,y);
         if(model.getChessPieceAt(point) == null){
