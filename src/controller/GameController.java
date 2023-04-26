@@ -132,11 +132,12 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickUndoButton() {
         if (allMovesOnBoard.size() > 0) {
+            selectedPoint = null;
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
             model.undoMove(lastMove);
-            //view.setChessComponentAtGrid(lastMove.getFrom(), view.removeChessComponentAtGrid(lastMove.getTo()));
-            //view.setChessComponentAtGrid(lastMove.getTo(), view.removeChessComponentAtGrid(lastMove.getFrom()));
-            //view.repaint();
+            this.swapColor();
+        }else{
+            System.out.println("No move to undo");
         }
     }
 

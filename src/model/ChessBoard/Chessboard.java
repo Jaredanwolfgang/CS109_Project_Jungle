@@ -20,6 +20,8 @@ public class Chessboard {
 
     public Chessboard() {
         this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
+        this.bluePieces = new ArrayList<>();
+        this.redPieces = new ArrayList<>();
         initGrid();
         initPieces();
     }

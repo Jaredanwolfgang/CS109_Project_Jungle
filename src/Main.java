@@ -20,6 +20,10 @@ public class Main {
                 if(x == -1){
                     System.exit(0);
                 }
+                if(x == -2){
+                    gameController.onPlayerClickUndoButton();
+                    continue;
+                }
                 int y = input.nextInt();
                 gameController.testViaKeyboard(x, y);
             }
