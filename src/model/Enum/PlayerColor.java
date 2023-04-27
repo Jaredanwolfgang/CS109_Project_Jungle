@@ -19,6 +19,4 @@ public enum PlayerColor {
     public Color getColor() {
         return color;
     }
-
-
 }

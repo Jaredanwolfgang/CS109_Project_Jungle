@@ -8,6 +8,7 @@ import model.Enum.Category;
 import model.Enum.PlayerColor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ChessPiece {
     //Owner of the chess
@@ -78,11 +79,7 @@ public class ChessPiece {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-        result = prime * result + ((category == null) ? 0 : category.hashCode());
-        return result;
+        return Objects.hash(owner, category);
     }
 
     @Override
@@ -94,10 +91,10 @@ public class ChessPiece {
         if (getClass() != obj.getClass())
             return false;
         ChessPiece other = (ChessPiece) obj;
-        if (owner != other.owner) {
+        if (owner.equals(other.owner)) {
             return false;
         }
-        if (category != other.category) {
+        if (category.equals(other.category)) {
             return false;
         }
         return true;
