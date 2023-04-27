@@ -237,7 +237,7 @@ class JungleSimulator {
     }
 
     static ArrayList<Move> getAvailableMoves(Cell[][] board,Color player,int depth) {
-        /*if(depth < 4){
+        /*if(depth < 10){
             CellGrid cells = new CellGrid(Chessboard.cloneBoard(board));
             if (AI_MCTS.historyMoves.containsKey(cells)) {
                 return AI_MCTS.historyMoves.get(cells);

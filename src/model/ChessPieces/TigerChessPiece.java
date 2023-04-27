@@ -61,7 +61,7 @@ public class TigerChessPiece extends ChessPiece{
             }
 
             //Check if the target point is the same as the current point.
-            if(Chessboard.getDistance(fromPoint, toPoint) == 1){
+            if(Chessboard.getDistance(fromPoint, toPoint) == 0){
                 return null;
             }
 
@@ -74,14 +74,14 @@ public class TigerChessPiece extends ChessPiece{
             boolean isValidJump = true;
             if(fromPoint.getRow() == toPoint.getRow()){
                 if(fromPoint.getCol() < toPoint.getCol()){
-                    for (int i = fromPoint.getCol(); i < toPoint.getCol(); i++) {
+                    for (int i = fromPoint.getCol() + 1; i < toPoint.getCol(); i++) {
                         if(!board[fromPoint.getRow()][i].isRiver() || board[fromPoint.getRow()][i].getPiece() != null){
                             isValidJump = false;
                             break;
                         }
                     }
                 }else{
-                    for (int i = toPoint.getCol(); i < fromPoint.getCol(); i++) {
+                    for (int i = toPoint.getCol() + 1; i < fromPoint.getCol(); i++) {
                         if(!board[fromPoint.getRow()][i].isRiver() || board[fromPoint.getRow()][i].getPiece() != null){
                             isValidJump = false;
                             break;
@@ -90,14 +90,14 @@ public class TigerChessPiece extends ChessPiece{
                 }
             }else if(fromPoint.getCol() == toPoint.getCol()){
                 if(fromPoint.getRow() < toPoint.getRow()){
-                    for (int i = fromPoint.getRow(); i < toPoint.getRow(); i++) {
+                    for (int i = fromPoint.getRow() + 1; i < toPoint.getRow(); i++) {
                         if(!board[i][fromPoint.getCol()].isRiver() || board[i][fromPoint.getCol()].getPiece() != null){
                             isValidJump = false;
                             break;
                         }
                     }
                 }else{
-                    for (int i = toPoint.getRow(); i < fromPoint.getRow(); i++) {
+                    for (int i = toPoint.getRow() + 1; i < fromPoint.getRow(); i++) {
                         if(!board[i][fromPoint.getCol()].isRiver() || board[i][fromPoint.getCol()].getPiece() != null){
                             isValidJump = false;
                             break;
