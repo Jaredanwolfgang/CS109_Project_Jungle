@@ -108,7 +108,7 @@ public class Chessboard {
         grid[7][5].setPiece(piece);
         redPieces.add(piece);
         piece = new ElephantChessPiece(PlayerColor.RED);
-        grid[6][0].setPiece(piece);
+        grid[8][1].setPiece(piece);
         redPieces.add(piece);
         piece = new WolfChessPiece(PlayerColor.RED);
         grid[6][2].setPiece(piece);

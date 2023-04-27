@@ -4,6 +4,7 @@ import model.ChessBoard.Cell;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.Move;
 import model.ChessPieces.ElephantChessPiece;
+import model.Enum.Category;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import static model.Enum.PlayerColor.BLUE;
 
 public class AI_MCTS {
-    static final int NUMBER_OF_ITERATIONS = 100000;
+    static final int NUMBER_OF_ITERATIONS = 10000;
     static HashMap <CellGrid , ArrayList<Move>> historyMoves = new HashMap<>();
     public static Move findBestOneMove(Cell[][] board, Color player){
         long current1=System.currentTimeMillis();
@@ -71,8 +72,11 @@ class MonteCarloTreeSearch {
             if(newBoard[move.getToPoint().getRow()][move.getToPoint().getCol()].isTrap()){
                 newBoard[move.getToPoint().getRow()][move.getToPoint().getCol()].getPiece().setTrapped(true);
             }
+            if(newBoard[move.getFromPoint().getRow()][move.getFromPoint().getCol()].isTrap()){
+                newBoard[move.getToPoint().getRow()][move.getToPoint().getCol()].getPiece().setTrapped(false);
+            }
             Node child = new Node(JungleSimulator.flipColor(node.player), node, newBoard, move);
-            child.winner = JungleSimulator.checkStatus(child.board , child.player);
+            child.winner = JungleSimulator.checkStatus(child.board , node.player);
             node.children.add(child);
         }
     }
@@ -80,7 +84,7 @@ class MonteCarloTreeSearch {
         Node currentNode = node;
         while(currentNode != null){
             currentNode.visits++;
-            if(currentNode.player == winner){
+            if(JungleSimulator.flipColor(currentNode.player) == winner){
                 currentNode.wins++;
             }else{
                 currentNode.losses++;
@@ -145,7 +149,7 @@ class JungleSimulator {
         if (node.winner != GAME_CONTINUES) {
             return node.winner;
         }
-        Color player = flipColor(node.player);
+        Color player = node.player;
         Cell[][] currentBoard = Chessboard.cloneBoard(node.board);
         int[] bluePieces = new int[9];
         int[] redPieces = new int[9];
@@ -226,6 +230,9 @@ class JungleSimulator {
             currentBoard[moveToMake.getFromPoint().getRow()][moveToMake.getFromPoint().getCol()].removePiece();
             if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].isTrap()){
                 currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().setTrapped(true);
+            }
+            if(currentBoard[moveToMake.getFromPoint().getRow()][moveToMake.getFromPoint().getCol()].isTrap()){
+                currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().setTrapped(false);
             }
             Color winner = checkStatus(currentBoard , player);
             if (winner != GAME_CONTINUES) {
