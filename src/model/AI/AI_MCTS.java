@@ -2,18 +2,20 @@ package model.AI;
 
 import model.ChessBoard.Cell;
 import model.ChessBoard.Chessboard;
-import model.ChessBoard.ChessboardPoint;
 import model.ChessBoard.Move;
-import model.ChessPieces.ChessPiece;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class AI_MCTS {
     static final int NUMBER_OF_ITERATIONS = 10000;
+    static HashMap <Cell[][] , ArrayList<Move>> historyMoves = new HashMap<>();
     public static Move findBestOneMove(Cell[][] board, Color player){
+        long current1=System.currentTimeMillis();
         Cell[][] boardCopy = Chessboard.cloneBoard(board);
         MonteCarloTreeSearch mcts = new MonteCarloTreeSearch();
         mcts.root = new Node(player, null, boardCopy, null);
@@ -24,6 +26,8 @@ public class AI_MCTS {
             return null;
         }
         mcts.findBestMove(NUMBER_OF_ITERATIONS);
+        long current2=System.currentTimeMillis();
+        System.out.printf("Time needed for %d iterations is %f seconds\n",NUMBER_OF_ITERATIONS,(current2-current1)/1000.0d);
         return mcts.bestMove.move;
     }
 }
@@ -61,6 +65,9 @@ class MonteCarloTreeSearch {
             }
             newBoard[move.getToPoint().getRow()][move.getToPoint().getCol()].setPiece(newBoard[move.getFromPoint().getRow()][move.getFromPoint().getCol()].getPiece());
             newBoard[move.getFromPoint().getRow()][move.getFromPoint().getCol()].removePiece();
+            if(newBoard[move.getToPoint().getRow()][move.getToPoint().getCol()].isTrap()){
+                newBoard[move.getToPoint().getRow()][move.getToPoint().getCol()].getPiece().setTrapped(true);
+            }
             Node child = new Node(JungleSimulator.flipColor(node.player), node, newBoard, move);
             child.winner = JungleSimulator.checkStatus(child.board , child.player);
             node.children.add(child);
@@ -134,40 +141,148 @@ class JungleSimulator {
         if (node.winner != GAME_CONTINUES) {
             return node.winner;
         }
-        //int counter = 0;
         Color player = flipColor(node.player);
         Cell[][] currentBoard = Chessboard.cloneBoard(node.board);
+        int[] bluePieces = new int[9];
+        int[] redPieces = new int[9];
+        int maxBlue = 0;
+        int maxRed = 0;
+        int minBlue = 8;
+        int minRed = 8;
+        for(int i = 0; i < 9; i++){
+            for(int j = 0; j < 7; j++){
+                if(currentBoard[i][j].getPiece() != null){
+                    if(currentBoard[i][j].getPiece().getOwner().getColor() == Color.BLUE){
+                        bluePieces[currentBoard[i][j].getPiece().getRank()]++;
+                        maxBlue = Math.max(maxBlue, currentBoard[i][j].getPiece().getRank());
+                        minBlue = Math.min(minBlue, currentBoard[i][j].getPiece().getRank());
+                    }else{
+                        redPieces[currentBoard[i][j].getPiece().getRank()]++;
+                        maxRed = Math.max(maxRed, currentBoard[i][j].getPiece().getRank());
+                        minRed = Math.min(minRed, currentBoard[i][j].getPiece().getRank());
+                    }
+                }
+            }
+        }
         while(true){
-            ArrayList<Move> moves = Chessboard.getAllPossibleMoveOnBoard(currentBoard, player);
+            ArrayList<Move> moves = JungleSimulator.getAvailableMoves(currentBoard, player);
             if(moves.isEmpty()){
                 return player;
             }
             int randomMoveIndex = (int) (Math.random()*moves.size());
             Move moveToMake = moves.get(randomMoveIndex);
             if(moveToMake.isDoesCapture()){
+                if(flipColor(player) == Color.BLUE){
+                    bluePieces[currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank()]--;
+                    if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == maxBlue){
+                        for (int i = maxBlue - 1; i >= 0; i--) {
+                            if(bluePieces[i] > 0){
+                                maxBlue = i;
+                                break;
+                            }
+                        }
+                    }
+                    if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == minBlue){
+                        for (int i = minBlue + 1; i < 9; i++) {
+                            if(bluePieces[i] > 0){
+                                minBlue = i;
+                                break;
+                            }
+                        }
+                    }
+                }else{
+                    redPieces[currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank()]--;
+                    if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == maxRed){
+                        for (int i = maxRed - 1; i >= 0; i--) {
+                            if(redPieces[i] > 0){
+                                maxRed = i;
+                                break;
+                            }
+                        }
+                    }
+                    if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == minRed){
+                        for (int i = minRed + 1; i < 9; i++) {
+                            if(redPieces[i] > 0){
+                                minRed = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(minRed > maxBlue){
+                    return Color.RED;
+                }
+                if(minBlue > maxRed){
+                    return Color.BLUE;
+                }
                 currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].removePiece();
             }
             currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].setPiece(currentBoard[moveToMake.getFromPoint().getRow()][moveToMake.getFromPoint().getCol()].getPiece());
             currentBoard[moveToMake.getFromPoint().getRow()][moveToMake.getFromPoint().getCol()].removePiece();
+            if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].isTrap()){
+                if(currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece() == null){
+                    System.out.println("null");
+                }
+                currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().setTrapped(true);
+            }
             Color winner = checkStatus(currentBoard , player);
             if (winner != GAME_CONTINUES) {
-                //System.out.println("Rollout: " + counter);
                 return winner;
             }
             player = flipColor(player);
-            //counter++;
         }
     }
 
     static ArrayList<Move> getAvailableMoves(Cell[][] board,Color player) {
-        return Chessboard.getAllPossibleMoveOnBoard(board, player);
+        if (AI_MCTS.historyMoves.containsKey(board)) {
+            return AI_MCTS.historyMoves.get(board);
+        }
+        ArrayList<Move> moves = Chessboard.getAllPossibleMoveOnBoard(board, player);
+        AI_MCTS.historyMoves.put(board, moves);
+        return moves;
     }
     static Color checkStatus(Cell[][] board, Color player) {
-        if(player == Color.BLUE && board[8][3].getPiece() != null && board[8][3].getPiece().getOwner().getColor() == Color.BLUE){
-            return player;
+        if(player == Color.BLUE){
+            if(board[8][3].getPiece() != null && board[8][3].getPiece().getOwner().getColor() == Color.BLUE){
+                return player;
+            }
+            if(board[8][4].getPiece() != null && board[8][4].getPiece().getOwner().getColor() == Color.BLUE &&
+                    (board[8][5].getPiece() == null || board[8][5].getPiece().getOwner().getColor() == Color.BLUE || board[8][4].getPiece().canCapture(board[8][5].getPiece())) &&
+                    (board[7][4].getPiece() == null || board[7][4].getPiece().getOwner().getColor() == Color.BLUE || board[8][4].getPiece().canCapture(board[7][4].getPiece()))){
+                return player;
+            }
+            if(board[8][2].getPiece() != null && board[8][2].getPiece().getOwner().getColor() == Color.BLUE &&
+                    (board[8][1].getPiece() == null || board[8][1].getPiece().getOwner().getColor() == Color.BLUE || board[8][2].getPiece().canCapture(board[8][1].getPiece())) &&
+                    (board[7][2].getPiece() == null || board[7][2].getPiece().getOwner().getColor() == Color.BLUE || board[8][2].getPiece().canCapture(board[7][2].getPiece()))){
+                return player;
+            }
+            if(board[7][3].getPiece() != null && board[7][3].getPiece().getOwner().getColor() == Color.BLUE &&
+                    (board[6][3].getPiece() == null || board[6][3].getPiece().getOwner().getColor() == Color.BLUE || board[7][3].getPiece().canCapture(board[6][3].getPiece())) &&
+                    (board[7][2].getPiece() == null || board[7][2].getPiece().getOwner().getColor() == Color.BLUE || board[7][3].getPiece().canCapture(board[7][2].getPiece())) &&
+                    (board[7][4].getPiece() == null || board[7][4].getPiece().getOwner().getColor() == Color.BLUE || board[7][3].getPiece().canCapture(board[7][4].getPiece()))){
+                return player;
+            }
         }
-        if(player == Color.RED && board[0][3].getPiece() != null && board[0][3].getPiece().getOwner().getColor() == Color.RED){
-            return player;
+        if(player == Color.RED){
+            if(board[0][3].getPiece() != null && board[0][3].getPiece().getOwner().getColor() == Color.RED){
+                return player;
+            }
+            if(board[0][4].getPiece() != null && board[0][4].getPiece().getOwner().getColor() == Color.RED &&
+                    (board[0][5].getPiece() == null || board[0][5].getPiece().getOwner().getColor() == Color.RED || board[0][4].getPiece().canCapture(board[0][5].getPiece())) &&
+                    (board[1][4].getPiece() == null || board[1][4].getPiece().getOwner().getColor() == Color.RED || board[0][4].getPiece().canCapture(board[1][4].getPiece()))){
+                return player;
+            }
+            if(board[0][2].getPiece() != null && board[0][2].getPiece().getOwner().getColor() == Color.RED &&
+                    (board[0][1].getPiece() == null || board[0][1].getPiece().getOwner().getColor() == Color.RED || board[0][2].getPiece().canCapture(board[0][1].getPiece())) &&
+                    (board[1][2].getPiece() == null || board[1][2].getPiece().getOwner().getColor() == Color.RED || board[0][2].getPiece().canCapture(board[1][2].getPiece()))){
+                return player;
+            }
+            if(board[1][3].getPiece() != null && board[1][3].getPiece().getOwner().getColor() == Color.RED &&
+                    (board[2][3].getPiece() == null || board[2][3].getPiece().getOwner().getColor() == Color.RED || board[1][3].getPiece().canCapture(board[2][3].getPiece())) &&
+                    (board[1][2].getPiece() == null || board[1][2].getPiece().getOwner().getColor() == Color.RED || board[1][3].getPiece().canCapture(board[1][2].getPiece())) &&
+                    (board[1][4].getPiece() == null || board[1][4].getPiece().getOwner().getColor() == Color.RED || board[1][3].getPiece().canCapture(board[1][4].getPiece()))){
+                return player;
+            }
         }
         /*boolean opponentHasNoPiece = true;
         Color opponent = flipColor(player);

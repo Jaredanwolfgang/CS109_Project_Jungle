@@ -75,4 +75,31 @@ public class ChessPiece {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+        result = prime * result + ((category == null) ? 0 : category.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ChessPiece other = (ChessPiece) obj;
+        if (owner != other.owner) {
+            return false;
+        }
+        if (category != other.category) {
+            return false;
+        }
+        return true;
+    }
 }
