@@ -2,13 +2,18 @@ package controller;
 
 
 import listener.GameListener;
+import model.ChessBoard.Move;
+import model.ChessPieces.ChessPiece;
 import model.Enum.Constant;
 import model.Enum.PlayerColor;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
+import model.User.User;
 import view.CellComponent;
 import view.ChessComponent.ElephantChessComponent;
 import view.ChessboardComponent;
+
+import java.util.ArrayList;
 
 /**
  * Controller is the connection between model and view,
@@ -18,12 +23,11 @@ import view.ChessboardComponent;
  *
 */
 public class GameController implements GameListener {
-
-
     private Chessboard model;
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
 
+    private ArrayList<Move> allMovesOnBoard;
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
 
@@ -31,7 +35,9 @@ public class GameController implements GameListener {
         this.view = view;
         this.model = model;
         this.currentPlayer = PlayerColor.BLUE;
+        this.allMovesOnBoard = new ArrayList<>();
 
+        model.registerController(this);
         view.registerController(this);
         initialize();
         view.initiateChessComponent(model);
@@ -51,8 +57,14 @@ public class GameController implements GameListener {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
     }
 
+    public void addMove(Move move) {
+        allMovesOnBoard.add(move);
+    }
     private boolean win() {
-        // TODO: Check the board if there is a winner
+        if((model.getGrid()[0][3].getPiece() != null && model.getGrid()[0][3].getPiece().getOwner() == PlayerColor.RED) ||
+                (model.getGrid()[8][3].getPiece() != null && model.getGrid()[8][3].getPiece().getOwner() == PlayerColor.BLUE)){
+            return true;
+        }
         return false;
     }
 
@@ -78,11 +90,21 @@ public class GameController implements GameListener {
                 selectedPoint = point;
                 component.setSelected(true);
                 component.repaint();
+
+                //Following code is just for debugging.
+                //It will print all valid moves of the selected chess piece, once a piece is selected.
+                ChessPiece piece = model.getChessPieceAt(point);
+                ArrayList<Move> validMoves = piece.getAvailableMoves(point, model.getGrid());
+                for (Move move : validMoves) {
+                    System.out.println(move);
+                }
             }
-        } else if (selectedPoint.equals(point)) {
-            selectedPoint = null;
-            component.setSelected(false);
-            component.repaint();
+        } else{
+            if (selectedPoint.equals(point)) {
+                selectedPoint = null;
+                component.setSelected(false);
+                component.repaint();
+            }
         }
         // TODO: Implement capture function
     }
