@@ -27,17 +27,22 @@ public class ChessPiece {
     }
 
     //Input a target chess piece, return whether this chess piece can capture the target.
-    //CAUTION: This method judge only by rank, not by position or owner.
+    //CAUTION: This method judge by rank and other special rules, and it checks whether two pieces have the same owner.
+    //         But it does not check the chessboard.
     public boolean canCapture(ChessPiece target) {
         //This method should be overridden in each subclass
         return false;
     }
 
+    //Input a point on the chessboard, return all available moves of this chess piece.
+    //CAUTION: This method assumes that there is a piece at the given point.
     public ArrayList<Move> getAvailableMoves(ChessboardPoint point, Cell[][] board) {
         //This method should be overridden in each subclass
         return null;
     }
 
+    //Input fromPoint and toPoint on the chessboard, return a move object.
+    //If the move is invalid, return null.
     public Move moveTo(ChessboardPoint fromPoint, ChessboardPoint toPoint, Cell[][] board) {
         //This method should be overridden in each subclass
         return null;

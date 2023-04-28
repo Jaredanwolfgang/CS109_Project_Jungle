@@ -13,6 +13,9 @@ import java.util.Objects;
 public class Cell {
     // the position for chess
     private ChessPiece piece = null;
+
+    //Only a few cells have owner.(trap and den)
+    //Other cells' owner is null.
     private PlayerColor owner = null;
 
     private boolean isTrap = false;

@@ -28,6 +28,8 @@ public class Chessboard {
         initPieces();
     }
 
+    //initGrid and initPieces methods are used to initialize the chessboard.
+    //They are also used to reset the chessboard.
     private void initGrid() {
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
@@ -123,77 +125,73 @@ public class Chessboard {
         redPieces.add(piece);
     }
 
+    //Only used once when model is created in GameController.java.
     public void registerController(GameController gameController){
         this.gameController = gameController;
     }
 
-    //This method is originally a private method, but I change it to public for testing.
-    //The only place that calls this method for testing is in GameController.java.
-    public ChessPiece getChessPieceAt(ChessboardPoint point) {
-        return getGridAt(point).getPiece();
-    }
-
-    private Cell getGridAt(ChessboardPoint point) {
-        return grid[point.getRow()][point.getCol()];
-    }
-
-
-    private ChessPiece removeChessPiece(ChessboardPoint point) {
-        ChessPiece chessPiece = getChessPieceAt(point);
-        getGridAt(point).removePiece();
-        return chessPiece;
-    }
-
-    private void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
-        getGridAt(point).setPiece(chessPiece);
-    }
-
-    public void moveChessPiece(ChessboardPoint src, ChessboardPoint dest) {
+    public Move moveChessPiece(ChessboardPoint src, ChessboardPoint dest) {
+        //First check if the move is valid.
+        //If not, throw an exception and end the method.
         if (!isValidMove(src, dest)) {
             throw new IllegalArgumentException("Illegal chess move!");
         }
+
+        //If the move is valid, generate a move instance.
         ChessPiece srcPiece = getChessPieceAt(src);
         Move move = srcPiece.moveTo(src, dest, this.grid);
-        gameController.addMove(move);
+
+        //Move the piece on the chessboard.
         setChessPiece(dest, removeChessPiece(src));
 
+        //Check if the chess piece gets trapped or gets out of the trap.
         if(getGridAt(dest).isTrap() && getGridAt(dest).getOwner() != srcPiece.getOwner()){
             srcPiece.setTrapped(true);
         }
         if(getGridAt(src).isTrap() && getGridAt(src).getOwner() != srcPiece.getOwner()){
             srcPiece.setTrapped(false);
         }
+
+        //If the move is invalid, an exception will be thrown and the method will end ahead.
+        //So we can garantee that the move is valid here.
+        return move;
     }
 
-    public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
+    public Move captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
+        //First check if the capture is valid.
+        //If not, throw an exception and end the method.
         if (isValidCapture(src, dest)) {
             throw new IllegalArgumentException("Illegal chess capture!");
         }
+
+        //If the capture is valid, generate a move instance.
         ChessPiece srcPiece = getChessPieceAt(src);
         Move move = srcPiece.moveTo(src, dest, this.grid);
+
+        //Remove the captured piece from the list.
         if(move.getCapturedPiece().getOwner() == PlayerColor.BLUE) {
             bluePieces.remove(move.getCapturedPiece());
         }else{
             redPieces.remove(move.getCapturedPiece());
         }
-        gameController.addMove(move);
+
+        //Move the chess piece on the chessboard.
         getGridAt(dest).removePiece();
         setChessPiece(dest, removeChessPiece(src));
 
+        //Check if the chess piece gets trapped.
         if(getGridAt(dest).isTrap() && getGridAt(dest).getOwner() != srcPiece.getOwner()){
             srcPiece.setTrapped(true);
         }
-    }
 
-    public Cell[][] getGrid() {
-        return grid;
-    }
-    public PlayerColor getChessPieceOwner(ChessboardPoint point) {
-        return getGridAt(point).getPiece().getOwner();
+        //If the move is invalid, an exception will be thrown and the method will end ahead.
+        //So we can garantee that the move is valid here.
+        return move;
     }
 
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
+        //If the move is invalid, the moveTo method will return null.
         if(srcPiece.moveTo(src, dest, this.grid) == null){
             return false;
         }
@@ -203,6 +201,7 @@ public class Chessboard {
 
     public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
+        //If the move is invalid, the moveTo method will return null.
         if(srcPiece.moveTo(src, dest, this.grid) == null){
             return false;
         }
@@ -343,5 +342,33 @@ public class Chessboard {
     public void reset() {
         initGrid();
         initPieces();
+    }
+
+    //getter and setter
+    private ChessPiece getChessPieceAt(ChessboardPoint point) {
+        return getGridAt(point).getPiece();
+    }
+
+    private Cell getGridAt(ChessboardPoint point) {
+        return grid[point.getRow()][point.getCol()];
+    }
+
+
+    private ChessPiece removeChessPiece(ChessboardPoint point) {
+        ChessPiece chessPiece = getChessPieceAt(point);
+        getGridAt(point).removePiece();
+        return chessPiece;
+    }
+
+    private void setChessPiece(ChessboardPoint point, ChessPiece chessPiece) {
+        getGridAt(point).setPiece(chessPiece);
+    }
+
+    public Cell[][] getGrid() {
+        return grid;
+    }
+
+    public PlayerColor getChessPieceOwner(ChessboardPoint point) {
+        return getGridAt(point).getPiece().getOwner();
     }
 }
