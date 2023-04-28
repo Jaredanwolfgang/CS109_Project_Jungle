@@ -152,7 +152,6 @@ public class GameController implements GameListener {
     public void onPlayerClickLoadButton() {
 
     }
-
     /*
     public void testViaKeyboard(int x,int y){
         ChessboardPoint point = new ChessboardPoint(x,y);
