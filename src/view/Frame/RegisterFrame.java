@@ -1,5 +1,8 @@
 package view.Frame;
 
+import view.Dialog.FailDialog;
+import view.Dialog.SuccessDialog;
+
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
@@ -7,16 +10,13 @@ import java.awt.event.*;
 import java.io.*;
 
 public class RegisterFrame extends JFrame implements ActionListener {
-    private final int WIDTH;
-    private final int HEIGHT;
+    private final int WIDTH =300;
+    private final int HEIGHT = 320;
     private JTextField userText, passText, passCheckText;
-    private JPasswordField passField;
+    private JPasswordField passField;//这里要设计PassField，但是还没写
     private final JButton registerButton = new JButton();
 
-    public RegisterFrame(int width, int height) {
-        this.WIDTH = width;
-        this.HEIGHT = height;
-
+    public RegisterFrame() {
         initTextArea();
         initButton("Image\\InitFrame\\Register_Light.png", "Image\\InitFrame\\" +
                 "Register_Dark.png", registerButton, 100, 220, 100, 56);
@@ -40,7 +40,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
         background.setBounds(0, 0, WIDTH, HEIGHT);
         this.getContentPane().add(background);
     }
-
+    //这里设置了三个TextField，用于输入数据
     public void initTextArea() {
         Color backGroundColor = new Color(0, 0, 0, 128);
 
@@ -189,17 +189,24 @@ public class RegisterFrame extends JFrame implements ActionListener {
                     String[] parts = line.split(":");
                     String storedUsername = parts[0];
                     if (username.equals(storedUsername)) {
-                        System.out.println("This username has already been used, please choose another one.");
+                        System.out.println("This username has been used.");
+                        new FailDialog("This username has been used.",this);
                         return;
                     }
                 }
                 if (passText.getText().equals(passCheckText.getText())) {
                     BufferedWriter writer = new BufferedWriter(new FileWriter("Information\\users.txt", true));
-                    writer.write(username + ":" + passText.getText());
+                    writer.write(username + ":" + passText.getText()+":"+0.0+"\n");
                     System.out.println("You have successfully registered!");
+                    LoginFrame loginFrame = new LoginFrame();
+                    new SuccessDialog("You have successfully registered!", loginFrame);
+                    this.setVisible(false);
+
                     writer.close();
+                    return;
                 } else {
                     System.out.println("The passwords you entered do not match, please try again.");
+                    new FailDialog("This username has already been used, please choose another one.",this);
                 }
                 reader.close();
             } catch (IOException ex) {

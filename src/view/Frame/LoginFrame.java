@@ -1,6 +1,8 @@
 package view.Frame;
 
 import model.User.User;
+import view.Dialog.FailDialog;
+import view.Dialog.SuccessDialog;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -14,18 +16,14 @@ import java.util.ArrayList;
 
 public class LoginFrame extends JFrame implements ActionListener{
 
-    private final int WIDTH;
-    private final int HEIGHT;
-
+    private final int WIDTH = 300;
+    private final int HEIGHT = 250;
+    private User user = new User();
     private JTextField userText, passText;
-    private JPasswordField passField;
+    private JPasswordField passField;//这里要设置PassField，但是还没写
     private JButton loginButton = new JButton();
 
-    public LoginFrame(int width, int height) {
-        this.WIDTH = width;
-        this.HEIGHT = height;
-
-
+    public LoginFrame() {
         initTextArea();
         initButton("Image\\InitFrame\\Login_Light.png","Image\\InitFrame\\" +
                 "Login_Dark.png",loginButton,0, 100, 150, 100, 56);
@@ -49,7 +47,7 @@ public class LoginFrame extends JFrame implements ActionListener{
         background.setBounds(0, 0, WIDTH, HEIGHT);
         this.getContentPane().add(background);
     }
-
+    //这里设置了两个TextField，用于输入数据
     public void initTextArea() {
         Color backGroundColor = new Color(0,0,0,128);
 
@@ -111,10 +109,11 @@ public class LoginFrame extends JFrame implements ActionListener{
         this.getContentPane().add(userText);
         this.getContentPane().add(passText);
     }
+    //初始化按钮
     public void initButton(String Address1, String Address2, JButton jb, int index, int x, int y, int width, int height) {
         ImageIcon Button_Light = new ImageIcon(Address1);
         Image img = Button_Light.getImage();
-        Image newimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        Image newimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);//重新调整图片大小
         ImageIcon Button_Light_New = new ImageIcon(newimg);
         ImageIcon Button_Dark = new ImageIcon(Address2);
         Image img2 = Button_Dark.getImage();
@@ -156,6 +155,7 @@ public class LoginFrame extends JFrame implements ActionListener{
         jb.addActionListener(this);
         this.getContentPane().add(jb);
     }
+    //设置按钮的动作，触发之后会读取并比对本地文件中的用户名和密码
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
             // Get the entered username and password
@@ -172,10 +172,19 @@ public class LoginFrame extends JFrame implements ActionListener{
                     String storedPassword = parts[1];
                     if (username.equals(storedUsername) && password.equals(storedPassword)) {
                         System.out.println("Login successful!");
+                        this.setVisible(false);
+                        StartFrame startFrame = new StartFrame(user);
+                        startFrame.setVisible(false);
+                        SuccessDialog successDialog = new SuccessDialog("Login successful", startFrame);
+                        user.setUsername(storedUsername);
+                        user.setPassword(storedPassword);
+                        user.setScore(Double.parseDouble(parts[2]));
                         return;
                     }
                 }
                 System.out.println("Incorrect username or password.");
+                this.setVisible(false);
+                FailDialog failDialog = new FailDialog("Incorrect username or password",this);
             } catch (IOException ex) {
                 System.out.println("Error reading file.");
                 ex.printStackTrace();
@@ -184,7 +193,7 @@ public class LoginFrame extends JFrame implements ActionListener{
     }
 
 
-
+    //设置圆角边框
     private static class RoundBorder extends AbstractBorder {
         private final int radius;
         private final Color color;

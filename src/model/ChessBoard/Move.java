@@ -2,7 +2,7 @@ package model.ChessBoard;
 
 import model.ChessPieces.ChessPiece;
 
-public class Move {
+public class Move{
     private ChessPiece movingPiece;
     private ChessboardPoint fromPoint;
     private ChessboardPoint toPoint;

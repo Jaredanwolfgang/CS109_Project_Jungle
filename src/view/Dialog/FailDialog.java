@@ -1,16 +1,15 @@
 package view.Dialog;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class SuccessDialog extends JDialog {
+public class FailDialog extends JDialog{
     private String message;
-    private JFrame toFrame;
-    public SuccessDialog(String message,JFrame toFrame){
+    private JFrame fromFrame;
+    public FailDialog(String message,JFrame fromFrame){
         this.message = message;
-        this.toFrame = toFrame;
+        this.fromFrame = fromFrame;
 
         initLabel(message);
         initDialog();
@@ -34,7 +33,7 @@ public class SuccessDialog extends JDialog {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                toFrame.setVisible(true);
+                fromFrame.setVisible(true);
             }
 
             @Override

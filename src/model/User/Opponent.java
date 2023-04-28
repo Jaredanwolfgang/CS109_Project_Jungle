@@ -2,17 +2,16 @@ package model.User;
 
 import model.Enum.PlayerColor;
 
-public class User extends Player implements Comparable{
+public class Opponent extends Player implements Comparable{
     private static String username;
     private static String password;
     private static double score;
-    private final PlayerColor usercolor = PlayerColor.RED;
-    //FIXME:How to judge whether it is the user or the opponent by using merely color?
+    private final PlayerColor opponentColor = PlayerColor.BLUE;
 
-    public User() {
+    public Opponent() {
     }
 
-    public User(String username, String password, double scores) {
+    public Opponent(String username, String password, double scores) {
         this.username = username;
         this.password = password;
         this.score = scores;
@@ -23,7 +22,7 @@ public class User extends Player implements Comparable{
     }
 
     public static void setUsername(String username) {
-        User.username = username;
+        Opponent.username = username;
     }
 
     public static String getPassword() {
@@ -31,7 +30,7 @@ public class User extends Player implements Comparable{
     }
 
     public static void setPassword(String password) {
-        User.password = password;
+        Opponent.password = password;
     }
 
     public static double getScore() {
@@ -39,7 +38,7 @@ public class User extends Player implements Comparable{
     }
 
     public static void setScore(double score) {
-        User.score = score;
+        Opponent.score = score;
     }
 
     @Override

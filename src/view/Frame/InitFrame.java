@@ -36,7 +36,7 @@ public class InitFrame extends JFrame {
         this.setLayout(null);
         this.setSize(WIDTH, HEIGHT);
         this.setTitle("Jungle");
-        this.setAlwaysOnTop(true);
+//        this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -77,9 +77,9 @@ public class InitFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (index == 0) {
-                    new LoginFrame(300, 250);
+                    new LoginFrame();
                 } else if (index == 1) {
-                    new RegisterFrame(300,320);
+                    new RegisterFrame();
                 } else if (index == 2) {
                     new MusicPlayerFrame();
                 } else if (index == 3) {

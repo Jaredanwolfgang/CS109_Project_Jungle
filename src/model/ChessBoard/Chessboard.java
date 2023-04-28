@@ -1,8 +1,7 @@
 package model.ChessBoard;
 
 import controller.GameController;
-import model.ChessPieces.ChessPiece;
-import model.ChessPieces.ElephantChessPiece;
+import model.ChessPieces.*;
 import model.Enum.Category;
 import model.Enum.Constant;
 import model.Enum.PlayerColor;
@@ -57,8 +56,29 @@ public class Chessboard {
 
     private void initPieces() {
         //This method place all chess pieces on the chessboard.
-        grid[0][0].setPiece(new ElephantChessPiece(PlayerColor.BLUE));
-        grid[8][6].setPiece(new ElephantChessPiece(PlayerColor.RED));
+        grid[6][0].setPiece(new ElephantChessPiece(PlayerColor.BLUE));
+        grid[2][6].setPiece(new ElephantChessPiece(PlayerColor.RED));
+
+        grid[8][6].setPiece(new LionChessPiece(PlayerColor.BLUE));
+        grid[0][0].setPiece(new LionChessPiece(PlayerColor.RED));
+
+        grid[8][0].setPiece(new TigerChessPiece(PlayerColor.BLUE));
+        grid[0][6].setPiece(new TigerChessPiece(PlayerColor.RED));
+
+        grid[6][4].setPiece(new LeopardChessPiece(PlayerColor.BLUE));
+        grid[2][2].setPiece(new LeopardChessPiece(PlayerColor.RED));
+
+        grid[6][2].setPiece(new WolfChessPiece(PlayerColor.BLUE));
+        grid[2][4].setPiece(new WolfChessPiece(PlayerColor.RED));
+
+        grid[7][5].setPiece(new DogChessPiece(PlayerColor.BLUE));
+        grid[1][1].setPiece(new DogChessPiece(PlayerColor.RED));
+
+        grid[7][1].setPiece(new CatChessPiece(PlayerColor.BLUE));
+        grid[1][5].setPiece(new CatChessPiece(PlayerColor.RED));
+
+        grid[6][6].setPiece(new RatChessPiece(PlayerColor.BLUE));
+        grid[2][0].setPiece(new RatChessPiece(PlayerColor.RED));
     }
 
     public void registerController(GameController gameController){
@@ -124,6 +144,8 @@ public class Chessboard {
         return getGridAt(point).getPiece().getOwner();
     }
 
+
+    //FIXME:Here is a very interesting question, why not move the below methods into GameController?
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
         ArrayList<Move> moves = srcPiece.getAvailableMoves(src , grid);
