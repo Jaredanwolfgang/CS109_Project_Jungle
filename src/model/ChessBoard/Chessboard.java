@@ -69,6 +69,8 @@ public class Chessboard {
 
     private void initPieces() {
         //This method place all chess pieces on the chessboard.
+        bluePieces.clear();
+        redPieces.clear();
         ChessPiece piece;
         piece = new LionChessPiece(PlayerColor.BLUE);
         grid[0][0].setPiece(piece);
@@ -108,7 +110,7 @@ public class Chessboard {
         grid[7][5].setPiece(piece);
         redPieces.add(piece);
         piece = new ElephantChessPiece(PlayerColor.RED);
-        grid[8][1].setPiece(piece);
+        grid[6][0].setPiece(piece);
         redPieces.add(piece);
         piece = new WolfChessPiece(PlayerColor.RED);
         grid[6][2].setPiece(piece);
@@ -237,6 +239,11 @@ public class Chessboard {
         }
 
         if(lastMove.isDoesCapture()) {
+            if(lastMove.getCapturedPiece().getOwner() == PlayerColor.BLUE) {
+                bluePieces.add(lastMove.getCapturedPiece());
+            }else{
+                redPieces.add(lastMove.getCapturedPiece());
+            }
             setChessPiece(lastMove.getToPoint(), lastMove.getCapturedPiece());
             if(this.getGridAt(lastMove.getToPoint()).isTrap()){
                 lastMove.getCapturedPiece().setTrapped(true);
@@ -246,7 +253,7 @@ public class Chessboard {
             }
         }
     }
-    public boolean isGameOver(){
+    public boolean noPieceLeft(){
         if(this.bluePieces.size() == 0 || this.redPieces.size() == 0){
             return true;
         }
@@ -298,12 +305,43 @@ public class Chessboard {
                             break;
                     }
                 }
-                newBoard[i][j].setOwner(board[i][j].getOwner());
-                newBoard[i][j].setDen(board[i][j].isDen());
-                newBoard[i][j].setTrap(board[i][j].isTrap());
-                newBoard[i][j].setRiver(board[i][j].isRiver());
             }
         }
+        newBoard[0][3].setDen(true);
+        newBoard[0][3].setOwner(PlayerColor.BLUE);
+        newBoard[8][3].setDen(true);
+        newBoard[8][3].setOwner(PlayerColor.RED);
+
+        newBoard[0][2].setTrap(true);
+        newBoard[0][2].setOwner(PlayerColor.BLUE);
+        newBoard[0][4].setTrap(true);
+        newBoard[0][4].setOwner(PlayerColor.BLUE);
+        newBoard[1][3].setTrap(true);
+        newBoard[1][3].setOwner(PlayerColor.BLUE);
+        newBoard[8][2].setTrap(true);
+        newBoard[8][2].setOwner(PlayerColor.RED);
+        newBoard[8][4].setTrap(true);
+        newBoard[8][4].setOwner(PlayerColor.RED);
+        newBoard[7][3].setTrap(true);
+        newBoard[7][3].setOwner(PlayerColor.RED);
+
+        newBoard[3][1].setRiver(true);
+        newBoard[3][2].setRiver(true);
+        newBoard[3][4].setRiver(true);
+        newBoard[3][5].setRiver(true);
+        newBoard[4][1].setRiver(true);
+        newBoard[4][2].setRiver(true);
+        newBoard[4][4].setRiver(true);
+        newBoard[4][5].setRiver(true);
+        newBoard[5][1].setRiver(true);
+        newBoard[5][2].setRiver(true);
+        newBoard[5][4].setRiver(true);
+        newBoard[5][5].setRiver(true);
         return newBoard;
+    }
+
+    public void reset() {
+        initGrid();
+        initPieces();
     }
 }

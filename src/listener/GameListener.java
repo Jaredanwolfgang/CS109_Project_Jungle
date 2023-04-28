@@ -11,4 +11,7 @@ public interface GameListener {
     void onPlayerClickChessPiece(ChessboardPoint point, ElephantChessComponent component);
 
     void onPlayerClickUndoButton();
+    void onPlayerClickResetButton();
+    void onPlayerClickSaveButton();
+    void onPlayerClickLoadButton();
 }

@@ -45,6 +45,9 @@ public class RatChessPiece extends ChessPiece{
 
         if(toPiece != null){
             if(this.canCapture(toPiece)){
+                if(board[fromPoint.getRow()][fromPoint.getCol()].isRiver() && toPiece.getCategory() == Category.ELEPHANT){
+                    return null;
+                }
                 return new Move(this, fromPoint, toPoint, true, toPiece);
             }else{
                 return null;

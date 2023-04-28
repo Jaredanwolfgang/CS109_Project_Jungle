@@ -25,6 +25,10 @@ public class Main {
                     gameController.onPlayerClickUndoButton();
                     continue;
                 }
+                if(x == -3){
+                    gameController.onPlayerClickResetButton();
+                    continue;
+                }
                 int y = input.nextInt();
                 gameController.testViaKeyboard(x, y);
             }

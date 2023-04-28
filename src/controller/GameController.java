@@ -43,17 +43,8 @@ public class GameController implements GameListener {
 
         model.registerController(this);
         view.registerController(this);
-        initialize();
         view.initiateChessComponent(model);
         view.repaint();
-    }
-
-    private void initialize() {
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-
-            }
-        }
     }
 
     // after a valid move swap the player
@@ -67,7 +58,7 @@ public class GameController implements GameListener {
     private boolean win() {
         if((model.getGrid()[0][3].getPiece() != null && model.getGrid()[0][3].getPiece().getOwner() == PlayerColor.RED) ||
                 (model.getGrid()[8][3].getPiece() != null && model.getGrid()[8][3].getPiece().getOwner() == PlayerColor.BLUE) ||
-                model.isGameOver()){
+                model.noPieceLeft()){
             return true;
         }
         return false;
@@ -85,10 +76,9 @@ public class GameController implements GameListener {
             }
             //view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             //view.repaint();
-            // TODO: if the chess enter Dens or Traps and so on
         }
         if(win()){
-            //
+
         }
     }
 
@@ -122,6 +112,9 @@ public class GameController implements GameListener {
                         model.captureChessPiece(selectedPoint,point);
                         selectedPoint = null;
                         this.swapColor();
+                        if(win()){
+
+                        }
                     }catch (IllegalArgumentException e){
                         System.out.println(e);
                     }
@@ -140,6 +133,24 @@ public class GameController implements GameListener {
         }else{
             System.out.println("No move to undo");
         }
+    }
+
+    @Override
+    public void onPlayerClickResetButton() {
+        selectedPoint = null;
+        model.reset();
+        this.currentPlayer = PlayerColor.BLUE;
+        this.allMovesOnBoard.clear();
+    }
+
+    @Override
+    public void onPlayerClickSaveButton() {
+
+    }
+
+    @Override
+    public void onPlayerClickLoadButton() {
+
     }
 
     public void testViaKeyboard(int x,int y){
