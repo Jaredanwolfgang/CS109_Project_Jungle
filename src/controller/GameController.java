@@ -153,6 +153,7 @@ public class GameController implements GameListener {
 
     }
 
+    /*
     public void testViaKeyboard(int x,int y){
         ChessboardPoint point = new ChessboardPoint(x,y);
         if(model.getChessPieceAt(point) == null){
@@ -169,5 +170,5 @@ public class GameController implements GameListener {
     }
     public Move AIMoveTest(){
         return AI_MCTS.findBestOneMove(model.getGrid(), currentPlayer.getColor());
-    }
+    }*/
 }
