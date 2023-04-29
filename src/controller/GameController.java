@@ -26,7 +26,7 @@ public class GameController implements GameListener {
     private PlayerColor currentPlayer;
     static User user1;
     static User user2;
-    static GameMode gameMode = GameMode.PVE;
+    static GameMode gameMode = GameMode.Local_PVP;
 
     // Record all moves on the board.
     private ArrayList<Move> allMovesOnBoard;
@@ -499,6 +499,7 @@ public class GameController implements GameListener {
                     if (!model.isValidCapture(move.getFromPoint(), move.getToPoint())) {
                         throw new IllegalArgumentException("Invalid move(piece can't reach the destination or piece can't capture the target)");
                     }
+                    allMovesOnBoard.add(model.captureChessPiece(move.getFromPoint(),move.getToPoint()));
                 }else{
                     if(model.getChessPieceAt(move.getFromPoint()) == null){
                         throw new IllegalArgumentException("Invalid move(piece does not exist)");
@@ -515,7 +516,9 @@ public class GameController implements GameListener {
                     if (!model.isValidMove(move.getFromPoint(), move.getToPoint())) {
                         throw new IllegalArgumentException("Invalid move(piece can't reach the destination)");
                     }
+                    allMovesOnBoard.add(model.moveChessPiece(move.getFromPoint(), move.getToPoint()));
                 }
+                this.swapColor();
             }catch(IllegalArgumentException e){
                 //Print error message.
                 isValidFile = false;
@@ -534,7 +537,7 @@ public class GameController implements GameListener {
             System.out.println("File Check Passed: Valid file.");
 
             //Here should be code in GUI to show success message.
-
+            this.onPlayerClickResetButton();
             for(Move move : moves){
                 this.onPlayerClickChessPiece(move.getFromPoint());
                 if(move.isDoesCapture()){
