@@ -499,8 +499,6 @@ public class GameController implements GameListener {
                     if (!model.isValidCapture(move.getFromPoint(), move.getToPoint())) {
                         throw new IllegalArgumentException("Invalid move(piece can't reach the destination or piece can't capture the target)");
                     }
-                    this.onPlayerClickChessPiece(move.getFromPoint());
-                    this.onPlayerClickChessPiece(move.getToPoint());
                 }else{
                     if(model.getChessPieceAt(move.getFromPoint()) == null){
                         throw new IllegalArgumentException("Invalid move(piece does not exist)");
@@ -517,8 +515,6 @@ public class GameController implements GameListener {
                     if (!model.isValidMove(move.getFromPoint(), move.getToPoint())) {
                         throw new IllegalArgumentException("Invalid move(piece can't reach the destination)");
                     }
-                    this.onPlayerClickChessPiece(move.getFromPoint());
-                    this.onPlayerClickCell(move.getToPoint());
                 }
             }catch(IllegalArgumentException e){
                 //Print error message.
@@ -539,6 +535,14 @@ public class GameController implements GameListener {
 
             //Here should be code in GUI to show success message.
 
+            for(Move move : moves){
+                this.onPlayerClickChessPiece(move.getFromPoint());
+                if(move.isDoesCapture()){
+                    this.onPlayerClickChessPiece(move.getToPoint());
+                }else{
+                    this.onPlayerClickCell(move.getToPoint());
+                }
+            }
         }
     }
 
