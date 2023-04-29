@@ -37,6 +37,9 @@ public class Main {
                     gameController.onPlayerClickLoadButton("save.txt");
                     continue;
                 }
+                if(x == -6){
+                    System.out.println(gameController.onPlayerClickLoginButton("xyc","234567"));
+                }
                 int y = input.nextInt();
                 gameController.testViaKeyboard(x, y);
             }

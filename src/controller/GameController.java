@@ -13,6 +13,7 @@ import java.io.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Controller is the connection between model and view,
@@ -552,7 +553,7 @@ public class GameController implements GameListener {
     @Override
     public boolean onPlayerClickLoginButton(String username, String password) {
         for (User user : allUsers) {
-            if(user.getUsername().equals(username) && user.getPassword().equals(password) && user.getPlayerType() != PlayerType.AI){
+            if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
                 user1 = user;
                 return true;
             }
@@ -563,7 +564,7 @@ public class GameController implements GameListener {
     @Override
     public boolean onPlayerClickRegisterButton(String username, String password) {
         for (User user : allUsers) {
-            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+            if(user.getUsername().equals(username) && user.validatePassword(password)){
                 return false;
             }
         }
@@ -587,7 +588,7 @@ public class GameController implements GameListener {
     @Override
     public boolean onPlayerSelectLocalPVPMode(String username, String password) {
         for (User user : allUsers) {
-            if(user.getUsername().equals(username) && user.getPassword().equals(password) && user.getPlayerType() != PlayerType.AI){
+            if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
                 user2 = user;
                 gameMode = GameMode.Local_PVP;
                 return true;
