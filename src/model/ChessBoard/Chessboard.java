@@ -134,7 +134,7 @@ public class Chessboard {
         //First check if the move is valid.
         //If not, throw an exception and end the method.
         if (!isValidMove(src, dest)) {
-            throw new IllegalArgumentException("Illegal chess move!");
+            throw new IllegalArgumentException("Invalid move(piece can't reach the destination)");
         }
 
         //If the move is valid, generate a move instance.
@@ -160,8 +160,8 @@ public class Chessboard {
     public Move captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         //First check if the capture is valid.
         //If not, throw an exception and end the method.
-        if (isValidCapture(src, dest)) {
-            throw new IllegalArgumentException("Illegal chess capture!");
+        if (!isValidCapture(src, dest)) {
+            throw new IllegalArgumentException("Invalid move(piece can't reach the destination or piece can't capture the target)");
         }
 
         //If the capture is valid, generate a move instance.
@@ -191,6 +191,12 @@ public class Chessboard {
 
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
+        if(srcPiece == null){
+            return false;
+        }
+        if(getChessPieceAt(dest) != null){
+            return false;
+        }
         //If the move is invalid, the moveTo method will return null.
         if(srcPiece.moveTo(src, dest, this.grid) == null){
             return false;
@@ -201,6 +207,12 @@ public class Chessboard {
 
     public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
+        if(srcPiece == null){
+            return false;
+        }
+        if(getChessPieceAt(dest) == null){
+            return false;
+        }
         //If the move is invalid, the moveTo method will return null.
         if(srcPiece.moveTo(src, dest, this.grid) == null){
             return false;
@@ -345,7 +357,7 @@ public class Chessboard {
     }
 
     //getter and setter
-    private ChessPiece getChessPieceAt(ChessboardPoint point) {
+    public ChessPiece getChessPieceAt(ChessboardPoint point) {
         return getGridAt(point).getPiece();
     }
 

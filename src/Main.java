@@ -13,7 +13,7 @@ public class Main {
             mainFrame.setVisible(true);
 
             //testing code
-            /*System.out.println(gameController.AIMoveTest());
+            //System.out.println(gameController.AIMoveTest());
             Scanner input = new Scanner(System.in);
             while(true){
                 System.out.println("Enter -1 to exit");
@@ -29,9 +29,17 @@ public class Main {
                     gameController.onPlayerClickResetButton();
                     continue;
                 }
+                if(x == -4){
+                    gameController.onPlayerClickSaveButton("save.txt");
+                    continue;
+                }
+                if(x == -5){
+                    gameController.onPlayerClickLoadButton("save.txt");
+                    continue;
+                }
                 int y = input.nextInt();
                 gameController.testViaKeyboard(x, y);
-            }*/
+            }
         });
     }
 }
