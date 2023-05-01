@@ -27,9 +27,9 @@ public class GameController implements GameListener {
     private ClientThread client;
     private PlayerColor colorOfUser;
     private PlayerColor currentPlayer;
-    private static User user1;
-    private static User user2;
-    private static GameMode gameMode;
+    public static User user1;
+    public static User user2;
+    public static GameMode gameMode;
 
     // Record all moves on the board.
     private ArrayList<Move> allMovesOnBoard;
