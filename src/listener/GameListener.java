@@ -1,8 +1,11 @@
 package listener;
 
 import model.ChessBoard.ChessboardPoint;
+import model.User.User;
 import view.CellComponent;
 import view.ChessComponent.ElephantChessComponent;
+
+import java.util.ArrayList;
 
 public interface GameListener {
 
@@ -51,6 +54,10 @@ public interface GameListener {
 
     //call this method when player choose online pvp mode
     void onPlayerSelectOnlinePVPMode();
+
+    //call this method when player click the rank list button
+    //return an array list of user, sorted by their score already
+    ArrayList<User> onPlayerClickRankListButton();
 
     //call this method when player exit the game frame and go back to the mode selection frame
     //(I need to reset the second user to null and reset the chessboard)

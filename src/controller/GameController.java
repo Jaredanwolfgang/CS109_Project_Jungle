@@ -88,11 +88,12 @@ public class GameController implements GameListener {
                 return;
             }
         }
+        allUsers.sort(Comparator.comparing(User::getScore));
         System.out.println("Read users successfully!");
     }
 
     private void writeUsers(){
-        allUsers.sort(Comparator.comparing(x -> x.getScore()));
+        allUsers.sort(Comparator.comparing(User::getScore));
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(USER_FILE_PATH));
@@ -209,15 +210,6 @@ public class GameController implements GameListener {
             if (model.getChessPieceOwner(point) == currentPlayer) {
                 //If the clicked piece is the current player's piece, select it.
                 selectedPoint = point;
-
-                //Following code is just for debugging.
-                //It will print all valid moves of the selected chess piece, once a piece is selected.
-                /*ChessPiece piece = model.getChessPieceAt(point);
-                ArrayList<Move> validMoves = piece.getAvailableMoves(point, model.getGrid());
-                for (Move move : validMoves) {
-                    System.out.println(move);
-                }*/
-
             }
         }else{
             if (selectedPoint.equals(point)) {
@@ -362,7 +354,7 @@ public class GameController implements GameListener {
             reader = new BufferedReader(new FileReader(filePath));
             String line;
             while ((line = reader.readLine()) != null) {
-                Move move = null;
+                Move move;
 
                 String[] parts = line.split(",");
 
@@ -372,8 +364,8 @@ public class GameController implements GameListener {
                 
                 String movingPieceName = parts[0];
                 String movingPieceOwner = parts[1];
-                ChessPiece movingPiece = null;
-                PlayerColor movingPieceOwnerColor = null;
+                ChessPiece movingPiece;
+                PlayerColor movingPieceOwnerColor;
 
                 if(movingPieceOwner.equals("BLUE")) {
                     movingPieceOwnerColor = PlayerColor.BLUE;
@@ -456,8 +448,8 @@ public class GameController implements GameListener {
 
                     String capturedPieceName = parts[7];
                     String capturedPieceOwner = parts[1];
-                    ChessPiece capturedPiece = null;
-                    PlayerColor capturedPieceOwnerColor = null;
+                    ChessPiece capturedPiece;
+                    PlayerColor capturedPieceOwnerColor;
                     if(capturedPieceOwner.equals("BLUE")) {
                         capturedPieceOwnerColor = PlayerColor.BLUE;
                     }else if(capturedPieceOwner.equals("RED")){
@@ -477,14 +469,14 @@ public class GameController implements GameListener {
                         default ->
                                 throw new IllegalArgumentException("Invalid input format(illegal captured piece type): " + line);
                     };
-                    move = new Move(movingPiece, fromPoint, toPoint, doesCapture, capturedPiece);
+                    move = new Move(movingPiece, fromPoint, toPoint, true, capturedPiece);
                 }else{
 
                     if(parts.length != 7){
                         throw new IllegalArgumentException("Invalid input format: " + line);
                     }
 
-                    move = new Move(movingPiece, fromPoint, toPoint, doesCapture, null);
+                    move = new Move(movingPiece, fromPoint, toPoint, false, null);
                 }
                 moves.add(move);
             }
@@ -682,6 +674,11 @@ public class GameController implements GameListener {
             return;
         }
         System.out.println("Client thread started successfully");
+    }
+
+    @Override
+    public ArrayList<User> onPlayerClickRankListButton() {
+        return allUsers;
     }
 
     @Override
