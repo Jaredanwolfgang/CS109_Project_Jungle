@@ -18,8 +18,24 @@ public class ChessGameFrame extends JFrame {
     //    public final Dimension FRAME_SIZE ;
     private final int WIDTH = 500;
     private final int HEIGHT = 729;
+
+    /**
+     * I've written a GameMode enum class in my code.
+     * You can easily get current game mode by accessing gameMode variable in the GameController class, as it is set to be static.
+     */
     private final Mode mode;
     private JLabel background;
+
+    /**
+     * You can know which button can be used in which mode by reading the comments in gameListener class.
+     * Here I summarized it for you:
+     *   1. saveButton: all modes
+     *   2. loadButton: local PVP only (should display additional warning information, clicking this button will cause the game to be reset, even if the file is invalid)
+     *   3. regretButton: local PVP and PVE
+     *   4. restartButton: local PVP and PVE
+     *
+     *   (There is a onPlayerExitGameFrame method, please call it when the player exits current game mode and returns to the game mode selection frame)
+     */
     private final JButton backgroundButton = new JButton();
     private final JButton loadButton = new JButton();
     private final JButton saveButton = new JButton();

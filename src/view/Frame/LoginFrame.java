@@ -18,9 +18,17 @@ public class LoginFrame extends JFrame implements ActionListener{
 
     private final int WIDTH = 300;
     private final int HEIGHT = 250;
+
+    /** I have to apologize here.
+     *  As java can’t rewrite a specific line in the users file. I must rewrite the whole file.
+     *  Therefore, I have to have all users in memory.
+     *  I read all users at the beginning and create an ArrayList for it.
+     *  And when any user's information changes, I update the Arraylist and write all users back to the file. All this is done in gameController.
+     *  I have already created interfaces in gameListeners for user login, register, logout and get player list. Don't forget to check it out.
+     */
     private User user = new User();
     private JTextField userText, passText;
-    private JPasswordField passField;//这里要设置PassField，但是还没写
+    private JPasswordField passwordField;//这里要设置PassField，但是还没写
     private JButton loginButton = new JButton();
 
     public LoginFrame() {
@@ -51,6 +59,9 @@ public class LoginFrame extends JFrame implements ActionListener{
     public void initTextArea() {
         Color backGroundColor = new Color(0,0,0,128);
 
+        /**
+         * You might want to change the font size here. Current size is too small to read.
+         */
         userText = new JTextField("Enter your Username here", 20);
         userText.setFont(new Font("Calibri", Font.ITALIC, 8));
 //        userText.setOpaque(false);

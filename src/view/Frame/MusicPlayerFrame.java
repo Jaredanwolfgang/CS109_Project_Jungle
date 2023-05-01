@@ -172,11 +172,7 @@ public class MusicPlayerFrame extends JFrame {
 
             //开始播放
             clip.start();
-        } catch (UnsupportedAudioFileException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (LineUnavailableException ex) {
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             ex.printStackTrace();
         }
     }

@@ -88,6 +88,11 @@ public class StartFrame extends JFrame {
         jb.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                /**
+                 *  Please do not create new gameController here.
+                 *  There is only one gameController in the whole game.
+                 *  And any new gameController do not have any data of the chessboard.
+                 */
                 if (index == 0) {
                     ChessGameFrame mainFrame = new ChessGameFrame(Mode.PVP, user);
                     GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard());
