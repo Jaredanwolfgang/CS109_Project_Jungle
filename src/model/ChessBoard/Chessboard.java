@@ -264,11 +264,14 @@ public class Chessboard {
             }
         }
     }
-    public boolean noPieceLeft(){
-        if(this.bluePieces.size() == 0 || this.redPieces.size() == 0){
-            return true;
+    public PlayerColor noPieceLeft(){
+        if(this.bluePieces.size() == 0){
+            return PlayerColor.BLUE;
         }
-        return false;
+        if(this.redPieces.size() == 0){
+            return PlayerColor.RED;
+        }
+        return null;
     }
     public static ArrayList<Move> getAllPossibleMoveOnBoard(Cell[][] board, Color PlayerColor){
         ArrayList<Move> moves = new ArrayList<>();

@@ -3,7 +3,7 @@ package view;
 
 import controller.GameController;
 import model.ChessBoard.Cell;
-import model.ChessBoard.Chessboard;
+import model.ChessBoard.*;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessPieces.ChessPiece;
 import view.ChessComponent.ElephantChessComponent;

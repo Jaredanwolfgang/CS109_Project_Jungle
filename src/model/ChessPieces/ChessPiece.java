@@ -7,10 +7,11 @@ import model.ChessBoard.Move;
 import model.Enum.Category;
 import model.Enum.PlayerColor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ChessPiece {
+public class ChessPiece implements Serializable {
     //Owner of the chess
     private PlayerColor owner;
 

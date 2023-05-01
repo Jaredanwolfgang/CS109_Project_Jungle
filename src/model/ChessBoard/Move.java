@@ -3,8 +3,9 @@ package model.ChessBoard;
 import model.ChessPieces.ChessPiece;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Move {
+public class Move implements Serializable {
     private ChessPiece movingPiece;
     private ChessboardPoint fromPoint;
     private ChessboardPoint toPoint;
