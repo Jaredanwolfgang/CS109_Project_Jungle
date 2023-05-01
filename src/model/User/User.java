@@ -9,12 +9,16 @@ public class User {
     private String username;
     private String password;
     private double score;
+    private int wins;
+    private int losses;
     private PlayerType playerType;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.score = 1000;
+        this.wins = 0;
+        this.losses = 0;
         this.playerType = PlayerType.HUMAN;
     }
 
@@ -52,10 +56,34 @@ public class User {
     public void setPlayerType(PlayerType playerType) {
         this.playerType = playerType;
     }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public void setLosses(int losses) {
+        this.losses = losses;
+    }
+
+    public double getWinRate(){
+        if(wins + losses == 0){
+            return Double.MAX_VALUE;
+        }
+        return (double)wins / (wins + losses);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(username).append(',').append(password).append(",").append(score).append(",");
+        sb.append(username).append(',').append(password).append(",").append(wins).append(",").append(losses).append(",").append(score).append(",");
         if(playerType == PlayerType.HUMAN){
             sb.append("HUMAN");
         }else if(playerType == PlayerType.AI){

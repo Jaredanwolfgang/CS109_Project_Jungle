@@ -1,6 +1,7 @@
 package listener;
 
 import model.ChessBoard.ChessboardPoint;
+import model.Enum.AIDifficulty;
 import model.User.User;
 import view.CellComponent;
 import view.ChessComponent.ElephantChessComponent;
@@ -18,6 +19,10 @@ public interface GameListener {
     //call this method when player click undo button
     //method will return false if there is no move to undo or the mode is online pvp
     boolean onPlayerClickUndoButton();
+
+    //call this method when player click playback button
+    //only available in local pvp mode and pve mode
+    void onPlayerClickPlayBackButton();
 
     //call this method when player click reset button
     void onPlayerClickResetButton();
@@ -50,7 +55,7 @@ public interface GameListener {
     boolean onPlayerSelectLocalPVPMode(String username, String password);
 
     //call this method when player choose pve mode
-    void onPlayerSelectLocalPVEMode();
+    void onPlayerSelectLocalPVEMode(AIDifficulty difficulty);
 
     //call this method when player choose online pvp mode
     void onPlayerSelectOnlinePVPMode();

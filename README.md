@@ -16,3 +16,5 @@ New functions:
 
 1. add online PVP mode.
 2. more function in local test mode, now you can choose game mode.
+3. add playback function.
+4. add difficulty choosing function in PVE mode.(Medium AI haven't finished yet)

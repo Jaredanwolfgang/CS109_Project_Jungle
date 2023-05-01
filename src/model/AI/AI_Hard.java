@@ -3,8 +3,6 @@ package model.AI;
 import model.ChessBoard.Cell;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.Move;
-import model.ChessPieces.ElephantChessPiece;
-import model.Enum.Category;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,9 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static model.Enum.PlayerColor.BLUE;
-
-public class AI_MCTS {
+public class AI_Hard {
     static final int NUMBER_OF_ITERATIONS = 10000;
     static HashMap <CellGrid , ArrayList<Move>> historyMoves = new HashMap<>();
     public static Move findBestOneMove(Cell[][] board, Color player){
@@ -92,7 +88,7 @@ class MonteCarloTreeSearch {
             Color winner = JungleSimulator.rollout(rolloutNode);
             backPropagate(rolloutNode, winner);
         }
-        System.out.println(AI_MCTS.historyMoves.size());
+        System.out.println(AI_Hard.historyMoves.size());
         double numVisits = 0;
         for(Node child : root.children){
             if(child.visits > numVisits){

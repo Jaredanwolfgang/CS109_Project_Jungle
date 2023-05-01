@@ -38,6 +38,10 @@ public class GameController implements GameListener {
     // Record whether there is a selected piece before and where
     private ChessboardPoint selectedPoint;
 
+    //If this variable is true, it means the controller is doing playback.
+    private boolean onAutoPlayback;
+    private AIDifficulty aiDifficulty;
+
     public GameController(ChessboardComponent view, Chessboard model) {
         this.view = view;
         this.model = model;
@@ -45,6 +49,8 @@ public class GameController implements GameListener {
         this.allMovesOnBoard = new ArrayList<>();
         this.allUsers = new ArrayList<>();
         this.selectedPoint = null;
+        this.onAutoPlayback = false;
+        this.aiDifficulty = AIDifficulty.EASY;
         this.readUsers();
 
         model.registerController(this);
@@ -63,12 +69,16 @@ public class GameController implements GameListener {
                 String[] parts = line.split(",");
                 String username = parts[0];
                 String password = parts[1];
-                double score = Double.parseDouble(parts[2]);
-                String playerType = parts[3];
+                int wins = Integer.parseInt(parts[2]);
+                int losses = Integer.parseInt(parts[3]);
+                double score = Double.parseDouble(parts[4]);
+                String playerType = parts[5];
                 User user = new User();
                 user.setUsername(username);
                 user.setPassword(password);
                 user.setScore(score);
+                user.setWins(wins);
+                user.setLosses(losses);
                 if(playerType.equals("HUMAN")){
                     user.setPlayerType(PlayerType.HUMAN);
                 }else if(playerType.equals("AI")){
@@ -135,6 +145,8 @@ public class GameController implements GameListener {
     }
 
     private void updateUserScore(User winner, User loser){
+        winner.setWins(winner.getWins() + 1);
+        loser.setLosses(loser.getLosses() + 1);
         double winnerExpectedScore = 1 / (1 + Math.pow(10, (loser.getScore() - winner.getScore()) / 400));
         double loserExpectedScore = 1 / (1 + Math.pow(10, (winner.getScore() - loser.getScore()) / 400));
         if(winner.getPlayerType() != PlayerType.AI) {
@@ -158,7 +170,9 @@ public class GameController implements GameListener {
             try{
                 Move moveToMake = model.moveChessPiece(selectedPoint,point);
                 //If the move is invalid, the try sentence ends here.
-                allMovesOnBoard.add(moveToMake);
+                if(!onAutoPlayback){
+                    allMovesOnBoard.add(moveToMake);
+                }
                 if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
                     this.client.makeMove(moveToMake);
                 }
@@ -197,7 +211,7 @@ public class GameController implements GameListener {
                     client.setEndGame(false);
                 }
             }
-            if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED){
+            if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED && !onAutoPlayback){
                 this.onPlayerClickAIMoveButton();
             }
         }
@@ -225,7 +239,9 @@ public class GameController implements GameListener {
                         Move moveToMake = model.captureChessPiece(selectedPoint,point);
                         //If the capture is invalid, the try sentence ends here.
 
-                        allMovesOnBoard.add(moveToMake);
+                        if(!onAutoPlayback) {
+                            allMovesOnBoard.add(moveToMake);
+                        }
                         if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
                             this.client.makeMove(moveToMake);
                         }
@@ -262,7 +278,7 @@ public class GameController implements GameListener {
                             client.setEndGame(false);
                         }
                     }
-                    if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED){
+                    if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED && !onAutoPlayback){
                         this.onPlayerClickAIMoveButton();
                     }
                 }
@@ -295,6 +311,42 @@ public class GameController implements GameListener {
             this.swapColor();
         }
         return true;
+    }
+
+    @Override
+    public void onPlayerClickPlayBackButton() {
+        if(gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client){
+            System.out.println("Playback is not allowed in online mode.");
+            return;
+        }
+
+        selectedPoint = null;
+        model.reset();
+        this.currentPlayer = PlayerColor.BLUE;
+
+        onAutoPlayback = true;
+        for (Move move : allMovesOnBoard) {
+            this.onPlayerClickChessPiece(move.getFromPoint());
+
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(move.isDoesCapture()){
+                this.onPlayerClickChessPiece(move.getToPoint());
+            }else{
+                this.onPlayerClickCell(move.getToPoint());
+            }
+
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        onAutoPlayback = false;
     }
 
     @Override
@@ -566,11 +618,25 @@ public class GameController implements GameListener {
             this.onPlayerClickResetButton();
             for(Move move : moves){
                 this.onPlayerClickChessPiece(move.getFromPoint());
+
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 if(move.isDoesCapture()){
                     this.onPlayerClickChessPiece(move.getToPoint());
                 }else{
                     this.onPlayerClickCell(move.getToPoint());
                 }
+
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         }
     }
@@ -606,8 +672,23 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickAIMoveButton() {
         //TO DO: possible function? In pvp or net pvp mode, player can click this button to let AI make a move.
-        Move AIMove = AI_MCTS.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        Move AIMove;
+        if(aiDifficulty == AIDifficulty.EASY){
+            AIMove = AI_Easy.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        }else if(aiDifficulty == AIDifficulty.MEDIUM){
+            AIMove = AI_Medium.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        }else{
+            AIMove = AI_Hard.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        }
+
         this.onPlayerClickChessPiece(AIMove.getFromPoint());
+
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         if(AIMove.isDoesCapture()){
             this.onPlayerClickChessPiece(AIMove.getToPoint());
         }else{
@@ -629,10 +710,25 @@ public class GameController implements GameListener {
     }
 
     @Override
-    public void onPlayerSelectLocalPVEMode() {
-        for (User user : allUsers) {
-            if(user.getPlayerType() == PlayerType.AI){
-                user2 = user;
+    public void onPlayerSelectLocalPVEMode(AIDifficulty difficulty) {
+        aiDifficulty = difficulty;
+        if(difficulty == AIDifficulty.EASY) {
+            for (User user : allUsers) {
+                if (user.getPlayerType() == PlayerType.AI && user.getUsername().equals("AI_EASY")){
+                    user2 = user;
+                }
+            }
+        }else if(difficulty == AIDifficulty.MEDIUM) {
+            for (User user : allUsers) {
+                if (user.getPlayerType() == PlayerType.AI && user.getUsername().equals("AI_MEDIUM")) {
+                    user2 = user;
+                }
+            }
+        }else{
+            for (User user : allUsers) {
+                if (user.getPlayerType() == PlayerType.AI && user.getUsername().equals("AI_HARD")) {
+                    user2 = user;
+                }
             }
         }
         colorOfUser = PlayerColor.BLUE;
@@ -683,6 +779,7 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerExitGameFrame() {
+        aiDifficulty = AIDifficulty.EASY;
         user2 = null;
         gameMode = null;
         colorOfUser = null;

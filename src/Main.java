@@ -1,5 +1,6 @@
 import controller.GameController;
 import model.ChessBoard.Chessboard;
+import model.Enum.AIDifficulty;
 import view.Frame.ChessGameFrame;
 
 import javax.swing.*;
@@ -43,6 +44,8 @@ public class Main {
                 sb.append("\n");
                 sb.append("Enter -12 to reset game mode");
                 sb.append("\n");
+                sb.append("Enter -13 to test play back");
+                sb.append("\n");
                 System.out.print(sb);
                 int x = input.nextInt();
                 if(x == -1){
@@ -74,7 +77,7 @@ public class Main {
                     continue;
                 }
                 if(x == -8){
-                    gameController.onPlayerSelectLocalPVEMode();
+                    gameController.onPlayerSelectLocalPVEMode(AIDifficulty.HARD);
                     continue;
                 }
                 if(x == -9){
@@ -91,6 +94,10 @@ public class Main {
                 }
                 if(x == -12){
                     gameController.onPlayerExitGameFrame();
+                    continue;
+                }
+                if(x == -13){
+                    gameController.onPlayerClickPlayBackButton();
                     continue;
                 }
                 int y = input.nextInt();
