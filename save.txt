@@ -1,0 +1,3 @@
+Lion,BLUE,0,0,0,1,false
+Leopard,RED,6,4,6,5,false
+Lion,BLUE,0,1,0,2,false

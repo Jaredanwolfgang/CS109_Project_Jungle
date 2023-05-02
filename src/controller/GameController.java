@@ -1,56 +1,128 @@
 package controller;
 
-
 import listener.GameListener;
-import model.ChessBoard.Move;
-import model.ChessPieces.ChessPiece;
-import model.Enum.Constant;
-import model.Enum.PlayerColor;
-import model.ChessBoard.Chessboard;
-import model.ChessBoard.ChessboardPoint;
+import model.AI.*;
+import model.ChessPieces.*;
+import model.Enum.*;
+import model.ChessBoard.*;
 import model.User.User;
-import view.CellComponent;
-import view.ChessComponent.ChessComponent;
-import view.ChessComponent.ElephantChessComponent;
-import view.ChessboardComponent;
-
+import view.*;
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Comparator;
+import Server.*;
 
 /**
  * Controller is the connection between model and view,
  * when a Controller receive a request from a view, the Controller
  * analyzes and then hands over to the model for processing
- * [in this demo the request methods are onPlayerClickCell() and onPlayerClickChessPiece()]
- *
 */
-//FIXME: Add user and component here.
 public class GameController implements GameListener {
+    private static final String USER_FILE_PATH = "src\\model\\User\\users.txt";
     private Chessboard model;
     private ChessboardComponent view;
+    private ServerThread server;
+    private ClientThread client;
+    private PlayerColor colorOfUser;
     private PlayerColor currentPlayer;
+    public static User user1;
+    public static User user2;
+    public static GameMode gameMode;
+
+    // Record all moves on the board.
     private ArrayList<Move> allMovesOnBoard;
-    // Record whether there is a selected piece before
+    private ArrayList<User> allUsers;
+
+    // Record whether there is a selected piece before and where
     private ChessboardPoint selectedPoint;
+
+    //If this variable is true, it means the controller is doing playback.
+    private boolean onAutoPlayback;
+    private AIDifficulty aiDifficulty;
 
     public GameController(ChessboardComponent view, Chessboard model) {
         this.view = view;
         this.model = model;
         this.currentPlayer = PlayerColor.BLUE;
         this.allMovesOnBoard = new ArrayList<>();
+        this.allUsers = new ArrayList<>();
+        this.selectedPoint = null;
+        this.onAutoPlayback = false;
+        this.aiDifficulty = AIDifficulty.EASY;
+        this.readUsers();
 
         model.registerController(this);
         view.registerController(this);
-        initialize();
-        view.initiateChessComponent(model);
-        view.repaint();
+        //view.initiateChessComponent(model);
+        //view.repaint();
     }
-    //TODO: The initialize method should be applied upon different chess pieces.
-    private void initialize() {
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
 
+    //This method read all users from file when game controller created.
+    private void readUsers() {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(USER_FILE_PATH));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String username = parts[0];
+                String password = parts[1];
+                int wins = Integer.parseInt(parts[2]);
+                int losses = Integer.parseInt(parts[3]);
+                double score = Double.parseDouble(parts[4]);
+                String playerType = parts[5];
+                User user = new User();
+                user.setUsername(username);
+                user.setPassword(password);
+                user.setScore(score);
+                user.setWins(wins);
+                user.setLosses(losses);
+                if(playerType.equals("HUMAN")){
+                    user.setPlayerType(PlayerType.HUMAN);
+                }else if(playerType.equals("AI")){
+                    user.setPlayerType(PlayerType.AI);
+                }
+                allUsers.add(user);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Error closing file: " + e.getMessage());
+                return;
             }
         }
+        allUsers.sort(Comparator.comparing(User::getScore));
+        System.out.println("Read users successfully!");
+    }
+
+    private void writeUsers(){
+        allUsers.sort(Comparator.comparing(User::getScore));
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(USER_FILE_PATH));
+            for (User user : allUsers) {
+                writer.write(user.toString());
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Error closing file: " + e.getMessage());
+                return;
+            }
+        }
+        System.out.println("Write users successfully!");
     }
 
     // after a valid move swap the player
@@ -58,58 +130,678 @@ public class GameController implements GameListener {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
     }
 
-    public void addMove(Move move) {
-        allMovesOnBoard.add(move);
-    }
-    //@Jaredan TODO:The win method does not specify user or component, it only judges whether the game ends.
-
-    private boolean win() {
-        if((model.getGrid()[0][3].getPiece() != null && model.getGrid()[0][3].getPiece().getOwner() == PlayerColor.RED) ||
-                (model.getGrid()[8][3].getPiece() != null && model.getGrid()[8][3].getPiece().getOwner() == PlayerColor.BLUE)){
-            return true;
+    //Judge if there is a winner in two ways.
+    //First: One player's piece enters the other player's den.
+    //Second: After a capture, one player has no piece left.
+    private PlayerColor win() {
+        PlayerColor noPieceLeft = model.noPieceLeft();
+        if((model.getGrid()[0][3].getPiece() != null && model.getGrid()[0][3].getPiece().getOwner() == PlayerColor.RED) || noPieceLeft == PlayerColor.BLUE){
+            return PlayerColor.RED;
         }
-        return false;
+        if((model.getGrid()[8][3].getPiece() != null && model.getGrid()[8][3].getPiece().getOwner() == PlayerColor.BLUE) || noPieceLeft == PlayerColor.RED){
+            return PlayerColor.BLUE;
+        }
+        return null;
     }
 
+    private void updateUserScore(User winner, User loser){
+        winner.setWins(winner.getWins() + 1);
+        loser.setLosses(loser.getLosses() + 1);
+        double winnerExpectedScore = 1 / (1 + Math.pow(10, (loser.getScore() - winner.getScore()) / 400));
+        double loserExpectedScore = 1 / (1 + Math.pow(10, (winner.getScore() - loser.getScore()) / 400));
+        if(winner.getPlayerType() != PlayerType.AI) {
+            winner.setScore(winner.getScore() + 32 * (1 - winnerExpectedScore));
+        }
+        if(loser.getPlayerType() != PlayerType.AI) {
+            loser.setScore(loser.getScore() + 32 * (0 - loserExpectedScore));
+        }
+        this.writeUsers();
+    }
+
+    public void setPlayerColor(PlayerColor playerColor) {
+        this.colorOfUser = playerColor;
+    }
 
     // click an empty cell
     @Override
-    public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-        if (selectedPoint != null && model.isValidMove(selectedPoint, point)) {
-            model.moveChessPiece(selectedPoint, point);
-            view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
-            selectedPoint = null;
-            swapColor();
-            view.repaint();
-            // TODO: if the chess enter Dens or Traps and so on, the win method can be merged here?
+    public void onPlayerClickCell(ChessboardPoint point) {
+        if (selectedPoint != null) {
+            //Try to move the selected piece to the clicked cell.
+            try{
+                Move moveToMake = model.moveChessPiece(selectedPoint,point);
+                //If the move is invalid, the try sentence ends here.
+                if(!onAutoPlayback){
+                    allMovesOnBoard.add(moveToMake);
+                }
+                if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
+                    this.client.makeMove(moveToMake);
+                }
+
+                //Here should be code for GUI to repaint the board.(One piece moved)
+
+                selectedPoint = null;
+                this.swapColor();
+            }catch (IllegalArgumentException e){
+                //Print error message.
+                System.out.println(e.getMessage());
+            }
+            if(win() != null){
+                if(gameMode == GameMode.PVE || gameMode == GameMode.Local_PVP){
+                    if(win() == PlayerColor.BLUE){
+                        updateUserScore(user1, user2);
+                    }else{
+                        updateUserScore(user2, user1);
+                    }
+                }
+                if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server){
+                    if(gameMode == GameMode.Online_PVP_Server){
+                        server.setEndGame(true);
+                    }
+                    client.setEndGame(true);
+                }
+
+                // TO DO: What should we do after one player wins?
+
+                return;
+            }else{
+                if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) {
+                    if (gameMode == GameMode.Online_PVP_Server) {
+                        server.setEndGame(false);
+                    }
+                    client.setEndGame(false);
+                }
+            }
+            if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED && !onAutoPlayback){
+                this.onPlayerClickAIMoveButton();
+            }
         }
     }
 
     // click a cell with a chess
     @Override
-    public void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent component) {
+    public void onPlayerClickChessPiece(ChessboardPoint point) {
         if (selectedPoint == null) {
-            if (model.getChessPieceOwner(point).equals(currentPlayer)) {
+            if (model.getChessPieceOwner(point) == currentPlayer) {
+                //If the clicked piece is the current player's piece, select it.
                 selectedPoint = point;
-                component.setSelected(true);
-                component.repaint();
+            }
+        }else{
+            if (selectedPoint.equals(point)) {
+                //If the clicked piece is the selected piece, deselect it.
+                selectedPoint = null;
+            }else{
+                if(model.getChessPieceOwner(point) == currentPlayer){
+                    //If the clicked piece is the current player's piece, select it.
+                    selectedPoint = point;
+                }else{
+                    //Try to capture the clicked piece with the selected piece.
+                    try{
+                        Move moveToMake = model.captureChessPiece(selectedPoint,point);
+                        //If the capture is invalid, the try sentence ends here.
 
-                //Following code is just for debugging.
-                //It will print all valid moves of the selected chess piece, once a piece is selected.
-                //@Jaredan TODO:Associate the valid Moves with GUI: change the color of the chessboard
-                ChessPiece piece = model.getChessPieceAt(point);
-                ArrayList<Move> validMoves = piece.getAvailableMoves(point, model.getGrid());
-                for (Move move : validMoves) {
-                    System.out.println(move);
+                        if(!onAutoPlayback) {
+                            allMovesOnBoard.add(moveToMake);
+                        }
+                        if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
+                            this.client.makeMove(moveToMake);
+                        }
+
+                        //Here should be code for GUI to repaint the board.(One piece captured)
+                        selectedPoint = null;
+                        this.swapColor();
+                    }catch (IllegalArgumentException e){
+                        //Print error message.
+                        System.out.println(e.getMessage());
+                    }
+                    if(win() != null){
+                        if(gameMode == GameMode.PVE || gameMode == GameMode.Local_PVP){
+                            if(win() == PlayerColor.BLUE){
+                                updateUserScore(user1, user2);
+                            }else{
+                                updateUserScore(user2, user1);
+                            }
+                        }
+                        if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server){
+                            if(gameMode == GameMode.Online_PVP_Server){
+                                server.setEndGame(true);
+                            }
+                            client.setEndGame(true);
+                        }
+
+                        // TO DO: What should we do after one player wins?
+
+                    }else{
+                        if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) {
+                            if (gameMode == GameMode.Online_PVP_Server) {
+                                server.setEndGame(false);
+                            }
+                            client.setEndGame(false);
+                        }
+                    }
+                    if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED && !onAutoPlayback){
+                        this.onPlayerClickAIMoveButton();
+                    }
                 }
             }
-        } else{
-            if (selectedPoint.equals(point)) {
-                selectedPoint = null;
-                component.setSelected(false);
-                component.repaint();
+        }
+    }
+
+    @Override
+    public boolean onPlayerClickUndoButton() {
+        int numberOfLoop;
+        if(gameMode == GameMode.PVE) {
+            numberOfLoop = 2;
+        }else if(gameMode == GameMode.Local_PVP){
+            numberOfLoop = 1;
+        }else{
+            System.out.println("Undo is not allowed in online mode.");
+            return false;
+        }
+        if (allMovesOnBoard.size() == 0) {
+            System.out.println("No move to undo");
+            return false;
+        }
+        selectedPoint = null;
+        for (int i = 0; i < numberOfLoop; i++) {
+            Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
+            model.undoMove(lastMove);
+
+            //Here should be code for GUI to repaint the board.(Move undone)
+
+            this.swapColor();
+        }
+        return true;
+    }
+
+    @Override
+    public void onPlayerClickPlayBackButton() {
+        if(gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client){
+            System.out.println("Playback is not allowed in online mode.");
+            return;
+        }
+
+        selectedPoint = null;
+        model.reset();
+        this.currentPlayer = PlayerColor.BLUE;
+
+        onAutoPlayback = true;
+        for (Move move : allMovesOnBoard) {
+            this.onPlayerClickChessPiece(move.getFromPoint());
+
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(move.isDoesCapture()){
+                this.onPlayerClickChessPiece(move.getToPoint());
+            }else{
+                this.onPlayerClickCell(move.getToPoint());
+            }
+
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
-        // TODO: Implement capture function
+        onAutoPlayback = false;
+    }
+
+    @Override
+    public void onPlayerClickResetButton() {
+        if(gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client){
+            System.out.println("Reset is not allowed in online mode.");
+            return;
+        }
+        selectedPoint = null;
+        model.reset();
+        this.currentPlayer = PlayerColor.BLUE;
+        this.allMovesOnBoard.clear();
+
+        //Here should be code for GUI to repaint the board.(Board reset)
+
+    }
+
+    @Override
+    public void onPlayerClickSaveButton(String filePath) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(filePath));
+            for (Move move : allMovesOnBoard) {
+                writer.write(move.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing moves to file: " + filePath);
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("Error closing file: " + filePath);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+        }
+        System.out.println("Finished writing moves to file: " + filePath);
+    }
+
+    @Override
+    public void onPlayerClickLoadButton(String filePath) {
+        if(gameMode != GameMode.Local_PVP){
+            System.out.println("Load is only allowed in local PVP mode.");
+            return;
+        }
+
+        //First reset the board.
+        this.onPlayerClickResetButton();
+
+        ArrayList<Move> moves = new ArrayList<>();
+        BufferedReader reader = null;
+        try{
+            reader = new BufferedReader(new FileReader(filePath));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Move move;
+
+                String[] parts = line.split(",");
+
+                if(parts.length < 7){
+                    throw new IllegalArgumentException("Invalid input format: " + line);
+                }
+                
+                String movingPieceName = parts[0];
+                String movingPieceOwner = parts[1];
+                ChessPiece movingPiece;
+                PlayerColor movingPieceOwnerColor;
+
+                if(movingPieceOwner.equals("BLUE")) {
+                    movingPieceOwnerColor = PlayerColor.BLUE;
+                }else if(movingPieceOwner.equals("RED")){
+                    movingPieceOwnerColor = PlayerColor.RED;
+                }else{
+                    throw new IllegalArgumentException("Invalid input format(illegal moving chess piece color): " + line);
+                }
+
+                movingPiece = switch (movingPieceName) {
+                    case "Elephant" -> new ElephantChessPiece(movingPieceOwnerColor);
+                    case "Lion" -> new LionChessPiece(movingPieceOwnerColor);
+                    case "Tiger" -> new TigerChessPiece(movingPieceOwnerColor);
+                    case "Leopard" -> new LeopardChessPiece(movingPieceOwnerColor);
+                    case "Wolf" -> new WolfChessPiece(movingPieceOwnerColor);
+                    case "Dog" -> new DogChessPiece(movingPieceOwnerColor);
+                    case "Cat" -> new CatChessPiece(movingPieceOwnerColor);
+                    case "Rat" -> new RatChessPiece(movingPieceOwnerColor);
+                    default ->
+                            throw new IllegalArgumentException("Invalid input format(illegal moving chess piece type): " + line);
+                };
+
+                int fromRow;
+                try{
+                    fromRow = Integer.parseInt(parts[2]);
+                    if(fromRow < 0 || fromRow > 8){
+                        throw new NumberFormatException();
+                    }
+                }catch (NumberFormatException e){
+                    throw new IllegalArgumentException("Invalid input format(illegal from point coordinate): " + line);
+                }
+
+                int fromCol;
+                try {
+                    fromCol = Integer.parseInt(parts[3]);
+                    if(fromCol < 0 || fromCol > 6){
+                        throw new NumberFormatException();
+                    }
+                }catch (NumberFormatException e){
+                    throw new IllegalArgumentException("Invalid input format(illegal from point coordinate): " + line);
+                }
+
+                ChessboardPoint fromPoint = new ChessboardPoint(fromRow, fromCol);
+
+                int toRow;
+                try{
+                    toRow = Integer.parseInt(parts[4]);
+                    if(toRow < 0 || toRow > 8){
+                        throw new NumberFormatException();
+                    }
+                }catch (NumberFormatException e){
+                    throw new IllegalArgumentException("Invalid input format(illegal to point coordinate): " + line);
+                }
+
+                int toCol;
+                try {
+                    toCol = Integer.parseInt(parts[5]);
+                    if(toCol < 0 || toCol > 6){
+                        throw new NumberFormatException();
+                    }
+                }catch (NumberFormatException e){
+                    throw new IllegalArgumentException("Invalid input format(illegal to point coordinate): " + line);
+                }
+                ChessboardPoint toPoint = new ChessboardPoint(toRow, toCol);
+
+                boolean doesCapture;
+                if(parts[6].equals("true")){
+                    doesCapture = true;
+                }else if(parts[6].equals("false")){
+                    doesCapture = false;
+                }else {
+                    throw new IllegalArgumentException("Invalid input format(illegal doesCapture flag): " + line);
+                }
+
+                if (doesCapture) {
+
+                    if(parts.length != 9){
+                        throw new IllegalArgumentException("Invalid input format: " + line);
+                    }
+
+                    String capturedPieceName = parts[7];
+                    String capturedPieceOwner = parts[1];
+                    ChessPiece capturedPiece;
+                    PlayerColor capturedPieceOwnerColor;
+                    if(capturedPieceOwner.equals("BLUE")) {
+                        capturedPieceOwnerColor = PlayerColor.BLUE;
+                    }else if(capturedPieceOwner.equals("RED")){
+                        capturedPieceOwnerColor = PlayerColor.RED;
+                    }else{
+                        throw new IllegalArgumentException("Invalid input format(illegal captured chess piece color): " + line);
+                    }
+                    capturedPiece = switch (capturedPieceName) {
+                        case "Elephant" -> new ElephantChessPiece(capturedPieceOwnerColor);
+                        case "Lion" -> new LionChessPiece(capturedPieceOwnerColor);
+                        case "Tiger" -> new TigerChessPiece(capturedPieceOwnerColor);
+                        case "Leopard" -> new LeopardChessPiece(capturedPieceOwnerColor);
+                        case "Wolf" -> new WolfChessPiece(capturedPieceOwnerColor);
+                        case "Dog" -> new DogChessPiece(capturedPieceOwnerColor);
+                        case "Cat" -> new CatChessPiece(capturedPieceOwnerColor);
+                        case "Rat" -> new RatChessPiece(capturedPieceOwnerColor);
+                        default ->
+                                throw new IllegalArgumentException("Invalid input format(illegal captured piece type): " + line);
+                    };
+                    move = new Move(movingPiece, fromPoint, toPoint, true, capturedPiece);
+                }else{
+
+                    if(parts.length != 7){
+                        throw new IllegalArgumentException("Invalid input format: " + line);
+                    }
+
+                    move = new Move(movingPiece, fromPoint, toPoint, false, null);
+                }
+                moves.add(move);
+            }
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return;
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + filePath);
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + filePath);
+            e.printStackTrace();
+            return;
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                System.out.println("Error closing file: " + filePath);
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        System.out.println("Finished reading moves from file: " + filePath);
+
+        boolean isValidFile = true;
+        for(Move move : moves){
+            try{
+                if(move.isDoesCapture()){
+                    if(model.getChessPieceAt(move.getFromPoint()) == null || model.getChessPieceAt(move.getToPoint()) == null){
+                        throw new IllegalArgumentException("Invalid move(piece does not exist)");
+                    }
+                    if(model.getChessPieceAt(move.getFromPoint()).getCategory() != move.getMovingPiece().getCategory() || model.getChessPieceAt(move.getToPoint()).getCategory() != move.getCapturedPiece().getCategory()
+                        || model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || model.getChessPieceAt(move.getToPoint()).getOwner() != move.getCapturedPiece().getOwner()){
+                        throw new IllegalArgumentException("Invalid move(piece does not match)");
+                    }
+                    if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || this.currentPlayer != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("Invalid move(piece does not belong to the player)");
+                    }
+                    if(model.getChessPieceAt(move.getToPoint()).getOwner() == move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("Invalid move(cannot capture your own piece)");
+                    }
+                    if (!model.isValidCapture(move.getFromPoint(), move.getToPoint())) {
+                        throw new IllegalArgumentException("Invalid move(piece can't reach the destination or piece can't capture the target)");
+                    }
+                    allMovesOnBoard.add(model.captureChessPiece(move.getFromPoint(),move.getToPoint()));
+                }else{
+                    if(model.getChessPieceAt(move.getFromPoint()) == null){
+                        throw new IllegalArgumentException("Invalid move(piece does not exist)");
+                    }
+                    if(model.getChessPieceAt(move.getFromPoint()).getCategory() != move.getMovingPiece().getCategory() || model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("Invalid move(piece does not match)");
+                    }
+                    if(model.getChessPieceAt(move.getToPoint()) != null){
+                        throw new IllegalArgumentException("Invalid move(there is a piece in the target cell)");
+                    }
+                    if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || this.currentPlayer != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("Invalid move(piece does not belong to the player)");
+                    }
+                    if (!model.isValidMove(move.getFromPoint(), move.getToPoint())) {
+                        throw new IllegalArgumentException("Invalid move(piece can't reach the destination)");
+                    }
+                    allMovesOnBoard.add(model.moveChessPiece(move.getFromPoint(), move.getToPoint()));
+                }
+                this.swapColor();
+            }catch(IllegalArgumentException e){
+                //Print error message.
+                isValidFile = false;
+                System.out.println(e.getMessage() + ": " + move);
+                break;
+            }
+        }
+        if(!isValidFile){
+            System.out.println("File Check Failed: Invalid file.");
+
+            //Here should be code in GUI to show error message.
+
+            //Reset the board.
+            this.onPlayerClickResetButton();
+        }else{
+            System.out.println("File Check Passed: Valid file.");
+
+            //Here should be code in GUI to show success message.
+            this.onPlayerClickResetButton();
+            for(Move move : moves){
+                this.onPlayerClickChessPiece(move.getFromPoint());
+
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if(move.isDoesCapture()){
+                    this.onPlayerClickChessPiece(move.getToPoint());
+                }else{
+                    this.onPlayerClickCell(move.getToPoint());
+                }
+
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public boolean onPlayerClickLoginButton(String username, String password) {
+        for (User user : allUsers) {
+            if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
+                user1 = user;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onPlayerClickRegisterButton(String username, String password) {
+        for (User user : allUsers) {
+            if(user.getUsername().equals(username) && user.validatePassword(password)){
+                return false;
+            }
+        }
+        allUsers.add(new User(username,password));
+        this.writeUsers();
+        return true;
+    }
+
+    @Override
+    public void onPlayerClickLogoutButton() {
+        user1 = null;
+    }
+
+    @Override
+    public void onPlayerClickAIMoveButton() {
+        //TO DO: possible function? In pvp or net pvp mode, player can click this button to let AI make a move.
+        Move AIMove;
+        if(aiDifficulty == AIDifficulty.EASY){
+            AIMove = AI_Easy.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        }else if(aiDifficulty == AIDifficulty.MEDIUM){
+            AIMove = AI_Medium.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        }else{
+            AIMove = AI_Hard.findBestOneMove(model.getGrid(), currentPlayer.getColor());
+        }
+
+        this.onPlayerClickChessPiece(AIMove.getFromPoint());
+
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(AIMove.isDoesCapture()){
+            this.onPlayerClickChessPiece(AIMove.getToPoint());
+        }else{
+            this.onPlayerClickCell(AIMove.getToPoint());
+        }
+    }
+
+    @Override
+    public boolean onPlayerSelectLocalPVPMode(String username, String password) {
+        for (User user : allUsers) {
+            if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI && user != user1){
+                user2 = user;
+                gameMode = GameMode.Local_PVP;
+                colorOfUser = PlayerColor.BLUE;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onPlayerSelectLocalPVEMode(AIDifficulty difficulty) {
+        aiDifficulty = difficulty;
+        if(difficulty == AIDifficulty.EASY) {
+            for (User user : allUsers) {
+                if (user.getPlayerType() == PlayerType.AI && user.getUsername().equals("AI_EASY")){
+                    user2 = user;
+                }
+            }
+        }else if(difficulty == AIDifficulty.MEDIUM) {
+            for (User user : allUsers) {
+                if (user.getPlayerType() == PlayerType.AI && user.getUsername().equals("AI_MEDIUM")) {
+                    user2 = user;
+                }
+            }
+        }else{
+            for (User user : allUsers) {
+                if (user.getPlayerType() == PlayerType.AI && user.getUsername().equals("AI_HARD")) {
+                    user2 = user;
+                }
+            }
+        }
+        colorOfUser = PlayerColor.BLUE;
+        gameMode = GameMode.PVE;
+    }
+
+    @Override
+    public void onPlayerSelectOnlinePVPMode() {
+        Socket socket = new Socket();
+        try{
+            socket.connect(new InetSocketAddress("localhost", 1234), 1000);
+            System.out.println("Server found, connected to server");
+            gameMode = GameMode.Online_PVP_Client;
+        }catch (Exception ex){
+            server = new ServerThread();
+            System.out.println("No server found, starting a new server");
+            try{
+                server.start();
+            }catch (IllegalArgumentException e){
+                System.out.println(e.getMessage());
+                return;
+            }
+            System.out.println("Server thread started successfully");
+            gameMode = GameMode.Online_PVP_Server;
+            try {
+                Thread.sleep(100);
+                socket = new Socket();
+                socket.connect(new InetSocketAddress("localhost", 1234), 1000);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            client = new ClientThread(socket,this);
+            client.start();
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("Client thread started successfully");
+    }
+
+    @Override
+    public ArrayList<User> onPlayerClickRankListButton() {
+        return allUsers;
+    }
+
+    @Override
+    public void onPlayerExitGameFrame() {
+        aiDifficulty = AIDifficulty.EASY;
+        user2 = null;
+        gameMode = null;
+        colorOfUser = null;
+        this.onPlayerClickResetButton();
+    }
+
+    public void testViaKeyboard(int x,int y){
+        ChessboardPoint point = new ChessboardPoint(x,y);
+        if(model.getChessPieceAt(point) == null){
+            onPlayerClickCell(point);
+        }else{
+            onPlayerClickChessPiece(point);
+        }
+        Chessboard.printChessBoard(model.getGrid());
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
+    }
+
+    public GameMode getGameMode(){
+        return gameMode;
     }
 }

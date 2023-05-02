@@ -2,7 +2,10 @@ package model.ChessBoard;
 
 import model.ChessPieces.ChessPiece;
 
-public class Move{
+import java.awt.*;
+import java.io.Serializable;
+
+public class Move implements Serializable {
     private ChessPiece movingPiece;
     private ChessboardPoint fromPoint;
     private ChessboardPoint toPoint;
@@ -59,21 +62,24 @@ public class Move{
 
     @Override
     public String toString() {
-        if(doesCapture){
-            return "Move{" +
-                    "movingPiece=" + movingPiece.getName() +
-                    ", fromPoint=" + "(" +fromPoint.getRow() + "," + fromPoint.getCol() + ")" +
-                    ", toPoint=" + "(" + toPoint.getRow() + "," + toPoint.getCol() + ")" +
-                    ", doesCapture=" + doesCapture +
-                    ", capturedPiece=" + capturedPiece.getName() +
-                    '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(movingPiece.getName() + ",");
+        if(movingPiece.getOwner().getColor() == Color.BLUE){
+            sb.append("BLUE,");
         }else{
-            return "Move{" +
-                    "movingPiece=" + movingPiece.getName() +
-                    ", fromPoint=" + "(" +fromPoint.getRow() + "," + fromPoint.getCol() + ")" +
-                    ", toPoint=" + "(" + toPoint.getRow() + "," + toPoint.getCol() + ")" +
-                    ", doesCapture=" + doesCapture +
-                    '}';
+            sb.append("RED,");
         }
+        sb.append(fromPoint.getRow() + "," + fromPoint.getCol() + ",");
+        sb.append(toPoint.getRow() + "," + toPoint.getCol() + ",");
+        sb.append(doesCapture);
+        if(doesCapture){
+            sb.append("," + capturedPiece.getName());
+            if(capturedPiece.getOwner().getColor() == Color.BLUE) {
+                sb.append(",BLUE");
+            }else{
+                sb.append(",RED");
+            }
+        }
+        return sb.toString();
     }
 }
