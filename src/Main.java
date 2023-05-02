@@ -77,7 +77,7 @@ public class Main {
                     continue;
                 }
                 if(x == -8){
-                    gameController.onPlayerSelectLocalPVEMode(AIDifficulty.HARD);
+                    gameController.onPlayerSelectLocalPVEMode(AIDifficulty.MEDIUM);
                     continue;
                 }
                 if(x == -9){

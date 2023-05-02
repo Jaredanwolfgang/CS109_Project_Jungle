@@ -28,3 +28,4 @@ The java project of CS109 in SUSTech is a Jungle chess game.
 5. add turn counter
 6. playback function now can be used in every mode.
 7. add timer for every mode. If time is up, AI will take over and perform a random move.
+8. add a medium AI.(dump greedy AI copied from https://github.com/jimmylaw21/CS109-2023-Sping-ChessDemo). （我只是强迫症犯了一定要把三个AI难度写全，然后就从SA那边抄过来了，你完全可以写一个更好的）
