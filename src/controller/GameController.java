@@ -245,8 +245,7 @@ public class GameController implements GameListener {
                         if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
                             this.client.makeMove(moveToMake);
                         }
-
-                        //Here should be code for GUI to repaint the board.(One piece captured)
+                        //TODO: Here should be code for GUI to repaint the board.(One piece captured)
                         selectedPoint = null;
                         this.swapColor();
                     }catch (IllegalArgumentException e){
@@ -268,7 +267,7 @@ public class GameController implements GameListener {
                             client.setEndGame(true);
                         }
 
-                        // TO DO: What should we do after one player wins?
+                        // TODO: What should we do after one player wins?
 
                     }else{
                         if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) {
@@ -306,7 +305,7 @@ public class GameController implements GameListener {
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
             model.undoMove(lastMove);
 
-            //Here should be code for GUI to repaint the board.(Move undone)
+            //TODO: Here should be code for GUI to repaint the board.(Move undone)
 
             this.swapColor();
         }
@@ -360,7 +359,7 @@ public class GameController implements GameListener {
         this.currentPlayer = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
 
-        //Here should be code for GUI to repaint the board.(Board reset)
+        //TODO: Here should be code for GUI to repaint the board.(Board reset)
 
     }
 

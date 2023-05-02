@@ -10,7 +10,8 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new InitFrame(800, 600);
+            Frame frame = new Frame();
+            new InitFrame(frame);
         });
     }
 }

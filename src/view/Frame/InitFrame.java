@@ -1,21 +1,23 @@
 package view.Frame;
 
+import listener.GameListener;
+
 import javax.swing.*;
+import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class InitFrame extends JFrame {
-    private final int WIDTH;
-    private final int HEIGHT;
+public class InitFrame extends JFrame{
+    private final Dimension screenSize = new Dimension(800,600);
     private final JButton loginButton = new JButton();
     private final JButton registerButton = new JButton();
     private final JButton musicButton = new JButton();
     private final JButton exitButton = new JButton();
+    private Frame frame;
 
-    public InitFrame(int width, int height) {
-        this.WIDTH = width;
-        this.HEIGHT = height;
+    public InitFrame(Frame frame) {
+        this.frame = frame;
         initJFrame();
 
         /** If the path to files never change, could we put it into the specific init method?
@@ -26,11 +28,11 @@ public class InitFrame extends JFrame {
          *   initBackground();
          * As some of the initialization might be used in other methods.(Like a reset of chessboard)
          */
-        initLabel("image\\InitFrame\\Jungle.png");
-        initButton("image\\InitFrame\\Login_Light.png", "image\\InitFrame\\Login_Dark.png", loginButton, 0, 100, 430, 160, 90);
-        initButton("image\\InitFrame\\Register_Light.png", "image\\InitFrame\\Register_Dark.png", registerButton, 1, 540, 430, 160, 90);
-        initButton("image\\AllFrame\\MusicButton_Light.png", "image\\AllFrame\\MusicButton_Dark.png", musicButton, 2, 650, 20, 50, 50);
-        initButton("image\\AllFrame\\ExitButton_Light.png", "image\\AllFrame\\ExitButton_Dark.png", exitButton, 3, 710, 20, 50, 50);
+        initLabel();
+        initLoginButton();
+        initRegisterButton();
+        initMusicButton();
+        initExitButton();
         initBackground("Background\\Jungle.gif");
 
         this.setVisible(true);
@@ -42,7 +44,7 @@ public class InitFrame extends JFrame {
     public void initJFrame() {
         System.out.println("InitFrame is initializing...");
         this.setLayout(null);
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize((int) screenSize.getWidth(), (int) screenSize.getHeight());
         this.setTitle("Jungle");
         //this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
@@ -63,83 +65,143 @@ public class InitFrame extends JFrame {
     //2. 按钮的位置
     //3. 按钮的目标大小（在方法当中有resize按钮的大小）
     //4. 按钮的index，用于判断按钮的功能
-    public void initButton(String Address1, String Address2, JButton jb, int index, int x, int y, int width, int height) {
+    public void initLoginButton() {
+        System.out.println("Login button is initializing...");
 
-        /** Directly printing jb will display too much information, you might want to rewrite this line. */
-        System.out.println("InitFrame button" + jb + " is initializing...");
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Light.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Dark.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
 
-        /*ImageIcon Button_Light = new ImageIcon(Address1);
-        Image img = Button_Light.getImage();
-        Image newimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Light_New = new ImageIcon(newimg);
-        ImageIcon Button_Dark = new ImageIcon(Address2);
-        Image img2 = Button_Dark.getImage();
-        Image newimg2 = img2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Dark_New = new ImageIcon(newimg2);*/
+        loginButton.setBorderPainted(false);
+        loginButton.setContentAreaFilled(false);
+        loginButton.setFocusPainted(false);
+        loginButton.setOpaque(false);
 
-        /** Here is a way to simplify the code above. */
-        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Address1).getScaledInstance(width, height, Image.SCALE_SMOOTH));
-        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Address2).getScaledInstance(width, height, Image.SCALE_SMOOTH));
-
-        jb.setBorderPainted(false);
-        jb.setContentAreaFilled(false);
-        jb.setFocusPainted(false);
-        jb.setOpaque(false);
-
-        jb.setBounds(x, y, width, height);
-        jb.setIcon(Button_Light_New);
-        jb.addMouseListener(new MouseListener() {
-
-            /**
-             *  You might want to reuse frames, instead of creating new ones every time.
-             *  (About how to reuse frames, you can check my previous example code on QQ)
-             *  Here is what chatGPT says:
-             *    "Additionally, it is worth noting that creating a new frame every time a button is clicked might not always be the best approach,
-             *    especially if you need to maintain state or pass data between frames.
-             *    In those cases, it might be better to use a single frame and update its contents dynamically."
-             */
+        loginButton.setBounds(100, 430, 160, 90);
+        loginButton.setIcon(Button_Light_New);
+        loginButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (index == 0) {
-                    new LoginFrame();
-                } else if (index == 1) {
-                    new RegisterFrame();
-                } else if (index == 2) {
-                    new MusicPlayerFrame();
-                } else if (index == 3) {
-                    System.exit(0);
-                }
+                frame.playerClickLoginButton();
             }
 
-            /** You can make unused methods shorter like this. */
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
-
             @Override
             public void mouseEntered(MouseEvent e) {
-                jb.setIcon(Button_Dark_New);
+                loginButton.setIcon(Button_Dark_New);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jb.setIcon(Button_Light_New);
+                loginButton.setIcon(Button_Light_New);
             }
         });
+        this.getContentPane().add(loginButton);
+    }
+    public void initRegisterButton() {
+        System.out.println("Register button is initializing...");
 
-        this.getContentPane().add(jb);
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Light.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Dark.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
+
+        registerButton.setBorderPainted(false);
+        registerButton.setContentAreaFilled(false);
+        registerButton.setFocusPainted(false);
+        registerButton.setOpaque(false);
+
+        registerButton.setBounds(540, 430, 160, 90);
+        registerButton.setIcon(Button_Light_New);
+        registerButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                frame.playerClickRegisterButton();
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                registerButton.setIcon(Button_Dark_New);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                registerButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(registerButton);
+    }
+    public void initMusicButton() {
+        System.out.println("Music button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        musicButton.setBorderPainted(false);
+        musicButton.setContentAreaFilled(false);
+        musicButton.setFocusPainted(false);
+        musicButton.setOpaque(false);
+
+        musicButton.setBounds(650, 20, 50, 50);
+        musicButton.setIcon(Button_Light_New);
+        musicButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new MusicPlayerFrame();
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                musicButton.setIcon(Button_Dark_New);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                musicButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(musicButton);
+    }
+    public void initExitButton() {
+        System.out.println("Exit button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        exitButton.setBorderPainted(false);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setOpaque(false);
+
+        exitButton.setBounds(710, 20, 50, 50);
+        exitButton.setIcon(Button_Light_New);
+        exitButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exitButton.setIcon(Button_Dark_New);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exitButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(exitButton);
     }
 
     //初始化Label，为游戏的标题
-    public void initLabel(String Address) {
+    public void initLabel() {
         System.out.println("InitFrame label is initializing...");
 
-        /*ImageIcon icon = new ImageIcon(Address);
-        Image img = icon.getImage();
-        Image newImg = img.getScaledInstance(512, 324, Image.SCALE_SMOOTH);
-        ImageIcon newIcon = new ImageIcon(newImg);*/
-
-        /** Here is a way to simplify the code above. */
-        ImageIcon newIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Address).getScaledInstance(512, 324, Image.SCALE_SMOOTH));
+        /** To get the scaled image. */
+        ImageIcon newIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Jungle.png").getScaledInstance(512, 324, Image.SCALE_SMOOTH));
 
         JLabel label = new JLabel(newIcon);
         label.setPreferredSize(new Dimension(newIcon.getIconWidth(), newIcon.getIconHeight()));

@@ -133,7 +133,7 @@ public class ChessGameFrame extends JFrame {
                 } else if (index == 5) {
                     new MusicPlayerFrame();
                 } else if (index == 6) {
-                    new StartFrame(user);
+                    new StartFrame();
                     dispose();
                 }else if(index == 7){
                     System.exit(0);
