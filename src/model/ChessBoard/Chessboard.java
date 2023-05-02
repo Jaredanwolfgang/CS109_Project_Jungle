@@ -226,18 +226,20 @@ public class Chessboard {
 
     //This method is only for testing.
     public static void printChessBoard(Cell[][] board){
-        System.out.println("    0  1  2  3  4  5  6 ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("   0  1  2  3  4  5  6 \n");
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            System.out.printf(" %d ",i);
+            sb.append(i).append(" ");
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
                 if(board[i][j].getPiece() == null) {
-                    System.out.print(" * ");
+                    sb.append(" * ");
                 }else{
-                    System.out.printf(" %c ",board[i][j].getPiece().getName().charAt(0));
+                    sb.append(" ").append(board[i][j].getPiece().getName().charAt(0)).append(" ");
                 }
             }
-            System.out.println();
+            sb.append("\n");
         }
+        System.out.println(sb);
     }
 
     public void undoMove(Move lastMove) {
@@ -292,31 +294,15 @@ public class Chessboard {
                 newBoard[i][j] = new Cell();
                 if(board[i][j].getPiece() != null){
                     Category category = board[i][j].getPiece().getCategory();
-                    switch(category){
-                        case ELEPHANT:
-                            newBoard[i][j].setPiece(new ElephantChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case LION:
-                            newBoard[i][j].setPiece(new LionChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case TIGER:
-                            newBoard[i][j].setPiece(new TigerChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case LEOPARD:
-                            newBoard[i][j].setPiece(new LeopardChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case WOLF:
-                            newBoard[i][j].setPiece(new WolfChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case DOG:
-                            newBoard[i][j].setPiece(new DogChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case CAT:
-                            newBoard[i][j].setPiece(new CatChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
-                        case RAT:
-                            newBoard[i][j].setPiece(new RatChessPiece(board[i][j].getPiece().getOwner()));
-                            break;
+                    switch (category) {
+                        case ELEPHANT -> newBoard[i][j].setPiece(new ElephantChessPiece(board[i][j].getPiece().getOwner()));
+                        case LION -> newBoard[i][j].setPiece(new LionChessPiece(board[i][j].getPiece().getOwner()));
+                        case TIGER -> newBoard[i][j].setPiece(new TigerChessPiece(board[i][j].getPiece().getOwner()));
+                        case LEOPARD -> newBoard[i][j].setPiece(new LeopardChessPiece(board[i][j].getPiece().getOwner()));
+                        case WOLF -> newBoard[i][j].setPiece(new WolfChessPiece(board[i][j].getPiece().getOwner()));
+                        case DOG -> newBoard[i][j].setPiece(new DogChessPiece(board[i][j].getPiece().getOwner()));
+                        case CAT -> newBoard[i][j].setPiece(new CatChessPiece(board[i][j].getPiece().getOwner()));
+                        case RAT -> newBoard[i][j].setPiece(new RatChessPiece(board[i][j].getPiece().getOwner()));
                     }
                 }
             }

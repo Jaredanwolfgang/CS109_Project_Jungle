@@ -2,12 +2,15 @@ package Server;
 
 import model.ChessBoard.Move;
 import model.Enum.PlayerColor;
+import model.User.User;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 public class ServerThread extends Thread{
     private ServerSocket serverSocket;
+    private User player1;
+    private User player2;
     private Socket player1Socket;
     private Socket player2Socket;
     private ObjectOutputStream player1Output;
@@ -57,6 +60,29 @@ public class ServerThread extends Thread{
             return;
         }
         System.out.println("Server: Player colors distributed");
+
+        try {
+            player1 = (User) player1Input.readObject();
+            System.out.println("Server: Player1 profiles received");
+            player2 = (User) player2Input.readObject();
+            System.out.println("Server: Player2 profiles received");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Server: Error receiving player profiles: " + e.getMessage());
+            return;
+        }
+
+        try {
+            player1Output.writeObject(player2);
+            player2Output.writeObject(player1);
+            player1Output.flush();
+            player2Output.flush();
+        } catch (IOException e) {
+            System.out.println("Server: Error distributing player profiles: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Server: Player profiles distributed");
+
         this.runTime();
     }
 

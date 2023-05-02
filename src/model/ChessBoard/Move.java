@@ -63,17 +63,17 @@ public class Move implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(movingPiece.getName() + ",");
+        sb.append(movingPiece.getName()).append(",");
         if(movingPiece.getOwner().getColor() == Color.BLUE){
             sb.append("BLUE,");
         }else{
             sb.append("RED,");
         }
-        sb.append(fromPoint.getRow() + "," + fromPoint.getCol() + ",");
-        sb.append(toPoint.getRow() + "," + toPoint.getCol() + ",");
+        sb.append(fromPoint.getRow()).append(",").append(fromPoint.getCol()).append(",");
+        sb.append(toPoint.getRow()).append(",").append(toPoint.getCol()).append(",");
         sb.append(doesCapture);
         if(doesCapture){
-            sb.append("," + capturedPiece.getName());
+            sb.append(",").append(capturedPiece.getName());
             if(capturedPiece.getOwner().getColor() == Color.BLUE) {
                 sb.append(",BLUE");
             }else{

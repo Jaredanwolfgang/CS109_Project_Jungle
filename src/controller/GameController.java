@@ -6,6 +6,7 @@ import model.ChessPieces.*;
 import model.Enum.*;
 import model.ChessBoard.*;
 import model.User.User;
+import model.Timer.Timer;
 import view.*;
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -20,11 +21,13 @@ import Server.*;
  * analyzes and then hands over to the model for processing
 */
 public class GameController implements GameListener {
+    public static final long animationInterval = 400;
     private static final String USER_FILE_PATH = "src\\model\\User\\users.txt";
     private Chessboard model;
     private ChessboardComponent view;
     private ServerThread server;
     private ClientThread client;
+    public Timer timer;
     private PlayerColor colorOfUser;
     private PlayerColor currentPlayer;
     public static User user1;
@@ -40,7 +43,8 @@ public class GameController implements GameListener {
 
     //If this variable is true, it means the controller is doing playback.
     private boolean onAutoPlayback;
-    private AIDifficulty aiDifficulty;
+    public static AIDifficulty aiDifficulty;
+    public static int turnCount;
 
     public GameController(ChessboardComponent view, Chessboard model) {
         this.view = view;
@@ -50,7 +54,8 @@ public class GameController implements GameListener {
         this.allUsers = new ArrayList<>();
         this.selectedPoint = null;
         this.onAutoPlayback = false;
-        this.aiDifficulty = AIDifficulty.EASY;
+        aiDifficulty = AIDifficulty.EASY;
+        turnCount = 1;
         this.readUsers();
 
         model.registerController(this);
@@ -130,6 +135,18 @@ public class GameController implements GameListener {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
     }
 
+    private void swapUser() {
+        colorOfUser = colorOfUser == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
+    }
+
+    public void setColorOfUser(PlayerColor playerColor) {
+        this.colorOfUser = playerColor;
+    }
+
+    public PlayerColor getColorOfUser() {
+        return colorOfUser;
+    }
+
     //Judge if there is a winner in two ways.
     //First: One player's piece enters the other player's den.
     //Second: After a capture, one player has no piece left.
@@ -158,13 +175,20 @@ public class GameController implements GameListener {
         this.writeUsers();
     }
 
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.colorOfUser = playerColor;
+    public void gatAIMove() {
+        //Do not use this function in veiw.
+        //This is only a reusable method to create AI.
+        Thread AI = new AIThread(this, model.getGrid(), currentPlayer);
+        AI.start();
     }
 
     // click an empty cell
     @Override
-    public void onPlayerClickCell(ChessboardPoint point) {
+    public void onPlayerClickCell(ChessboardPoint point, PlayerColor playerColor) {
+        if(playerColor != currentPlayer){
+            System.out.println("Not your turn!");
+            return;
+        }
         if (selectedPoint != null) {
             //Try to move the selected piece to the clicked cell.
             try{
@@ -173,7 +197,7 @@ public class GameController implements GameListener {
                 if(!onAutoPlayback){
                     allMovesOnBoard.add(moveToMake);
                 }
-                if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
+                if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser && !onAutoPlayback){
                     this.client.makeMove(moveToMake);
                 }
 
@@ -181,11 +205,18 @@ public class GameController implements GameListener {
 
                 selectedPoint = null;
                 this.swapColor();
+                if(gameMode == GameMode.Local_PVP){
+                    this.swapUser();
+                }
+                turnCount++;
+                timer.reset();
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
             }
+
             if(win() != null){
+                timer.shutdown();
                 if(gameMode == GameMode.PVE || gameMode == GameMode.Local_PVP){
                     if(win() == PlayerColor.BLUE){
                         updateUserScore(user1, user2);
@@ -204,22 +235,33 @@ public class GameController implements GameListener {
 
                 return;
             }else{
-                if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) {
+                if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) && !onAutoPlayback) {
                     if (gameMode == GameMode.Online_PVP_Server) {
                         server.setEndGame(false);
                     }
                     client.setEndGame(false);
                 }
             }
-            if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED && !onAutoPlayback){
-                this.onPlayerClickAIMoveButton();
+            if(gameMode == GameMode.PVE && currentPlayer != colorOfUser && !onAutoPlayback){
+                this.gatAIMove();
             }
         }
+        Chessboard.printChessBoard(model.getGrid());
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
+        System.out.println("Turn: " + turnCount);
     }
 
     // click a cell with a chess
     @Override
-    public void onPlayerClickChessPiece(ChessboardPoint point) {
+    public void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor) {
+        if(playerColor != currentPlayer){
+            System.out.println("Not your turn!");
+            return;
+        }
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point) == currentPlayer) {
                 //If the clicked piece is the current player's piece, select it.
@@ -242,18 +284,25 @@ public class GameController implements GameListener {
                         if(!onAutoPlayback) {
                             allMovesOnBoard.add(moveToMake);
                         }
-                        if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser){
+                        if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser && !onAutoPlayback){
                             this.client.makeMove(moveToMake);
                         }
 
                         //Here should be code for GUI to repaint the board.(One piece captured)
                         selectedPoint = null;
                         this.swapColor();
+                        if(gameMode == GameMode.Local_PVP){
+                            this.swapUser();
+                        }
+                        turnCount++;
+                        timer.reset();
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
                     }
+
                     if(win() != null){
+                        timer.shutdown();
                         if(gameMode == GameMode.PVE || gameMode == GameMode.Local_PVP){
                             if(win() == PlayerColor.BLUE){
                                 updateUserScore(user1, user2);
@@ -270,20 +319,28 @@ public class GameController implements GameListener {
 
                         // TO DO: What should we do after one player wins?
 
+                        return;
                     }else{
-                        if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) {
+                        if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) && !onAutoPlayback){
                             if (gameMode == GameMode.Online_PVP_Server) {
                                 server.setEndGame(false);
                             }
                             client.setEndGame(false);
                         }
                     }
-                    if(gameMode == GameMode.PVE && currentPlayer == PlayerColor.RED && !onAutoPlayback){
-                        this.onPlayerClickAIMoveButton();
+                    if(gameMode == GameMode.PVE && currentPlayer != colorOfUser && !onAutoPlayback){
+                        this.gatAIMove();
                     }
                 }
             }
         }
+        Chessboard.printChessBoard(model.getGrid());
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
+        System.out.println("Turn: " + turnCount);
     }
 
     @Override
@@ -309,39 +366,43 @@ public class GameController implements GameListener {
             //Here should be code for GUI to repaint the board.(Move undone)
 
             this.swapColor();
+            if(gameMode == GameMode.Local_PVP){
+                this.swapUser();
+            }
+            turnCount--;
+            timer.reset();
         }
         return true;
     }
 
     @Override
     public void onPlayerClickPlayBackButton() {
-        if(gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client){
-            System.out.println("Playback is not allowed in online mode.");
-            return;
-        }
-
         selectedPoint = null;
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
+        if(gameMode == GameMode.Local_PVP){
+            this.colorOfUser = PlayerColor.BLUE;
+        }
+        turnCount = 1;
 
         onAutoPlayback = true;
         for (Move move : allMovesOnBoard) {
-            this.onPlayerClickChessPiece(move.getFromPoint());
+            this.onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
             try {
-                Thread.sleep(250);
+                Thread.sleep(GameController.animationInterval);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
             if(move.isDoesCapture()){
-                this.onPlayerClickChessPiece(move.getToPoint());
+                this.onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
             }else{
-                this.onPlayerClickCell(move.getToPoint());
+                this.onPlayerClickCell(move.getToPoint(), currentPlayer);
             }
 
             try {
-                Thread.sleep(250);
+                Thread.sleep(GameController.animationInterval);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -355,10 +416,15 @@ public class GameController implements GameListener {
             System.out.println("Reset is not allowed in online mode.");
             return;
         }
+        turnCount = 1;
         selectedPoint = null;
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
+        this.colorOfUser = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
+        if(timer != null){
+            timer.reset();
+        }
 
         //Here should be code for GUI to repaint the board.(Board reset)
 
@@ -499,7 +565,7 @@ public class GameController implements GameListener {
                     }
 
                     String capturedPieceName = parts[7];
-                    String capturedPieceOwner = parts[1];
+                    String capturedPieceOwner = parts[8];
                     ChessPiece capturedPiece;
                     PlayerColor capturedPieceOwnerColor;
                     if(capturedPieceOwner.equals("BLUE")) {
@@ -617,22 +683,22 @@ public class GameController implements GameListener {
             //Here should be code in GUI to show success message.
             this.onPlayerClickResetButton();
             for(Move move : moves){
-                this.onPlayerClickChessPiece(move.getFromPoint());
+                this.onPlayerClickChessPiece(move.getFromPoint(),currentPlayer);
 
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(GameController.animationInterval);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
 
                 if(move.isDoesCapture()){
-                    this.onPlayerClickChessPiece(move.getToPoint());
+                    this.onPlayerClickChessPiece(move.getToPoint(),currentPlayer);
                 }else{
-                    this.onPlayerClickCell(move.getToPoint());
+                    this.onPlayerClickCell(move.getToPoint(),currentPlayer);
                 }
 
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(GameController.animationInterval);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -643,12 +709,22 @@ public class GameController implements GameListener {
 
     @Override
     public boolean onPlayerClickLoginButton(String username, String password) {
-        for (User user : allUsers) {
-            if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
-                user1 = user;
-                return true;
+        if(user1 == null){
+            for (User user : allUsers) {
+                if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
+                    user1 = user;
+                    return true;
+                }
+            }
+        }else{
+            for (User user : allUsers) {
+                if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI && user != user1){
+                    user2 = user;
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
@@ -670,43 +746,12 @@ public class GameController implements GameListener {
     }
 
     @Override
-    public void onPlayerClickAIMoveButton() {
-        //TO DO: possible function? In pvp or net pvp mode, player can click this button to let AI make a move.
-        Move AIMove;
-        if(aiDifficulty == AIDifficulty.EASY){
-            AIMove = AI_Easy.findBestOneMove(model.getGrid(), currentPlayer.getColor());
-        }else if(aiDifficulty == AIDifficulty.MEDIUM){
-            AIMove = AI_Medium.findBestOneMove(model.getGrid(), currentPlayer.getColor());
-        }else{
-            AIMove = AI_Hard.findBestOneMove(model.getGrid(), currentPlayer.getColor());
-        }
+    public void onPlayerSelectLocalPVPMode() {
+        gameMode = GameMode.Local_PVP;
+        colorOfUser = PlayerColor.BLUE;
 
-        this.onPlayerClickChessPiece(AIMove.getFromPoint());
-
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        if(AIMove.isDoesCapture()){
-            this.onPlayerClickChessPiece(AIMove.getToPoint());
-        }else{
-            this.onPlayerClickCell(AIMove.getToPoint());
-        }
-    }
-
-    @Override
-    public boolean onPlayerSelectLocalPVPMode(String username, String password) {
-        for (User user : allUsers) {
-            if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI && user != user1){
-                user2 = user;
-                gameMode = GameMode.Local_PVP;
-                colorOfUser = PlayerColor.BLUE;
-                return true;
-            }
-        }
-        return false;
+        timer = new Timer(this,1000);
+        timer.start();
     }
 
     @Override
@@ -733,6 +778,9 @@ public class GameController implements GameListener {
         }
         colorOfUser = PlayerColor.BLUE;
         gameMode = GameMode.PVE;
+
+        timer = new Timer(this,1000);
+        timer.start();
     }
 
     @Override
@@ -783,21 +831,17 @@ public class GameController implements GameListener {
         user2 = null;
         gameMode = null;
         colorOfUser = null;
+        timer.shutdown();
+        timer = null;
         this.onPlayerClickResetButton();
     }
 
     public void testViaKeyboard(int x,int y){
         ChessboardPoint point = new ChessboardPoint(x,y);
         if(model.getChessPieceAt(point) == null){
-            onPlayerClickCell(point);
+            onPlayerClickCell(point,colorOfUser);
         }else{
-            onPlayerClickChessPiece(point);
-        }
-        Chessboard.printChessBoard(model.getGrid());
-        if(selectedPoint != null){
-            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
-        }else{
-            System.out.println("No point is selected");
+            onPlayerClickChessPiece(point,colorOfUser);
         }
     }
 

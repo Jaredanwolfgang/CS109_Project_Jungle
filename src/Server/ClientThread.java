@@ -3,6 +3,8 @@ package Server;
 import controller.GameController;
 import model.ChessBoard.Move;
 import model.Enum.PlayerColor;
+import model.Timer.Timer;
+import model.User.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -33,11 +35,24 @@ public class ClientThread extends Thread{
         try {
             PlayerColor playerColor = (PlayerColor) inPut.readObject();
             System.out.println("Client: Player color received");
-            gameController.setPlayerColor(playerColor);
+            gameController.setColorOfUser(playerColor);
+
+            outPut.writeObject(GameController.user1);
+            outPut.flush();
+            System.out.println("Client: Sent local user profile to server");
+
+            User opponent = (User) inPut.readObject();
+            GameController.user2 = opponent;
+            System.out.println("Client: Received opponent profile from server: " + opponent.toString());
+
             try {
                 if(playerColor == PlayerColor.BLUE){
+                    gameController.timer = new Timer(gameController,900);
+                    gameController.timer.start();
                     this.runTimeBlue();
                 }else {
+                    gameController.timer = new Timer(gameController,1000);
+                    gameController.timer.start();
                     this.runTimeRed();
                 }
             } catch (InterruptedException e) {
@@ -56,17 +71,23 @@ public class ClientThread extends Thread{
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            gameController.onPlayerClickChessPiece(moveFromServer.getFromPoint());
+
+            gameController.onPlayerClickChessPiece(moveFromServer.getFromPoint(),(gameController.getColorOfUser() == PlayerColor.RED ? PlayerColor.BLUE : PlayerColor.RED));
+
+            sleep(GameController.animationInterval);
+
             if(moveFromServer.isDoesCapture()){
-                gameController.onPlayerClickChessPiece(moveFromServer.getToPoint());
+                gameController.onPlayerClickChessPiece(moveFromServer.getToPoint(),(gameController.getColorOfUser() == PlayerColor.RED ? PlayerColor.BLUE : PlayerColor.RED));
             }else{
-                gameController.onPlayerClickCell(moveFromServer.getToPoint());
+                gameController.onPlayerClickCell(moveFromServer.getToPoint(),(gameController.getColorOfUser() == PlayerColor.RED ? PlayerColor.BLUE : PlayerColor.RED));
             }
 
             waitForEndGameCall();
             if(gameEnded){
                 break;
             }
+
+            gameController.timer.setInterval(900);
 
             waitForPlayerMove();
 
@@ -81,6 +102,8 @@ public class ClientThread extends Thread{
             if(gameEnded){
                 break;
             }
+
+            gameController.timer.setInterval(1000);
         }
         this.shutDown();
     }
@@ -102,22 +125,29 @@ public class ClientThread extends Thread{
                 break;
             }
 
+            gameController.timer.setInterval(1000);
+
             try {
                 moveFromServer = (Move) inPut.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            gameController.onPlayerClickChessPiece(moveFromServer.getFromPoint());
+            gameController.onPlayerClickChessPiece(moveFromServer.getFromPoint(),(gameController.getColorOfUser() == PlayerColor.RED ? PlayerColor.BLUE : PlayerColor.RED));
+
+            sleep(GameController.animationInterval);
+
             if(moveFromServer.isDoesCapture()){
-                gameController.onPlayerClickChessPiece(moveFromServer.getToPoint());
+                gameController.onPlayerClickChessPiece(moveFromServer.getToPoint(),(gameController.getColorOfUser() == PlayerColor.RED ? PlayerColor.BLUE : PlayerColor.RED));
             }else{
-                gameController.onPlayerClickCell(moveFromServer.getToPoint());
+                gameController.onPlayerClickCell(moveFromServer.getToPoint(),(gameController.getColorOfUser() == PlayerColor.RED ? PlayerColor.BLUE : PlayerColor.RED));
             }
 
             waitForEndGameCall();
             if(gameEnded){
                 break;
             }
+
+            gameController.timer.setInterval(900);
         }
         this.shutDown();
     }

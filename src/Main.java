@@ -81,11 +81,11 @@ public class Main {
                     continue;
                 }
                 if(x == -9){
-                    System.out.println(gameController.onPlayerSelectLocalPVPMode("xyc","234567"));
+                    gameController.onPlayerSelectLocalPVPMode();
                     continue;
                 }
                 if(x == -10){
-                    gameController.onPlayerClickAIMoveButton();
+                    gameController.gatAIMove();
                     continue;
                 }
                 if(x == -11){
