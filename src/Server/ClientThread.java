@@ -9,6 +9,7 @@ import model.User.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class ClientThread extends Thread{
@@ -74,7 +75,9 @@ public class ClientThread extends Thread{
                 tempUser = GameController.user1;
 
                 GameController.user1 = (User) inPut.readObject();
+                System.out.println("Client: Received user1 profile from server: " + GameController.user1.toString());
                 GameController.user2 = (User) inPut.readObject();
+                System.out.println("Client: Received user2 profile from server: " + GameController.user2.toString());
 
                 gameController.timer = new Timer(gameController,1000);
                 gameController.timer.start();
@@ -95,6 +98,12 @@ public class ClientThread extends Thread{
                         gameController.onPlayerClickCell(move.getToPoint(),simulatedPlayerColor);
                     }
 
+                    try {
+                        sleep(GameController.animationInterval);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     simulatedPlayerColor = simulatedPlayerColor == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
                 }
 
@@ -109,6 +118,7 @@ public class ClientThread extends Thread{
     }
 
     private void runTimeSpectator() {
+        System.out.println("Client: Running as spectator");
         while(true){
             try {
                 moveFromServer = (Move) inPut.readObject();
