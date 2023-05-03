@@ -147,6 +147,14 @@ public class GameController implements GameListener {
         return colorOfUser;
     }
 
+    public GameMode getGameMode(){
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        GameController.gameMode = gameMode;
+    }
+
     //Judge if there is a winner in two ways.
     //First: One player's piece enters the other player's den.
     //Second: After a capture, one player has no piece left.
@@ -213,6 +221,7 @@ public class GameController implements GameListener {
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
+                return;
             }
 
             if(win() != null){
@@ -224,7 +233,12 @@ public class GameController implements GameListener {
                         updateUserScore(user2, user1);
                     }
                 }
-                if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server){
+                if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     if(gameMode == GameMode.Online_PVP_Server){
                         server.setEndGame(true);
                     }
@@ -235,7 +249,12 @@ public class GameController implements GameListener {
 
                 return;
             }else{
-                if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) && !onAutoPlayback) {
+                if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     if (gameMode == GameMode.Online_PVP_Server) {
                         server.setEndGame(false);
                     }
@@ -299,6 +318,7 @@ public class GameController implements GameListener {
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
+                        return;
                     }
 
                     if(win() != null){
@@ -310,7 +330,12 @@ public class GameController implements GameListener {
                                 updateUserScore(user2, user1);
                             }
                         }
-                        if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server){
+                        if(gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                             if(gameMode == GameMode.Online_PVP_Server){
                                 server.setEndGame(true);
                             }
@@ -321,7 +346,12 @@ public class GameController implements GameListener {
 
                         return;
                     }else{
-                        if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server) && !onAutoPlayback){
+                        if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                             if (gameMode == GameMode.Online_PVP_Server) {
                                 server.setEndGame(false);
                             }
@@ -412,7 +442,7 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerClickResetButton() {
-        if(gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client){
+        if(gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Spectator){
             System.out.println("Reset is not allowed in online mode.");
             return;
         }
@@ -422,9 +452,9 @@ public class GameController implements GameListener {
         this.currentPlayer = PlayerColor.BLUE;
         this.colorOfUser = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
-        if(timer != null){
-            timer.reset();
-        }
+        timer.shutdown();
+        timer = new Timer(this,1000);
+        timer.start();
 
         //Here should be code for GUI to repaint the board.(Board reset)
 
@@ -789,7 +819,6 @@ public class GameController implements GameListener {
         try{
             socket.connect(new InetSocketAddress("localhost", 1234), 1000);
             System.out.println("Server found, connected to server");
-            gameMode = GameMode.Online_PVP_Client;
         }catch (Exception ex){
             server = new ServerThread();
             System.out.println("No server found, starting a new server");
@@ -827,13 +856,13 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerExitGameFrame() {
+        this.onPlayerClickResetButton();
         aiDifficulty = AIDifficulty.EASY;
         user2 = null;
         gameMode = null;
         colorOfUser = null;
         timer.shutdown();
         timer = null;
-        this.onPlayerClickResetButton();
     }
 
     public void testViaKeyboard(int x,int y){
@@ -843,9 +872,5 @@ public class GameController implements GameListener {
         }else{
             onPlayerClickChessPiece(point,colorOfUser);
         }
-    }
-
-    public GameMode getGameMode(){
-        return gameMode;
     }
 }

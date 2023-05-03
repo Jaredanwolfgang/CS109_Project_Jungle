@@ -5,13 +5,12 @@ import model.Enum.AIDifficulty;
 
 public class Timer extends Thread {
     private int interval;
-    private int period;
+    private final int period = 45;
     private int remaining;
     private boolean running;
     private GameController gameController;
 
     public Timer(GameController gameController, int interval) {
-        this.period = 45;
         this.remaining = period;
         this.gameController = gameController;
         this.running = true;
