@@ -1,5 +1,7 @@
 package model.Enum;
 
-public enum PlayerType {
+import java.io.Serializable;
+
+public enum PlayerType implements Serializable {
     HUMAN, AI
 }

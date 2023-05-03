@@ -2,12 +2,17 @@ package Server;
 
 import model.ChessBoard.Move;
 import model.Enum.PlayerColor;
+import model.User.User;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+
 public class ServerThread extends Thread{
     private ServerSocket serverSocket;
+    private User player1;
+    private User player2;
     private Socket player1Socket;
     private Socket player2Socket;
     private ObjectOutputStream player1Output;
@@ -16,6 +21,9 @@ public class ServerThread extends Thread{
     private ObjectInputStream player2Input;
     private boolean gameEnded = false;
     private boolean ready = false;
+    private SpectatorThread spectatorThread;
+
+    ArrayList<Move> allMoves = new ArrayList<>();
     public ServerThread() {
     }
 
@@ -47,6 +55,8 @@ public class ServerThread extends Thread{
     }
 
     private void startGame() {
+
+
         try{
             player1Output.writeObject(PlayerColor.BLUE);
             player2Output.writeObject(PlayerColor.RED);
@@ -57,6 +67,32 @@ public class ServerThread extends Thread{
             return;
         }
         System.out.println("Server: Player colors distributed");
+
+        try {
+            player1 = (User) player1Input.readObject();
+            System.out.println("Server: Player1 profiles received");
+            player2 = (User) player2Input.readObject();
+            System.out.println("Server: Player2 profiles received");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Server: Error receiving player profiles: " + e.getMessage());
+            return;
+        }
+
+        try {
+            player1Output.writeObject(player2);
+            player2Output.writeObject(player1);
+            player1Output.flush();
+            player2Output.flush();
+        } catch (IOException e) {
+            System.out.println("Server: Error distributing player profiles: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Server: Player profiles distributed");
+
+        this.spectatorThread = new SpectatorThread(this, serverSocket, player1, player2);
+        this.spectatorThread.start();
+
         this.runTime();
     }
 
@@ -70,6 +106,8 @@ public class ServerThread extends Thread{
                 player2Output.writeObject(move);
                 player2Output.flush();
                 System.out.println("Server: Player1 move sent to player2");
+                spectatorThread.updateMove(move);
+                System.out.println("Server: Move added to spectator thread");
 
                 waitForEndGameCall();
                 if(gameEnded){
@@ -82,6 +120,8 @@ public class ServerThread extends Thread{
                 player1Output.writeObject(move);
                 player1Output.flush();
                 System.out.println("Server: Player2 move sent to player1");
+                spectatorThread.updateMove(move);
+                System.out.println("Server: Move added to spectator thread");
 
                 waitForEndGameCall();
                 if(gameEnded){
@@ -96,6 +136,7 @@ public class ServerThread extends Thread{
     }
 
     private void shutdown() {
+        spectatorThread.shutDown();
         try{
             player1Output.close();
             player2Output.close();
@@ -117,8 +158,22 @@ public class ServerThread extends Thread{
 
     public synchronized void waitForEndGameCall() throws InterruptedException {
         while(!ready){
+            System.out.println("Server: Waiting for end game call");
             wait();
         }
+        System.out.println("Server: End game call received");
         ready = false;
+    }
+
+    public User getPlayer1() {
+        return player1;
+    }
+
+    public User getPlayer2() {
+        return player2;
+    }
+
+    public ArrayList<Move> getAllMoves() {
+        return allMoves;
     }
 }

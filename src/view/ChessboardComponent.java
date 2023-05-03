@@ -137,10 +137,10 @@ public class ChessboardComponent extends JComponent {
             JComponent clickedComponent = (JComponent) getComponentAt(e.getX(), e.getY());
             if (clickedComponent.getComponentCount() == 0) {
                 System.out.print("None chess here and ");
-                gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()));
+                //gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()));
             } else {
                 System.out.print("One chess here and ");
-                gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()));
+                //gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()));
             }
         }
     }

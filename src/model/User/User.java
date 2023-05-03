@@ -3,9 +3,10 @@ package model.User;
 
 import model.Enum.PlayerType;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User {
+public class User implements Serializable {
     private String username;
     private String password;
     private double score;
@@ -75,7 +76,7 @@ public class User {
 
     public double getWinRate(){
         if(wins + losses == 0){
-            return Double.MAX_VALUE;
+            return 0.5;
         }
         return (double)wins / (wins + losses);
     }

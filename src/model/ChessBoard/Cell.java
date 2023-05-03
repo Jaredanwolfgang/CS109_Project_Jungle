@@ -3,8 +3,6 @@ package model.ChessBoard;
 import model.ChessPieces.ChessPiece;
 import model.Enum.PlayerColor;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**

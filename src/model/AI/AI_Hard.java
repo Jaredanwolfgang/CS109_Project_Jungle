@@ -88,7 +88,7 @@ class MonteCarloTreeSearch {
             Color winner = JungleSimulator.rollout(rolloutNode);
             backPropagate(rolloutNode, winner);
         }
-        System.out.println(AI_Hard.historyMoves.size());
+        //System.out.println(AI_Hard.historyMoves.size());
         double numVisits = 0;
         for(Node child : root.children){
             if(child.visits > numVisits){
