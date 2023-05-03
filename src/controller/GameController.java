@@ -239,10 +239,10 @@ public class GameController implements GameListener {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    client.setEndGame(true);
                     if(gameMode == GameMode.Online_PVP_Server){
                         server.setEndGame(true);
                     }
-                    client.setEndGame(true);
                 }
 
                 // TO DO: What should we do after one player wins?
@@ -255,10 +255,10 @@ public class GameController implements GameListener {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    client.setEndGame(false);
                     if (gameMode == GameMode.Online_PVP_Server) {
                         server.setEndGame(false);
                     }
-                    client.setEndGame(false);
                 }
             }
             if(gameMode == GameMode.PVE && currentPlayer != colorOfUser && !onAutoPlayback){
@@ -336,10 +336,10 @@ public class GameController implements GameListener {
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
+                            client.setEndGame(true);
                             if(gameMode == GameMode.Online_PVP_Server){
                                 server.setEndGame(true);
                             }
-                            client.setEndGame(true);
                         }
 
                         // TO DO: What should we do after one player wins?
@@ -352,10 +352,10 @@ public class GameController implements GameListener {
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
+                            client.setEndGame(false);
                             if (gameMode == GameMode.Online_PVP_Server) {
                                 server.setEndGame(false);
                             }
-                            client.setEndGame(false);
                         }
                     }
                     if(gameMode == GameMode.PVE && currentPlayer != colorOfUser && !onAutoPlayback){

@@ -9,7 +9,6 @@ import model.User.User;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class ClientThread extends Thread{
