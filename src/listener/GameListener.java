@@ -18,7 +18,7 @@ public interface GameListener {
 
     /**
      * Now this method also need a playerColor variable.(To differentiate the source of the event, e.g.AI? player? online opponent?)
-     * In view, please always set the playerColor parameter to gameController.getColorOfUser().
+     * In the GUI part, please always use gameController.getColorOfUser() as the playerColor parameter.
      */
     void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor);
 
@@ -27,7 +27,7 @@ public interface GameListener {
     boolean onPlayerClickUndoButton();
 
     //call this method when player click playback button
-    //only available in local pvp mode and pve mode
+    /** now available in all modes */
     void onPlayerClickPlayBackButton();
 
     //call this method when player click reset button
@@ -42,7 +42,7 @@ public interface GameListener {
     void onPlayerClickLoadButton(String filePath);
 
     //call this method when player click login button
-    //return true if login success
+    //return true if user logins successfully
     boolean onPlayerClickLoginButton(String username, String password);
 
     //call this method when player click register button
@@ -50,11 +50,14 @@ public interface GameListener {
     boolean onPlayerClickRegisterButton(String username, String password);
 
     //call this method when player click logout button
+    /** This will logout the very first user(the user that login at the initFrame)
+     * Please do not use this when player exit the local pvp mode
+     * the user will automatically logout when player exit the local pvp mode
+     * */
     void onPlayerClickLogoutButton();
 
 
     //call this method when player choose local pvp mode
-
     /**
      * Now this method don't need any information
      * but you should reuse the login method before you call this method
@@ -69,6 +72,7 @@ public interface GameListener {
 
     //call this method when player click the rank list button
     //return an array list of user, sorted by their score already
+    /** ATTENTION: please do not change user data in the GUI part, all changes have been dealt with in controller. */
     ArrayList<User> onPlayerClickRankListButton();
 
     //call this method when player exit the game frame and go back to the mode selection frame
