@@ -112,8 +112,6 @@ public class ClientThread extends Thread{
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     private void runTimeSpectator() {
@@ -150,6 +148,8 @@ public class ClientThread extends Thread{
                 break;
             }
         }
+        GameController.user1 = tempUser;
+
         this.shutDown();
     }
 
@@ -195,9 +195,6 @@ public class ClientThread extends Thread{
 
             gameController.timer.setInterval(1000);
         }
-
-        GameController.user1 = tempUser;
-
         this.shutDown();
     }
 

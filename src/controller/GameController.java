@@ -197,6 +197,9 @@ public class GameController implements GameListener {
     public void onPlayerClickCell(ChessboardPoint point, PlayerColor playerColor) {
         if(playerColor != currentPlayer){
             System.out.println("Not your turn!");
+
+            /** Here should be code for GUI to tell user that it's not his turn */
+
             return;
         }
         if (selectedPoint != null) {
@@ -211,18 +214,27 @@ public class GameController implements GameListener {
                     this.client.makeMove(moveToMake);
                 }
 
-                //Here should be code for GUI to repaint the board.(One piece moved)
+                /** Here should be code for GUI to repaint the board.(One piece moved) */
 
                 selectedPoint = null;
                 this.swapColor();
+
+                /** NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+
                 if(gameMode == GameMode.Local_PVP){
                     this.swapUser();
                 }
                 turnCount++;
+
+                /** NOT NECESSARY: Here should be code for GUI to update turn count */
+
                 timer.reset();
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
+
+                /** NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
+
                 return;
             }
 
@@ -247,7 +259,7 @@ public class GameController implements GameListener {
                     }
                 }
 
-                // TO DO: What should we do after one player wins?
+                /** Here should be code for GUI to display game over message to user */
 
                 return;
             }else{
@@ -280,6 +292,9 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor) {
         if(playerColor != currentPlayer){
+
+            /** Here should be code for GUI to tell user that it's not his turn */
+
             System.out.println("Not your turn!");
             return;
         }
@@ -287,15 +302,27 @@ public class GameController implements GameListener {
             if (model.getChessPieceOwner(point) == currentPlayer) {
                 //If the clicked piece is the current player's piece, select it.
                 selectedPoint = point;
+
+                /** Here should be code for GUI to show all available moves for the selected piece */
+
             }
         }else{
             if (selectedPoint.equals(point)) {
                 //If the clicked piece is the selected piece, deselect it.
+
+                /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+
                 selectedPoint = null;
             }else{
                 if(model.getChessPieceOwner(point) == currentPlayer){
                     //If the clicked piece is the current player's piece, select it.
+
+                    /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+
                     selectedPoint = point;
+
+                    /** Here should be code for GUI to show all available moves for the selected piece */
+
                 }else{
                     //Try to capture the clicked piece with the selected piece.
                     try{
@@ -312,14 +339,23 @@ public class GameController implements GameListener {
                         //Here should be code for GUI to repaint the board.(One piece captured)
                         selectedPoint = null;
                         this.swapColor();
+
+                        /** NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+
                         if(gameMode == GameMode.Local_PVP){
                             this.swapUser();
                         }
                         turnCount++;
+
+                        /** NOT NECESSARY: Here should be code for GUI to update turn count */
+
                         timer.reset();
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
+
+                        /** NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
+
                         return;
                     }
 
@@ -344,7 +380,7 @@ public class GameController implements GameListener {
                             }
                         }
 
-                        // TO DO: What should we do after one player wins?
+                        /** Here should be code for GUI to display game over message to user */
 
                         return;
                     }else{
@@ -391,17 +427,26 @@ public class GameController implements GameListener {
             return false;
         }
         selectedPoint = null;
+
+        /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+
         for (int i = 0; i < numberOfLoop; i++) {
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
             model.undoMove(lastMove);
 
-            //Here should be code for GUI to repaint the board.(Move undone)
+            /** Here should be code for GUI to undo a move */
 
             this.swapColor();
+
+            /** NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+
             if(gameMode == GameMode.Local_PVP){
                 this.swapUser();
             }
             turnCount--;
+
+            /** NOT NECESSARY: Here should be code for GUI to update turn count */
+
             timer.reset();
         }
         return true;
@@ -410,12 +455,20 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickPlayBackButton() {
         selectedPoint = null;
+
+        /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
+
+        /** NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
+
         if(gameMode == GameMode.Local_PVP){
             this.colorOfUser = PlayerColor.BLUE;
         }
         turnCount = 1;
+
+        /** NOT NECESSARY: Here should be code for GUI to update turn count */
 
         onAutoPlayback = true;
         for (Move move : allMovesOnBoard) {
@@ -449,9 +502,18 @@ public class GameController implements GameListener {
             return;
         }
         turnCount = 1;
+
+        /** NOT NECESSARY: Here should be code for GUI to update turn count */
+
         selectedPoint = null;
+
+        /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
+
+        /** NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
+
         this.colorOfUser = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
         timer.shutdown();
@@ -487,6 +549,9 @@ public class GameController implements GameListener {
             }
         }
         System.out.println("Finished writing moves to file: " + filePath);
+
+        /** NOT NECESSARY: Here should be code for GUI to show a message indicating that the file is saved successfully */
+
     }
 
     @Override
@@ -633,6 +698,11 @@ public class GameController implements GameListener {
             }
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
+
+            /** NOT NECESSARY: Here should be a pop-up window to show the error message.
+             * (I don't think the three other exceptions below need this)
+            */
+
             return;
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filePath);
@@ -700,20 +770,21 @@ public class GameController implements GameListener {
                 //Print error message.
                 isValidFile = false;
                 System.out.println(e.getMessage() + ": " + move);
+
+                /** NOT NECESSARY: Here should be a pop-up window to show the error message. */
+
                 break;
             }
         }
         if(!isValidFile){
             System.out.println("File Check Failed: Invalid file.");
-
-            //Here should be code in GUI to show error message.
-
             //Reset the board.
             this.onPlayerClickResetButton();
         }else{
             System.out.println("File Check Passed: Valid file.");
 
-            //Here should be code in GUI to show success message.
+            /** NOT NECESSARY: Here should be a pop-up window to show file reads successfully. */
+
             this.onPlayerClickResetButton();
             for(Move move : moves){
                 this.onPlayerClickChessPiece(move.getFromPoint(),currentPlayer);
@@ -854,6 +925,7 @@ public class GameController implements GameListener {
 
     @Override
     public ArrayList<User> onPlayerClickRankListButton() {
+        allUsers.sort(Comparator.comparing(User::getScore).reversed());
         return allUsers;
     }
 
