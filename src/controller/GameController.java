@@ -93,6 +93,7 @@ public class GameController implements GameListener {
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
+            return;
         } finally {
             try {
                 if (reader != null) {
@@ -117,6 +118,7 @@ public class GameController implements GameListener {
             }
         } catch (IOException e) {
             System.err.println("Error writing file: " + e.getMessage());
+            return;
         } finally {
             try {
                 if (writer != null) {
@@ -472,6 +474,7 @@ public class GameController implements GameListener {
         } catch (IOException e) {
             System.out.println("Error writing moves to file: " + filePath);
             e.printStackTrace();
+            return;
         } finally {
             if (writer != null) {
                 try {
