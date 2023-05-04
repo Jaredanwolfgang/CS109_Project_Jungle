@@ -35,7 +35,7 @@ public class InitFrame extends JFrame{
         initExitButton();
         initBackground("Background\\Jungle.gif");
 
-        this.setVisible(true);
+        this.setVisible(false);
     }
 
     //初始化Frame
@@ -56,7 +56,7 @@ public class InitFrame extends JFrame{
     public void initBackground(String Address) {
         System.out.println("InitFrame background is initializing...");
         JLabel background = new JLabel(new ImageIcon(Address));
-        background.setBounds(0, 0, WIDTH, HEIGHT);
+        background.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
         this.getContentPane().add(background);
     }
 
@@ -64,7 +64,6 @@ public class InitFrame extends JFrame{
     //1. 明暗图片对应的位置
     //2. 按钮的位置
     //3. 按钮的目标大小（在方法当中有resize按钮的大小）
-    //4. 按钮的index，用于判断按钮的功能
     public void initLoginButton() {
         System.out.println("Login button is initializing...");
 

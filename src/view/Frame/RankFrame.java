@@ -33,7 +33,7 @@ public class RankFrame extends JFrame {
         initTable();
         initBackground("Background/L_R_bg.gif");
 
-        this.setVisible(true);
+        this.setVisible(false);
     }
     public void initFrame(){
         System.out.println("RankFrame is initializing...");
@@ -115,20 +115,9 @@ public class RankFrame extends JFrame {
         jb.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (index == 0) {
-                    new LoginFrame();
-                } else if (index == 1) {
-                    new RegisterFrame();
-                } else if (index == 2) {
-                    new MusicPlayerFrame();
-                } else if (index == 3) {
-                    System.exit(0);
-                }
             }
-
             @Override
             public void mousePressed(MouseEvent e) {
-
             }
 
             @Override

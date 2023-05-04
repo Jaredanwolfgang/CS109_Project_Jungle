@@ -108,7 +108,7 @@ public class MusicPlayerFrame extends JFrame {
         setLocationRelativeTo(null);
         setAlwaysOnTop(true);
         setResizable(false);
-        setVisible(true);
+        setVisible(false);
 
         //添加窗口监听
         addWindowListener(new WindowListener() {

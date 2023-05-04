@@ -15,55 +15,57 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class LoginFrame extends JFrame implements ActionListener{
+    private final Dimension screenSize = new Dimension(300,250);
 
+/*
     private final int WIDTH = 300;
     private final int HEIGHT = 250;
-
-    /** I have to apologize here.
-     *  As java can’t rewrite a specific line in the users file. I must rewrite the whole file.
-     *  Therefore, I have to have all users in memory.
-     *  I read all users at the beginning and create an ArrayList for it.
-     *  And when any user's information changes, I update the Arraylist and write all users back to the file. All this is done in gameController.
-     *  I have already created interfaces in gameListeners for user login, register, logout and get player list. Don't forget to check it out.
-     */
-    private User user = new User();
+*/
     private JTextField userText, passText;
     private JPasswordField passwordField;//这里要设置PassField，但是还没写
     private JButton loginButton = new JButton();
+    private Frame frame;
 
-    public LoginFrame() {
-        initTextArea();
-        initButton("Image\\InitFrame\\Login_Light.png","Image\\InitFrame\\" +
-                "Login_Dark.png",loginButton,0, 100, 150, 100, 56);
-        initBackground("Background\\L_R_bg.gif");
+    public LoginFrame(Frame frame) {
+        this.frame = frame;
+        initUsernameTextField();
+        initPasswordTextField();
+        initPasswordPassField();
+
+        initButton();
+        initBackground("Background\\Spring.gif");
         initFrame();
-        this.setVisible(true);
+        this.setVisible(false);
     }
 
     public void initFrame() {
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
         this.setTitle("Jungle Login");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(null);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.getLoginFrame().setVisible(false);
+                frame.getInitFrame().setVisible(true);
+            }
+        });
     }
 
     public void initBackground(String Address) {
         JLabel background = new JLabel(new ImageIcon(Address));
-        background.setBounds(0, 0, WIDTH, HEIGHT);
+        background.setBounds(0, 0, 300, 250);
         this.getContentPane().add(background);
     }
     //这里设置了两个TextField，用于输入数据
-    public void initTextArea() {
+    public void initUsernameTextField() {
         Color backGroundColor = new Color(0,0,0,128);
 
-        /**
-         * You might want to change the font size here. Current size is too small to read.
-         */
         userText = new JTextField("Enter your Username here", 20);
-        userText.setFont(new Font("Calibri", Font.ITALIC, 8));
+        userText.setFont(new Font("Calibri", Font.ITALIC, 12));
 //        userText.setOpaque(false);
         userText.setBackground(backGroundColor);
         userText.setForeground(Color.WHITE);
@@ -80,7 +82,7 @@ public class LoginFrame extends JFrame implements ActionListener{
             public void focusLost(FocusEvent e) {
                 if (userText.getText().equals("")) {
                     userText.setText("Enter your Username here");
-                    userText.setFont(new Font("Calibri", Font.ITALIC, 8));
+                    userText.setFont(new Font("Calibri", Font.ITALIC, 12));
                     userText.setForeground(Color.WHITE);
                     userText.setBackground(backGroundColor);
                 }
@@ -88,9 +90,12 @@ public class LoginFrame extends JFrame implements ActionListener{
         });
         userText.setBorder(new RoundBorder(10,Color.WHITE));
         userText.setBounds(50, 20, 200, 50);
-
+        this.getContentPane().add(userText);
+    }
+    public void initPasswordTextField(){
+        Color backGroundColor = new Color(0,0,0,128);
         passText = new JTextField("Enter your Password here", 20);
-        passText.setFont(new Font("Calibri", Font.ITALIC, 8));
+        passText.setFont(new Font("Calibri", Font.ITALIC, 12));
 
 //        passText.setOpaque(false);
         passText.setBackground(backGroundColor);
@@ -98,77 +103,67 @@ public class LoginFrame extends JFrame implements ActionListener{
         passText.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                passText.setText("");
-                passText.setFont(new Font("Calibri", Font.BOLD, 12));
-                passText.setForeground(Color.WHITE);
-                userText.setBackground(backGroundColor);
+                passText.setVisible(false);
+                passwordField.setVisible(true);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (passText.getText().equals("")) {
-                    passText.setText("Enter your Password here");
-                    passText.setFont(new Font("Calibri", Font.ITALIC, 8));
-                    passText.setForeground(Color.WHITE);
-                    userText.setBackground(backGroundColor);
+                if (passwordField.getText()==""||passwordField.getText()==null) {
+                    passText.setVisible(true);
+                    passwordField.setVisible(false);
                 }
             }
         });
         passText.setBorder(new RoundBorder(10,Color.WHITE));
         passText.setBounds(50, 90, 200, 50);
-
-        this.getContentPane().add(userText);
         this.getContentPane().add(passText);
     }
+    public void initPasswordPassField(){
+        passwordField = new JPasswordField("");
+        Color backGroundColor = new Color(0,0,0,128);
+        passwordField.setBackground(backGroundColor);
+        passwordField.setForeground(Color.WHITE);
+        passwordField.setBorder(new RoundBorder(10,Color.WHITE));
+        passwordField.setBounds(50, 90, 200, 50);
+        this.getContentPane().add(passwordField);
+        passwordField.setVisible(false);
+    }
     //初始化按钮
-    public void initButton(String Address1, String Address2, JButton jb, int index, int x, int y, int width, int height) {
-        ImageIcon Button_Light = new ImageIcon(Address1);
-        Image img = Button_Light.getImage();
-        Image newimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);//重新调整图片大小
-        ImageIcon Button_Light_New = new ImageIcon(newimg);
-        ImageIcon Button_Dark = new ImageIcon(Address2);
-        Image img2 = Button_Dark.getImage();
-        Image newimg2 = img2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Dark_New = new ImageIcon(newimg2);
+    public void initButton() {
+        System.out.println("LoginFrame:loginButton is initializing...");
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Login_Light.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Login_Dark.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
 
-        jb.setBorderPainted(false);
-        jb.setContentAreaFilled(false);
-        jb.setFocusPainted(false);
-        jb.setOpaque(false);
+        loginButton.setBorderPainted(false);
+        loginButton.setContentAreaFilled(false);
+        loginButton.setFocusPainted(false);
+        loginButton.setOpaque(false);
 
-        jb.setBounds(x, y, width, height);
-        jb.setIcon(Button_Light_New);
-        jb.addMouseListener(new MouseListener() {
+        loginButton.setBounds(100, 150, 100, 56);
+        loginButton.setIcon(Button_Light_New);
+        loginButton.addMouseListener(new MouseListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-
+            public void mouseClicked(MouseEvent e) {}
             @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
+            public void mousePressed(MouseEvent e) {}
             @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
+            public void mouseReleased(MouseEvent e) {}
             @Override
-            public void mouseEntered(MouseEvent e) {
-                jb.setIcon(Button_Dark_New);
+            public void mouseEntered(MouseEvent e){
+                loginButton.setIcon(Button_Dark_New);
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
-                jb.setIcon(Button_Light_New);
+                loginButton.setIcon(Button_Light_New);
             }
         });
-        jb.addActionListener(this);
-        this.getContentPane().add(jb);
+        loginButton.addActionListener(this);
+        this.getContentPane().add(loginButton);
     }
     //设置按钮的动作，触发之后会读取并比对本地文件中的用户名和密码
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == loginButton) {
+        /*if (e.getSource() == loginButton) {
             // Get the entered username and password
             String username = userText.getText();
             String password = passText.getText();
@@ -184,7 +179,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                     if (username.equals(storedUsername) && password.equals(storedPassword)) {
                         System.out.println("Login successful!");
                         this.setVisible(false);
-                        StartFrame startFrame = new StartFrame(user);
+                        StartFrame startFrame = new StartFrame(frame);
                         startFrame.setVisible(false);
                         SuccessDialog successDialog = new SuccessDialog("Login successful", startFrame);
                         user.setUsername(storedUsername);
@@ -200,6 +195,12 @@ public class LoginFrame extends JFrame implements ActionListener{
                 System.out.println("Error reading file.");
                 ex.printStackTrace();
             }
+        }*/
+        if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
+            this.setVisible(false);
+            new SuccessDialog("Login successful",frame.getStartFrame());
+        }else{
+            new FailDialog("Incorrect username or password",this);
         }
     }
 

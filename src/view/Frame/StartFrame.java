@@ -35,7 +35,7 @@ public class StartFrame extends JFrame {
         initReturnButton();
         initBackground("Background\\L_R_bg.gif");
 
-        this.setVisible(true);
+        this.setVisible(false);
     }
 
     //初始化Frame
@@ -294,7 +294,7 @@ public class StartFrame extends JFrame {
         returnButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.playerClickReturnButton();
+                frame.playerClickReturnButton(frame.getStartFrame(),frame.getInitFrame());
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}

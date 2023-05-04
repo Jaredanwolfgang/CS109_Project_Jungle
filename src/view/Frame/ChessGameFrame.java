@@ -7,172 +7,441 @@ import model.User.User;
 import view.ChessboardComponent;
 
 import javax.swing.*;
+import javax.tools.Tool;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
-public class ChessGameFrame extends JFrame {
-    //    public final Dimension FRAME_SIZE ;
-    private final int WIDTH = 500;
-    private final int HEIGHT = 729;
+public class ChessGameFrame extends JFrame implements ComponentListener {
+    public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private int WIDTH = (int) screenSize.getWidth();
+    private int HEIGHT = (int) screenSize.getHeight();
 
-    /**
-     * I've written a GameMode enum class in my code.
-     * You can easily get current game mode by accessing gameMode variable in the GameController class, as it is set to be static.
-     */
-    private final Mode mode;
     private JLabel background;
+    private int seasons;
 
     /**
      * You can know which button can be used in which mode by reading the comments in gameListener class.
      * Here I summarized it for you:
-     *   1. saveButton: all modes
-     *   2. loadButton: local PVP only (should display additional warning information, clicking this button will cause the game to be reset, even if the file is invalid)
-     *   3. regretButton: local PVP and PVE
-     *   4. restartButton: local PVP and PVE
-     *
-     *   (There is a onPlayerExitGameFrame method, please call it when the player exits current game mode and returns to the game mode selection frame)
+     * 1. saveButton: all modes
+     * 2. loadButton: local PVP only (should display additional warning information, clicking this button will cause the game to be reset, even if the file is invalid)
+     * 3. regretButton: local PVP and PVE
+     * 4. restartButton: local PVP and PVE
+     * (There is a onPlayerExitGameFrame method, please call it when the player exits current game mode and returns to the game mode selection frame)
      */
     private final JButton backgroundButton = new JButton();
     private final JButton loadButton = new JButton();
     private final JButton saveButton = new JButton();
-    private final JButton regretButton = new JButton();
-    private final JButton restartButton = new JButton();
+    private final JButton undoButton = new JButton();
+    private final JButton resetButton = new JButton();
     private final JButton musicButton = new JButton();
     private final JButton exitButton = new JButton();
     private final JButton returnButton = new JButton();
-    private User user;
-    private int season;
-    private Seasons seasons = Seasons.SPRING;
 
-    private final int ONE_CHESS_SIZE;
+    private Frame frame;
+    private int ONE_CHESS_SIZE = HEIGHT * 4 / 45;
+    private int ONE_BUTTON_SIZE = HEIGHT * 3 / 50;
+    private String Address = "Background\\Spring.gif";
 
     private ChessboardComponent chessboardComponent;
-    public ChessGameFrame(Mode mode,User user) {
+
+
+    public ChessGameFrame(Frame frame) {
+        this.frame = frame;
         setTitle("Jungle Game"); //设置标题
-        this.mode = mode;
-        this.ONE_CHESS_SIZE = (HEIGHT * 3 / 5) / 9;
-        this.user = user;
 
         initFrame();
         addChessboard();
-        initButton("image\\GameFrame\\RestartButton_Light.png","image\\GameFrame\\RestartButton_Dark.png", restartButton, 0, 20, 609, 50, 50);
-        initButton("image\\GameFrame\\RegretButton_Light.png","image\\GameFrame\\RegretButton_Dark.png", regretButton, 1, 90, 609, 50, 50);
-        initButton("image\\GameFrame\\SaveButton_Light.png","image\\GameFrame\\SaveButton_Dark.png", saveButton, 2, 160, 609, 50, 50);
-        initButton("image\\GameFrame\\LoadButton_Light.png","image\\GameFrame\\LoadButton_Dark.png", loadButton, 3, 230, 609, 50, 50);
 
-        initButton("image\\GameFrame\\BackgroundButton_Light.png","image\\GameFrame\\BackgroundButton_Dark.png", backgroundButton, 4, 220, 20, 50, 50);
-        initButton("image\\AllFrame\\MusicButton_Light.png","image\\AllFrame\\MusicButton_Dark.png", musicButton, 5, 360, 20, 50, 50);
-        initButton("image\\AllFrame\\ReturnButton_Light.png","image\\AllFrame\\ReturnButton_Dark.png", returnButton, 6, 290, 20, 50, 50);
-        initButton("image\\AllFrame\\ExitButton_Light.png", "image\\AllFrame\\ExitButton_Dark.png", exitButton, 7, 430, 20, 50, 50);
+        initLoadButton();
+        initResetButton();
+        initUndoButton();
+        initExitButton();
+        initReturnButton();
+        initSaveButton();
+        initMusicButton();
+        initBackgroundButton();
 
-        initBackground("Background\\L_R_bg.gif");
-        this.setVisible(true);
+        initBackground();
+        this.setVisible(false);
     }
-    public void initFrame(){
+
+    public void initFrame() {
         System.out.println("ChessGameFrame is initializing...");
-        setSize(WIDTH, HEIGHT);
+        setSize(500, 729);
         setLocationRelativeTo(null); // Center the window.
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //设置程序关闭按键，如果点击右上方的叉就游戏全部关闭了
         setLayout(null);
         setResizable(false);
     }
-    public void initBackground(String Address){
-        System.out.println("ChessGameFrame background is initializing...");
-        this.season = 0;
-        background = new JLabel(new ImageIcon(Address));
-        background.setBounds(0, 0, WIDTH, HEIGHT);
-        this.getContentPane().add(background);
-    }
-    public void changeBackground(String Address){
-        this.getContentPane().remove(background);
-        System.out.println("ChessGameFrame background is changing...");
-        background = new JLabel(new ImageIcon(Address));
-        background.setBounds(0, 0, WIDTH, HEIGHT);
-        this.getContentPane().add(background);
-        repaint();
-    }
+
+
     //The links are not added.
-    public void initButton(String Address1, String Address2, JButton jb, int index, int x, int y, int width, int height) {
-        System.out.println("ChessGameFrame button" + jb + " is initializing...");
-        ImageIcon Button_Light = new ImageIcon(Address1);
-        Image img = Button_Light.getImage();
-        Image newimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Light_New = new ImageIcon(newimg);
-        ImageIcon Button_Dark = new ImageIcon(Address2);
-        Image img2 = Button_Dark.getImage();
-        Image newimg2 = img2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Dark_New = new ImageIcon(newimg2);
+    public void initResetButton() {
+        System.out.println("ChessGameFrame button Reset Button is initializing...");
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\ResetButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\ResetButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
 
-        jb.setBorderPainted(false);
-        jb.setContentAreaFilled(false);
-        jb.setFocusPainted(false);
-        jb.setOpaque(false);
-
-        jb.setBounds(x, y, width, height);
-        jb.setIcon(Button_Light_New);
-        jb.addMouseListener(new MouseListener() {
+        resetButton.setBorderPainted(false);
+        resetButton.setContentAreaFilled(false);
+        resetButton.setFocusPainted(false);
+        resetButton.setOpaque(false);
+        resetButton.setBounds(HEIGHT / 50, HEIGHT - HEIGHT / 50 - ONE_BUTTON_SIZE, 50, 50);
+        resetButton.setIcon(Button_Light_New);
+        resetButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (index == 0) {
-
-                } else if (index == 1) {
-
-                } else if (index == 2) {
-
-                } else if (index == 3) {
-
-                } else if (index == 4) {
-                    changeBackground("Background\\"+ seasons.getSeason((season)%4).getName());
-                    System.out.println("Background is changing to "+seasons.getSeason((season)%4).getName());
-                    season = (season+1)%4;
-                    System.out.println(season);
-                } else if (index == 5) {
-                    new MusicPlayerFrame();
-                } else if (index == 6) {
-                    new StartFrame();
-                    dispose();
-                }else if(index == 7){
-                    System.exit(0);
-                }
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                jb.setIcon(Button_Dark_New);
+                resetButton.setIcon(Button_Dark_New);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jb.setIcon(Button_Light_New);
+                resetButton.setIcon(Button_Light_New);
             }
         });
-
-        this.getContentPane().add(jb);
+        this.getContentPane().add(resetButton);
     }
+
+    public void initUndoButton() {
+        System.out.println("ChessGameFrame button Undo Button is initializing...");
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        undoButton.setBorderPainted(false);
+        undoButton.setContentAreaFilled(false);
+        undoButton.setFocusPainted(false);
+        undoButton.setOpaque(false);
+        undoButton.setBounds(HEIGHT * 2 / 50 + ONE_CHESS_SIZE, HEIGHT - HEIGHT / 50 - ONE_BUTTON_SIZE, 50, 50);
+        undoButton.setIcon(Button_Light_New);
+        undoButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                undoButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                undoButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(undoButton);
+    }
+
+    public void initSaveButton() {
+        System.out.println("ChessGameFrame button Save Button is initializing...");
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        saveButton.setBorderPainted(false);
+        saveButton.setContentAreaFilled(false);
+        saveButton.setFocusPainted(false);
+        saveButton.setOpaque(false);
+        saveButton.setBounds(HEIGHT * 3 / 50 + ONE_CHESS_SIZE * 2, HEIGHT - HEIGHT / 50 - ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        saveButton.setIcon(Button_Light_New);
+        saveButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                saveButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                saveButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(saveButton);
+    }
+
+    public void initLoadButton() {
+        System.out.println("ChessGameFrame button Load Button is initializing...");
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        loadButton.setBorderPainted(false);
+        loadButton.setContentAreaFilled(false);
+        loadButton.setFocusPainted(false);
+        loadButton.setOpaque(false);
+        loadButton.setBounds(HEIGHT * 4 / 50 + ONE_CHESS_SIZE * 3, HEIGHT - HEIGHT / 50 - ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        loadButton.setIcon(Button_Light_New);
+        loadButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                loadButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                loadButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(loadButton);
+    }
+
+    public void initBackgroundButton() {
+        System.out.println("ChessGameFrame button BackgroundButton is initializing...");
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\BackgroundButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\BackgroundButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        backgroundButton.setBorderPainted(false);
+        backgroundButton.setContentAreaFilled(false);
+        backgroundButton.setFocusPainted(false);
+        backgroundButton.setOpaque(false);
+        backgroundButton.setBounds(WIDTH - HEIGHT * 4 / 50 - ONE_BUTTON_SIZE * 4, HEIGHT / 50, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        backgroundButton.setIcon(Button_Light_New);
+        backgroundButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                changeBackground();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                backgroundButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backgroundButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(backgroundButton);
+    }
+
+    public void initMusicButton() {
+        System.out.println("ChessGameFrame button Music button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        musicButton.setBorderPainted(false);
+        musicButton.setContentAreaFilled(false);
+        musicButton.setFocusPainted(false);
+        musicButton.setOpaque(false);
+
+        musicButton.setBounds(WIDTH - HEIGHT * 2 / 50 - ONE_BUTTON_SIZE * 2, HEIGHT / 50, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        musicButton.setIcon(Button_Light_New);
+        musicButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new MusicPlayerFrame();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                musicButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                musicButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(musicButton);
+    }
+
+    public void initExitButton() {
+        System.out.println("ChessGameFrame button Exit button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        exitButton.setBorderPainted(false);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setOpaque(false);
+
+        exitButton.setBounds(WIDTH - HEIGHT / 50 - ONE_BUTTON_SIZE, HEIGHT / 50, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        exitButton.setIcon(Button_Light_New);
+        exitButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exitButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exitButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(exitButton);
+    }
+
+    public void initReturnButton() {
+        System.out.println("ChessGameFrame button Return button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+
+        returnButton.setBorderPainted(false);
+        returnButton.setContentAreaFilled(false);
+        returnButton.setFocusPainted(false);
+        returnButton.setOpaque(false);
+
+        returnButton.setBounds(WIDTH - HEIGHT * 3 / 50 - ONE_BUTTON_SIZE * 3, HEIGHT / 50, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        returnButton.setIcon(Button_Light_New);
+        returnButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                frame.playerClickReturnButton(frame.getStartFrame(), frame.getInitFrame());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                returnButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                returnButton.setIcon(Button_Light_New);
+            }
+        });
+        this.getContentPane().add(returnButton);
+    }
+
     private void addChessboard() {
         chessboardComponent = new ChessboardComponent(ONE_CHESS_SIZE);
-        chessboardComponent.setLocation(80, 130);
+        chessboardComponent.setLocation((WIDTH - 7 * ONE_CHESS_SIZE) / 2, (HEIGHT - 9 * ONE_CHESS_SIZE) / 2);
         add(chessboardComponent);
     }
+
+    public void initBackground() {
+        System.out.println("ChessGameFrame background is initializing...");
+        ImageIcon newBackground;
+        Double screenWidth = screenSize.getWidth();
+        Double screenHeight = screenSize.getHeight();
+        if (screenHeight / screenWidth > 1.458) {
+            newBackground = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Address).getScaledInstance((int) (HEIGHT / 1.458), HEIGHT, Image.SCALE_SMOOTH));
+        } else {
+            newBackground = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Address).getScaledInstance(WIDTH, (int) (WIDTH * 1.458), Image.SCALE_SMOOTH));
+        }
+        this.seasons = 0;
+        background = new JLabel(newBackground);
+        background.setBounds(0, 0, WIDTH, HEIGHT);
+        this.getContentPane().add(background);
+    }
+
+    public void changeBackground() {
+        this.getContentPane().remove(background);
+        System.out.println("ChessGameFrame background is changing...");
+        Address = "Background\\" + Seasons.values()[seasons].getName(seasons);
+        background = new JLabel(new ImageIcon(Address));
+        seasons = (seasons + 1) % 4;
+        background.setBounds(0, 0, WIDTH, HEIGHT);
+        this.getContentPane().add(background);
+        repaint();
+    }
+
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
     }
+
     public void setChessboardComponent(ChessboardComponent chessboardComponent) {
         this.chessboardComponent = chessboardComponent;
     }
 
+    @Override
+    public void componentResized(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+    }
 }

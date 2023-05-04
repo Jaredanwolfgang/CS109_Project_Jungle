@@ -1,16 +1,24 @@
 package view.Frame;
 import controller.GameController;
+import model.ChessBoard.Chessboard;
 import model.User.User;
+
+import javax.swing.*;
 
 public class Frame {
     private static User currentUser;
     private static User component;
-    private GameController  gameController;
+    private GameController gameController;
     private InitFrame initFrame = new InitFrame(this);
     private LoginFrame loginFrame = new LoginFrame(this);
     private RegisterFrame registerFrame = new RegisterFrame(this);
     private StartFrame startFrame = new StartFrame(this);
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
+
+    public Frame() {
+        gameController= new GameController(this.chessGameFrame.getChessboardComponent(), new Chessboard());
+        initFrame.setVisible(true);
+    }
 
     public void playerClickLoginButton(){
         loginFrame.setVisible(true);
@@ -32,9 +40,9 @@ public class Frame {
         chessGameFrame.setVisible(true);
         startFrame.setVisible(false);
     }
-    public void playerClickReturnButton(){
-        startFrame.setVisible(false);
-        initFrame.setVisible(true);
+    public void playerClickReturnButton(JFrame fromFrame,JFrame toFrame){
+        fromFrame.setVisible(false);
+        toFrame.setVisible(true);
     }
     public void playerLogin(String username, String password){
         //Read all users in file and check if username and password is correct
