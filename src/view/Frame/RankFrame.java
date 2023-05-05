@@ -31,7 +31,7 @@ public class RankFrame extends JFrame {
         }
 
         initTable();
-        initBackground("Background/L_R_bg.gif");
+        initBackground("Background/Spring.gif");
 
         this.setVisible(false);
     }

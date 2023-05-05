@@ -31,6 +31,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
      * 4. restartButton: local PVP and PVE
      * (There is a onPlayerExitGameFrame method, please call it when the player exits current game mode and returns to the game mode selection frame)
      */
+
     private final JButton backgroundButton = new JButton();
     private final JButton loadButton = new JButton();
     private final JButton saveButton = new JButton();
@@ -74,9 +75,15 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         setLocationRelativeTo(null); // Center the window.
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //设置程序关闭按键，如果点击右上方的叉就游戏全部关闭了
         setLayout(null);
-        setResizable(false);
+        setResizable(true);
+        addComponentListener(this);
     }
 
+    private void addChessboard() {
+        chessboardComponent = new ChessboardComponent(ONE_CHESS_SIZE);
+        chessboardComponent.setLocation((WIDTH - 7 * ONE_CHESS_SIZE) / 2, (HEIGHT - 9 * ONE_CHESS_SIZE) / 2);
+        add(chessboardComponent);
+    }
 
     //The links are not added.
     public void initResetButton() {
@@ -115,7 +122,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(resetButton);
     }
-
     public void initUndoButton() {
         System.out.println("ChessGameFrame button Undo Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -152,7 +158,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(undoButton);
     }
-
     public void initSaveButton() {
         System.out.println("ChessGameFrame button Save Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -189,7 +194,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(saveButton);
     }
-
     public void initLoadButton() {
         System.out.println("ChessGameFrame button Load Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -226,7 +230,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(loadButton);
     }
-
     public void initBackgroundButton() {
         System.out.println("ChessGameFrame button BackgroundButton is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\BackgroundButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -264,7 +267,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(backgroundButton);
     }
-
     public void initMusicButton() {
         System.out.println("ChessGameFrame button Music button is initializing...");
 
@@ -282,7 +284,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new MusicPlayerFrame();
+                frame.getMusicPlayerFrame().setVisible(true);
             }
 
             @Override
@@ -305,7 +307,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(musicButton);
     }
-
     public void initExitButton() {
         System.out.println("ChessGameFrame button Exit button is initializing...");
 
@@ -346,7 +347,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(exitButton);
     }
-
     public void initReturnButton() {
         System.out.println("ChessGameFrame button Return button is initializing...");
 
@@ -386,12 +386,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             }
         });
         this.getContentPane().add(returnButton);
-    }
-
-    private void addChessboard() {
-        chessboardComponent = new ChessboardComponent(ONE_CHESS_SIZE);
-        chessboardComponent.setLocation((WIDTH - 7 * ONE_CHESS_SIZE) / 2, (HEIGHT - 9 * ONE_CHESS_SIZE) / 2);
-        add(chessboardComponent);
     }
 
     public void initBackground() {

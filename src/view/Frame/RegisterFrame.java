@@ -13,18 +13,16 @@ public class RegisterFrame extends JFrame implements ActionListener {
     private final Dimension screenSize = new Dimension(300,320);
 /*    private final int WIDTH =300;
     private final int HEIGHT = 320;*/
-    private JTextField userText, passText, passCheckText;
-    private JPasswordField passField,passCheckField;//这里要设计PassField，但是还没写
+    private JTextField userText;
+    private JPasswordField passwordField,passwordCheckField;//这里要设计PassField，但是还没写
     private final JButton registerButton = new JButton();
     private Frame frame;
 
     public RegisterFrame(Frame frame) {
         this.frame = frame;
         initUsernameTextField();
-        initPasswordTextField();
         initPasswordPassField();
         initPasswordCheckPassField();
-        initPasswordCheckTextField();
 
         initButton();
         initBackground("Background\\Spring.gif");
@@ -33,13 +31,20 @@ public class RegisterFrame extends JFrame implements ActionListener {
     }
 
     public void initFrame() {
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize((int)screenSize.getWidth(), (int)screenSize.getHeight());
         this.setTitle("Jungle Register");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(null);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.getRegisterFrame().setVisible(false);
+                frame.getInitFrame().setVisible(true);
+            }
+        });
     }
 
     public void initBackground(String Address) {
@@ -50,105 +55,88 @@ public class RegisterFrame extends JFrame implements ActionListener {
 
     public void initUsernameTextField() {
         Color backGroundColor = new Color(0, 0, 0, 128);
+
         userText = new JTextField("Enter your Username here", 20);
-        userText.setFont(new Font("Calibri", Font.ITALIC, 8));
-//        userText.setOpaque(false);
+        userText.setFont(new Font("Calibri", Font.ITALIC, 12));
         userText.setBackground(backGroundColor);
         userText.setForeground(Color.WHITE);
         userText.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 userText.setText("");
-                userText.setFont(new Font("Calibri", Font.BOLD, 12));
-                userText.setForeground(Color.WHITE);
-                userText.setBackground(backGroundColor);
+                userText.setFont(new Font("Calibri", Font.BOLD, 14));
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 if (userText.getText().equals("")) {
                     userText.setText("Create your Username here");
-                    userText.setFont(new Font("Calibri", Font.ITALIC, 8));
-                    userText.setForeground(Color.WHITE);
-                    userText.setBackground(backGroundColor);
+                    userText.setFont(new Font("Calibri", Font.ITALIC, 12));
                 }
             }
         });
+
         userText.setBorder(new RegisterFrame.RoundBorder(10, Color.WHITE));
         userText.setBounds(50, 20, 200, 50);
         this.getContentPane().add(userText);
     }
-    public void initPasswordTextField(){
-        Color backGroundColor = new Color(0, 0, 0, 128);
-        passText = new JTextField("Use a strong Password", 20);
-        passText.setFont(new Font("Calibri", Font.ITALIC, 8));
-        passText.setBackground(backGroundColor);
-        passText.setForeground(Color.WHITE);
-        passText.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                passText.setVisible(false);
-                passField.setVisible(true);
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (passField.getText().equals("")) {
-                    passText.setVisible(true);
-                    passField.setVisible(false);
-                }
-            }
-        });
-        passText.setBorder(new RegisterFrame.RoundBorder(10, Color.WHITE));
-        passText.setBounds(50, 90, 200, 50);
-        this.getContentPane().add(passText);
-    }
     public void initPasswordPassField(){
-        Color backGroundColor = new Color(0, 0, 0, 128);
-        passField = new JPasswordField("");
-        passField.setBackground(backGroundColor);
-        passField.setForeground(Color.WHITE);
-        passField.setBorder(new RegisterFrame.RoundBorder(10, Color.WHITE));
-        passField.setBounds(50, 90, 200, 50);
+        passwordField = new JPasswordField("Enter your Password here", 20);
+        passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+        passwordField.setEchoChar('\0');
 
-        passField.setVisible(false);
-        this.getContentPane().add(passField);
-    }
-    public void initPasswordCheckTextField(){
-        Color backGroundColor = new Color(0, 0, 0, 128);
-        passCheckText = new JTextField("Check your Password again", 20);
-        passCheckText.setFont(new Font("Calibri", Font.ITALIC, 8));
-//        passText.setOpaque(false);
-        passCheckText.setBackground(backGroundColor);
-        passCheckText.setForeground(Color.WHITE);
-        passCheckText.addFocusListener(new FocusListener() {
+        Color backGroundColor = new Color(0,0,0,128);
+        passwordField.setBackground(backGroundColor);
+        passwordField.setForeground(Color.WHITE);
+        passwordField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                passCheckText.setVisible(false);
-                passCheckField.setVisible(true);
+                passwordField.setText("");
+                passwordField.setFont(new Font("Calibri", Font.BOLD, 14));
+                passwordField.setEchoChar('*'); // set echo char to a dot or any other character you prefer
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (passCheckField.getText().equals("")) {
-                    passCheckText.setVisible(true);
-                    passCheckField.setVisible(false);
+                if (passwordField.getText().equals("")) {
+                    passwordField.setText("Enter your Password here");
+                    passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+                    passwordField.setEchoChar('\0');
                 }
             }
         });
-        passCheckText.setBorder(new RegisterFrame.RoundBorder(10, Color.WHITE));
-        passCheckText.setBounds(50, 160, 200, 50);
-        this.getContentPane().add(passCheckText);
+        passwordField.setBorder(new RoundBorder(10,Color.WHITE));
+        passwordField.setBounds(50, 90, 200, 50);
+        this.getContentPane().add(passwordField);
     }
     public void initPasswordCheckPassField(){
-        Color backGroundColor = new Color(0, 0, 0, 128);
-        passCheckField = new JPasswordField("");
-        passCheckField.setBackground(backGroundColor);
-        passCheckField.setForeground(Color.WHITE);
-        passCheckField.setBorder(new RegisterFrame.RoundBorder(10, Color.WHITE));
-        passCheckField.setBounds(50, 160, 200, 50);
+        passwordCheckField = new JPasswordField("Confirm your Password here", 20);
+        passwordCheckField.setFont(new Font("Calibri", Font.ITALIC, 12));
+        passwordCheckField.setEchoChar('\0');
 
-        passCheckField.setVisible(false);
-        this.getContentPane().add(passCheckField);
+        Color backGroundColor = new Color(0,0,0,128);
+        passwordCheckField.setBackground(backGroundColor);
+        passwordCheckField.setForeground(Color.WHITE);
+        passwordCheckField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                passwordCheckField.setText("");
+                passwordCheckField.setFont(new Font("Calibri", Font.BOLD, 14));
+                passwordCheckField.setEchoChar('*'); // set echo char to a dot or any other character you prefer
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordCheckField.getText().equals("")) {
+                    passwordCheckField.setText("Enter your Password here");
+                    passwordCheckField.setFont(new Font("Calibri", Font.ITALIC, 12));
+                    passwordCheckField.setEchoChar('\0');
+                }
+            }
+        });
+        passwordCheckField.setBorder(new RoundBorder(10,Color.WHITE));
+        passwordCheckField.setBounds(50, 160, 200, 50);
+        this.getContentPane().add(passwordCheckField);
     }
 
     public void initButton() {
@@ -185,48 +173,11 @@ public class RegisterFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        /*if (e.getSource() == registerButton) {
-            // Get the entered username and password
-            String username = userText.getText();
-
-            // Check if the entered username and password match the local file
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader("Information\\users.txt"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(":");
-                    String storedUsername = parts[0];
-                    if (username.equals(storedUsername)) {
-                        System.out.println("This username has been used.");
-                        new FailDialog("This username has been used.",this);
-                        return;
-                    }
-                }
-                if (passText.getText().equals(passCheckText.getText())) {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter("Information\\users.txt", true));
-                    writer.write(username + ":" + passText.getText()+":"+0.0+"\n");
-                    System.out.println("You have successfully registered!");
-                    LoginFrame loginFrame = new LoginFrame();
-                    new SuccessDialog("You have successfully registered!", loginFrame);
-                    this.setVisible(false);
-
-                    writer.close();
-                    return;
-                } else {
-                    System.out.println("The passwords you entered do not match, please try again.");
-                    new FailDialog("This username has already been used, please choose another one.",this);
-                }
-                reader.close();
-            } catch (IOException ex) {
-                System.out.println("Error reading file.");
-                ex.printStackTrace();
-            }
-        }*/
-        if(passText.getText() != passCheckField.getText()){
+        if(passwordField.getText().equals(passwordCheckField.getText())){
             new FailDialog("The passwords do not match.",this);
             return;
         }
-        if(frame.getGameController().onPlayerClickRegisterButton(userText.getText(),passField.getText())){
+        if(frame.getGameController().onPlayerClickRegisterButton(userText.getText(),passwordField.getText())){
             this.setVisible(false);
             new SuccessDialog("Successfully registered!",frame.getLoginFrame());
         }else{

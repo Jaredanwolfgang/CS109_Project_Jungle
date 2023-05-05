@@ -25,15 +25,15 @@ public class MusicPlayerFrame extends JFrame {
     private static long clipTimePosition;
     private JSlider slider;
     private static int volume = INIT_VOLUME;
-    public MusicPlayerFrame() {
+    private Frame frame;
+    public MusicPlayerFrame(Frame frame) {
         //构造方法
-
+        this.frame = frame;
         //创建按钮
         JPanel panel = new JPanel();
         playButton = new JButton("Play");
         pauseButton = new JButton("Pause");
         stopButton = new JButton("Stop");
-
         //播放按钮按下时
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -41,7 +41,6 @@ public class MusicPlayerFrame extends JFrame {
                 playMusic();
             }
         });
-
         //暂停按钮按下时
         pauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -53,7 +52,6 @@ public class MusicPlayerFrame extends JFrame {
                 }
             }
         });
-
         //停止按钮按下时
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

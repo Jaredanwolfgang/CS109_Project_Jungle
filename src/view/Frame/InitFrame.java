@@ -147,14 +147,22 @@ public class InitFrame extends JFrame{
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new MusicPlayerFrame();
+                frame.getMusicPlayerFrame().setVisible(true);
             }
-            @Override public void mousePressed(MouseEvent e) {}
-            @Override public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 musicButton.setIcon(Button_Light_New);

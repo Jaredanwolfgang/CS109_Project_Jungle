@@ -33,7 +33,8 @@ public class StartFrame extends JFrame {
         initMusicButton();
         initExitButton();
         initReturnButton();
-        initBackground("Background\\L_R_bg.gif");
+        initBackground();
+        initLabel();
 
         this.setVisible(false);
     }
@@ -53,10 +54,10 @@ public class StartFrame extends JFrame {
     }
 
     //初始化背景，使用的是JLabel
-    public void initBackground(String Address) {
+    public void initBackground() {
         System.out.println("StartFrame background is initializing...");
-        JLabel background = new JLabel(new ImageIcon(Address));
-        background.setBounds(0, 0, WIDTH, HEIGHT);
+        JLabel background = new JLabel(new ImageIcon("Background\\Spring.gif"));
+        background.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
         this.getContentPane().add(background);
     }
 
@@ -192,7 +193,6 @@ public class StartFrame extends JFrame {
         rankButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.playerClickNetPVPButton();
             }
 
             @Override
@@ -230,7 +230,7 @@ public class StartFrame extends JFrame {
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new MusicPlayerFrame();
+                frame.getMusicPlayerFrame().setVisible(true);
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
@@ -295,6 +295,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 frame.playerClickReturnButton(frame.getStartFrame(),frame.getInitFrame());
+                frame.getGameController().onPlayerClickLogoutButton();
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
@@ -309,8 +310,6 @@ public class StartFrame extends JFrame {
         });
         this.getContentPane().add(returnButton);
     }
-
-
     //初始化Label，为游戏的标题
     public void initLabel() {
         System.out.println("StartFrame label is initializing...");

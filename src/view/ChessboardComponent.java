@@ -54,9 +54,7 @@ public class ChessboardComponent extends JComponent {
                     ChessPiece chessPiece = grid[i][j].getPiece();
                     System.out.println(chessPiece.getOwner());
                     gridComponents[i][j].add(
-                            new ElephantChessComponent(
-                                    chessPiece.getOwner(),
-                                    CHESS_SIZE));
+                            new ElephantChessComponent(chessPiece.getOwner(), CHESS_SIZE));
                 }
             }
         }

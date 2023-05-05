@@ -186,7 +186,7 @@ public class GameController implements GameListener {
     }
 
     public void gatAIMove() {
-        //Do not use this function in veiw.
+        //Do not use this function in view.
         //This is only a reusable method to create AI.
         Thread AI = new AIThread(this, model.getGrid(), currentPlayer);
         AI.start();
@@ -198,7 +198,7 @@ public class GameController implements GameListener {
         if(playerColor != currentPlayer){
             System.out.println("Not your turn!");
 
-            /** Here should be code for GUI to tell user that it's not his turn */
+            /** TODO: Here should be code for GUI to tell user that it's not his turn */
 
             return;
         }
@@ -214,26 +214,26 @@ public class GameController implements GameListener {
                     this.client.makeMove(moveToMake);
                 }
 
-                /** Here should be code for GUI to repaint the board.(One piece moved) */
+                /** TODO: Here should be code for GUI to repaint the board.(One piece moved) */
 
                 selectedPoint = null;
                 this.swapColor();
 
-                /** NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+                /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
 
                 if(gameMode == GameMode.Local_PVP){
                     this.swapUser();
                 }
                 turnCount++;
 
-                /** NOT NECESSARY: Here should be code for GUI to update turn count */
+                /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
 
                 timer.reset();
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
 
-                /** NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
+                /** TODO: NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
 
                 return;
             }
@@ -259,7 +259,7 @@ public class GameController implements GameListener {
                     }
                 }
 
-                /** Here should be code for GUI to display game over message to user */
+                /** TODO: Here should be code for GUI to display game over message to user */
 
                 return;
             }else{
@@ -293,7 +293,7 @@ public class GameController implements GameListener {
     public void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor) {
         if(playerColor != currentPlayer){
 
-            /** Here should be code for GUI to tell user that it's not his turn */
+            /** TODO: Here should be code for GUI to tell user that it's not his turn */
 
             System.out.println("Not your turn!");
             return;
@@ -303,25 +303,25 @@ public class GameController implements GameListener {
                 //If the clicked piece is the current player's piece, select it.
                 selectedPoint = point;
 
-                /** Here should be code for GUI to show all available moves for the selected piece */
+                /** TODO: Here should be code for GUI to show all available moves for the selected piece */
 
             }
         }else{
             if (selectedPoint.equals(point)) {
                 //If the clicked piece is the selected piece, deselect it.
 
-                /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+                /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
 
                 selectedPoint = null;
             }else{
                 if(model.getChessPieceOwner(point) == currentPlayer){
                     //If the clicked piece is the current player's piece, select it.
 
-                    /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+                    /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
 
                     selectedPoint = point;
 
-                    /** Here should be code for GUI to show all available moves for the selected piece */
+                    /** TODO: Here should be code for GUI to show all available moves for the selected piece */
 
                 }else{
                     //Try to capture the clicked piece with the selected piece.
@@ -336,26 +336,25 @@ public class GameController implements GameListener {
                             this.client.makeMove(moveToMake);
                         }
 
-                        //Here should be code for GUI to repaint the board.(One piece captured)
+                        /** TODO: Here should be code for GUI to repaint the board.(One piece captured)
                         selectedPoint = null;
                         this.swapColor();
 
-                        /** NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+                        /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
 
                         if(gameMode == GameMode.Local_PVP){
                             this.swapUser();
                         }
                         turnCount++;
 
-                        /** NOT NECESSARY: Here should be code for GUI to update turn count */
+                        /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
 
                         timer.reset();
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
 
-                        /** NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
-
+                        /** TODO: NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
                         return;
                     }
 
@@ -380,7 +379,7 @@ public class GameController implements GameListener {
                             }
                         }
 
-                        /** Here should be code for GUI to display game over message to user */
+                        /** TODO: Here should be code for GUI to display game over message to user */
 
                         return;
                     }else{
@@ -428,24 +427,24 @@ public class GameController implements GameListener {
         }
         selectedPoint = null;
 
-        /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+        /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
 
         for (int i = 0; i < numberOfLoop; i++) {
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
             model.undoMove(lastMove);
 
-            /** Here should be code for GUI to undo a move */
+            /** TODO: Here should be code for GUI to undo a move */
 
             this.swapColor();
 
-            /** NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+            /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
 
             if(gameMode == GameMode.Local_PVP){
                 this.swapUser();
             }
             turnCount--;
 
-            /** NOT NECESSARY: Here should be code for GUI to update turn count */
+            /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
 
             timer.reset();
         }
@@ -456,19 +455,19 @@ public class GameController implements GameListener {
     public void onPlayerClickPlayBackButton() {
         selectedPoint = null;
 
-        /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+        /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
 
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
 
-        /** NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
+        /** TODO: NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
 
         if(gameMode == GameMode.Local_PVP){
             this.colorOfUser = PlayerColor.BLUE;
         }
         turnCount = 1;
 
-        /** NOT NECESSARY: Here should be code for GUI to update turn count */
+        /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
 
         onAutoPlayback = true;
         for (Move move : allMovesOnBoard) {
@@ -503,16 +502,16 @@ public class GameController implements GameListener {
         }
         turnCount = 1;
 
-        /** NOT NECESSARY: Here should be code for GUI to update turn count */
+        /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
 
         selectedPoint = null;
 
-        /** Here should be code for GUI to remove all possible moves of the previous selected piece */
+        /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
 
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
 
-        /** NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
+        /** TODO: NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
 
         this.colorOfUser = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
@@ -520,7 +519,7 @@ public class GameController implements GameListener {
         timer = new Timer(this,1000);
         timer.start();
 
-        //Here should be code for GUI to repaint the board.(Board reset)
+        //TODO: Here should be code for GUI to repaint the board.(Board reset)
 
     }
 
@@ -550,7 +549,7 @@ public class GameController implements GameListener {
         }
         System.out.println("Finished writing moves to file: " + filePath);
 
-        /** NOT NECESSARY: Here should be code for GUI to show a message indicating that the file is saved successfully */
+        /** TODO: NOT NECESSARY: Here should be code for GUI to show a message indicating that the file is saved successfully */
 
     }
 
@@ -699,7 +698,7 @@ public class GameController implements GameListener {
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
 
-            /** NOT NECESSARY: Here should be a pop-up window to show the error message.
+            /** TODO: NOT NECESSARY: Here should be a pop-up window to show the error message.
              * (I don't think the three other exceptions below need this)
             */
 
@@ -771,7 +770,7 @@ public class GameController implements GameListener {
                 isValidFile = false;
                 System.out.println(e.getMessage() + ": " + move);
 
-                /** NOT NECESSARY: Here should be a pop-up window to show the error message. */
+                /** TODO: NOT NECESSARY: Here should be a pop-up window to show the error message. */
 
                 break;
             }
@@ -783,7 +782,7 @@ public class GameController implements GameListener {
         }else{
             System.out.println("File Check Passed: Valid file.");
 
-            /** NOT NECESSARY: Here should be a pop-up window to show file reads successfully. */
+            /** TODO: NOT NECESSARY: Here should be a pop-up window to show file reads successfully. */
 
             this.onPlayerClickResetButton();
             for(Move move : moves){

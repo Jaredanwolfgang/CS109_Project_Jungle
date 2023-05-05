@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class LoginFrame extends JFrame implements ActionListener{
     private final Dimension screenSize = new Dimension(300,250);
-
 /*
     private final int WIDTH = 300;
     private final int HEIGHT = 250;
@@ -29,7 +28,6 @@ public class LoginFrame extends JFrame implements ActionListener{
     public LoginFrame(Frame frame) {
         this.frame = frame;
         initUsernameTextField();
-        initPasswordTextField();
         initPasswordPassField();
 
         initButton();
@@ -54,28 +52,24 @@ public class LoginFrame extends JFrame implements ActionListener{
             }
         });
     }
-
     public void initBackground(String Address) {
         JLabel background = new JLabel(new ImageIcon(Address));
         background.setBounds(0, 0, 300, 250);
         this.getContentPane().add(background);
     }
-    //这里设置了两个TextField，用于输入数据
+    //Username uses TextField, while the password uses PasswordField
     public void initUsernameTextField() {
         Color backGroundColor = new Color(0,0,0,128);
 
         userText = new JTextField("Enter your Username here", 20);
         userText.setFont(new Font("Calibri", Font.ITALIC, 12));
-//        userText.setOpaque(false);
         userText.setBackground(backGroundColor);
         userText.setForeground(Color.WHITE);
         userText.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 userText.setText("");
-                userText.setFont(new Font("Calibri", Font.BOLD, 12));
-                userText.setForeground(Color.WHITE);
-                userText.setBackground(backGroundColor);
+                userText.setFont(new Font("Calibri", Font.BOLD, 14));
             }
 
             @Override
@@ -83,8 +77,6 @@ public class LoginFrame extends JFrame implements ActionListener{
                 if (userText.getText().equals("")) {
                     userText.setText("Enter your Username here");
                     userText.setFont(new Font("Calibri", Font.ITALIC, 12));
-                    userText.setForeground(Color.WHITE);
-                    userText.setBackground(backGroundColor);
                 }
             }
         });
@@ -92,42 +84,34 @@ public class LoginFrame extends JFrame implements ActionListener{
         userText.setBounds(50, 20, 200, 50);
         this.getContentPane().add(userText);
     }
-    public void initPasswordTextField(){
-        Color backGroundColor = new Color(0,0,0,128);
-        passText = new JTextField("Enter your Password here", 20);
-        passText.setFont(new Font("Calibri", Font.ITALIC, 12));
+    public void initPasswordPassField(){
+        passwordField = new JPasswordField("Enter your Password here", 20);
+        passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+        passwordField.setEchoChar('\0');
 
-//        passText.setOpaque(false);
-        passText.setBackground(backGroundColor);
-        passText.setForeground(Color.WHITE);
-        passText.addFocusListener(new FocusListener() {
+        Color backGroundColor = new Color(0,0,0,128);
+        passwordField.setBackground(backGroundColor);
+        passwordField.setForeground(Color.WHITE);
+        passwordField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                passText.setVisible(false);
-                passwordField.setVisible(true);
+                passwordField.setText("");
+                passwordField.setFont(new Font("Calibri", Font.BOLD, 14));
+                passwordField.setEchoChar('*'); // set echo char to a dot or any other character you prefer
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (passwordField.getText()==""||passwordField.getText()==null) {
-                    passText.setVisible(true);
-                    passwordField.setVisible(false);
+                if (passwordField.getText().equals("")) {
+                    passwordField.setText("Enter your Password here");
+                    passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+                    passwordField.setEchoChar('\0');
                 }
             }
         });
-        passText.setBorder(new RoundBorder(10,Color.WHITE));
-        passText.setBounds(50, 90, 200, 50);
-        this.getContentPane().add(passText);
-    }
-    public void initPasswordPassField(){
-        passwordField = new JPasswordField("");
-        Color backGroundColor = new Color(0,0,0,128);
-        passwordField.setBackground(backGroundColor);
-        passwordField.setForeground(Color.WHITE);
         passwordField.setBorder(new RoundBorder(10,Color.WHITE));
         passwordField.setBounds(50, 90, 200, 50);
         this.getContentPane().add(passwordField);
-        passwordField.setVisible(false);
     }
     //初始化按钮
     public void initButton() {
@@ -163,47 +147,23 @@ public class LoginFrame extends JFrame implements ActionListener{
     }
     //设置按钮的动作，触发之后会读取并比对本地文件中的用户名和密码
     public void actionPerformed(ActionEvent e) {
-        /*if (e.getSource() == loginButton) {
-            // Get the entered username and password
-            String username = userText.getText();
-            String password = passText.getText();
-
-            // Check if the entered username and password match the local file
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader("Information\\users.txt"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(":");
-                    String storedUsername = parts[0];
-                    String storedPassword = parts[1];
-                    if (username.equals(storedUsername) && password.equals(storedPassword)) {
-                        System.out.println("Login successful!");
-                        this.setVisible(false);
-                        StartFrame startFrame = new StartFrame(frame);
-                        startFrame.setVisible(false);
-                        SuccessDialog successDialog = new SuccessDialog("Login successful", startFrame);
-                        user.setUsername(storedUsername);
-                        user.setPassword(storedPassword);
-                        user.setScore(Double.parseDouble(parts[2]));
-                        return;
-                    }
-                }
-                System.out.println("Incorrect username or password.");
-                this.setVisible(false);
-                FailDialog failDialog = new FailDialog("Incorrect username or password",this);
-            } catch (IOException ex) {
-                System.out.println("Error reading file.");
-                ex.printStackTrace();
-            }
-        }*/
         if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
             this.setVisible(false);
             new SuccessDialog("Login successful",frame.getStartFrame());
+            userText.setText("Enter your Username here");
+            userText.setFont(new Font("Calibri", Font.ITALIC, 12));
+            passwordField.setText("Enter your Password here");
+            passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+            passwordField.setEchoChar('\0');
         }else{
             new FailDialog("Incorrect username or password",this);
+            userText.setText("Enter your Username here");
+            userText.setFont(new Font("Calibri", Font.ITALIC, 12));
+            passwordField.setText("Enter your Password here");
+            passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+            passwordField.setEchoChar('\0');
         }
     }
-
 
     //设置圆角边框
     private static class RoundBorder extends AbstractBorder {
