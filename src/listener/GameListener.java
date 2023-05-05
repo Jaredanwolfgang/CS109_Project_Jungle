@@ -5,6 +5,7 @@ import model.Enum.AIDifficulty;
 import model.Enum.PlayerColor;
 import model.User.User;
 import view.CellComponent;
+import view.ChessComponent.ChessComponent;
 import view.ChessComponent.ElephantChessComponent;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public interface GameListener {
 
     //call this method when player click an empty cell
-    void onPlayerClickCell(ChessboardPoint point, PlayerColor playerColor);
+    void onPlayerClickCell(ChessboardPoint point, ChessComponent chessComponent);
 
     //call this method when player click a chess piece
 
@@ -20,7 +21,7 @@ public interface GameListener {
      * Now this method also need a playerColor variable.(To differentiate the source of the event, e.g.AI? player? online opponent?)
      * In the GUI part, please always use gameController.getColorOfUser() as the playerColor parameter.
      */
-    void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor);
+    void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent chessComponent);
 
     //call this method when player click undo button
     //method will return false if there is no move to undo or the mode is online pvp

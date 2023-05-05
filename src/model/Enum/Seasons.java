@@ -10,7 +10,7 @@ public enum Seasons {
     Seasons(String name){
         this.name = name;
     }
-    public String getName(int seasons){
+    public String getName(){
         return name;
     }
 }

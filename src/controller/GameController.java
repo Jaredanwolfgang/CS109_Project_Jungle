@@ -14,6 +14,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Comparator;
 import Server.*;
+import view.ChessComponent.ChessComponent;
+import view.Dialog.FailDialog;
+import view.Frame.ChessGameFrame;
 
 /**
  * Controller is the connection between model and view,
@@ -60,8 +63,9 @@ public class GameController implements GameListener {
 
         model.registerController(this);
         view.registerController(this);
-        //view.initiateChessComponent(model);
-        //view.repaint();
+
+        view.initiateChessComponent(model);
+        view.repaint();
     }
 
     //This method read all users from file when game controller created.
@@ -192,16 +196,23 @@ public class GameController implements GameListener {
         AI.start();
     }
 
+
+
     // click an empty cell
     @Override
-    public void onPlayerClickCell(ChessboardPoint point, PlayerColor playerColor) {
-        if(playerColor != currentPlayer){
+    public void onPlayerClickCell(ChessboardPoint point, ChessComponent chessComponent) {
+        if(!chessComponent.getOwner().getColor().equals(currentPlayer)){
             System.out.println("Not your turn!");
-
-            /** TODO: Here should be code for GUI to tell user that it's not his turn */
-
+            //* TODO: Here should be code for GUI to tell user that it's not his turn
             return;
         }
+
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
+
         if (selectedPoint != null) {
             //Try to move the selected piece to the clicked cell.
             try{
@@ -216,8 +227,10 @@ public class GameController implements GameListener {
 
                 /** TODO: Here should be code for GUI to repaint the board.(One piece moved) */
 
-                selectedPoint = null;
-                this.swapColor();
+                model.moveChessPiece(selectedPoint, point);
+                view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                System.out.println("Move successfully!");
+                view.repaint();
 
                 /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
 
@@ -280,27 +293,22 @@ public class GameController implements GameListener {
             }
         }
         Chessboard.printChessBoard(model.getGrid());
-        if(selectedPoint != null){
-            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
-        }else{
-            System.out.println("No point is selected");
-        }
+
         System.out.println("Turn: " + turnCount);
     }
 
     // click a cell with a chess
     @Override
-    public void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor) {
-        if(playerColor != currentPlayer){
-
+    public void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent chessComponent) {
+        if(!chessComponent.getOwner().getColor().equals(currentPlayer)){
             /** TODO: Here should be code for GUI to tell user that it's not his turn */
-
             System.out.println("Not your turn!");
             return;
         }
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point) == currentPlayer) {
                 //If the clicked piece is the current player's piece, select it.
+
                 selectedPoint = point;
 
                 /** TODO: Here should be code for GUI to show all available moves for the selected piece */
@@ -336,9 +344,12 @@ public class GameController implements GameListener {
                             this.client.makeMove(moveToMake);
                         }
 
-                        /** TODO: Here should be code for GUI to repaint the board.(One piece captured)
-                        selectedPoint = null;
-                        this.swapColor();
+                        /** TODO: Here should be code for GUI to repaint the board.(One piece captured)*/
+                         model.moveChessPiece(selectedPoint, point);
+                         view.removeChessComponentAtGrid(point);
+                         view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                         selectedPoint = null;
+                         view.repaint();
 
                         /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
 
@@ -947,4 +958,6 @@ public class GameController implements GameListener {
             onPlayerClickChessPiece(point,colorOfUser);
         }
     }
+
+
 }

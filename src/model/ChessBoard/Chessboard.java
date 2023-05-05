@@ -68,7 +68,6 @@ public class Chessboard {
         grid[5][4].setRiver(true);
         grid[5][5].setRiver(true);
     }
-
     private void initPieces() {
         //This method place all chess pieces on the chessboard.
         bluePieces.clear();
@@ -153,7 +152,7 @@ public class Chessboard {
         }
 
         //If the move is invalid, an exception will be thrown and the method will end ahead.
-        //So we can garantee that the move is valid here.
+        //So we can guarantee that the move is valid here.
         return move;
     }
 
@@ -203,7 +202,6 @@ public class Chessboard {
         }
         return true;
     }
-
 
     public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
@@ -266,6 +264,7 @@ public class Chessboard {
             }
         }
     }
+
     public PlayerColor noPieceLeft(){
         if(this.bluePieces.size() == 0){
             return PlayerColor.BLUE;
@@ -353,7 +352,6 @@ public class Chessboard {
     private Cell getGridAt(ChessboardPoint point) {
         return grid[point.getRow()][point.getCol()];
     }
-
 
     private ChessPiece removeChessPiece(ChessboardPoint point) {
         ChessPiece chessPiece = getChessPieceAt(point);
