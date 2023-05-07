@@ -4,6 +4,7 @@ import controller.GameController;
 import model.Enum.Mode;
 import model.Enum.Seasons;
 import model.User.User;
+import view.ChessComponent.ChessComponent;
 import view.ChessboardComponent;
 
 import javax.swing.*;
@@ -15,11 +16,12 @@ import java.awt.event.*;
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
 public class ChessGameFrame extends JFrame implements ComponentListener {
-    public Dimension screenSize = new Dimension(500,729);
+    public Dimension screenSize = new Dimension(500, 729);
     private int WIDTH = (int) screenSize.getWidth();
     private int HEIGHT = (int) screenSize.getHeight();
 
     private JLabel background;
+    private JLabel turnLabel = new JLabel();
     private int seasons;
 
     /**
@@ -65,6 +67,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         initMusicButton();
         initBackgroundButton();
 
+        initTurnLabel();
         initBackground();
         this.setVisible(false);
     }
@@ -91,9 +94,6 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     }
 
 
-
-
-
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
     }
@@ -108,6 +108,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         WIDTH = (int) screenSize.getWidth();
         HEIGHT = (int) screenSize.getHeight();
     }
+
     //All the buttons are initiated here.
     public void initResetButton() {
         System.out.println("ChessGameFrame button Reset Button is initializing...");
@@ -118,7 +119,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         resetButton.setContentAreaFilled(false);
         resetButton.setFocusPainted(false);
         resetButton.setOpaque(false);
-        resetButton.setBounds(HEIGHT / 50, HEIGHT - HEIGHT / 50 - 2* ONE_BUTTON_SIZE, 50, 50);
+        resetButton.setBounds(HEIGHT / 50, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, 50, 50);
         resetButton.setIcon(Button_Light_New);
         resetButton.addMouseListener(new MouseListener() {
             @Override
@@ -145,6 +146,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(resetButton);
     }
+
     public void initUndoButton() {
         System.out.println("ChessGameFrame button Undo Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -154,7 +156,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         undoButton.setContentAreaFilled(false);
         undoButton.setFocusPainted(false);
         undoButton.setOpaque(false);
-        undoButton.setBounds(HEIGHT * 2 / 50 + ONE_CHESS_SIZE, HEIGHT - HEIGHT / 50 - 2* ONE_BUTTON_SIZE, 50, 50);
+        undoButton.setBounds(HEIGHT * 2 / 50 + ONE_CHESS_SIZE, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, 50, 50);
         undoButton.setIcon(Button_Light_New);
         undoButton.addMouseListener(new MouseListener() {
             @Override
@@ -181,6 +183,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(undoButton);
     }
+
     public void initSaveButton() {
         System.out.println("ChessGameFrame button Save Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -190,7 +193,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         saveButton.setContentAreaFilled(false);
         saveButton.setFocusPainted(false);
         saveButton.setOpaque(false);
-        saveButton.setBounds(HEIGHT * 3 / 50 + ONE_CHESS_SIZE * 2, HEIGHT - HEIGHT / 50 - 2* ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        saveButton.setBounds(HEIGHT * 3 / 50 + ONE_CHESS_SIZE * 2, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
         saveButton.setIcon(Button_Light_New);
         saveButton.addMouseListener(new MouseListener() {
             @Override
@@ -217,6 +220,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(saveButton);
     }
+
     public void initLoadButton() {
         System.out.println("ChessGameFrame button Load Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -226,7 +230,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         loadButton.setContentAreaFilled(false);
         loadButton.setFocusPainted(false);
         loadButton.setOpaque(false);
-        loadButton.setBounds(HEIGHT * 4 / 50 + ONE_CHESS_SIZE * 3, HEIGHT - HEIGHT / 50 - 2* ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        loadButton.setBounds(HEIGHT * 4 / 50 + ONE_CHESS_SIZE * 3, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
         loadButton.setIcon(Button_Light_New);
         loadButton.addMouseListener(new MouseListener() {
             @Override
@@ -253,6 +257,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(loadButton);
     }
+
     public void initBackgroundButton() {
         System.out.println("ChessGameFrame button BackgroundButton is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\BackgroundButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -290,6 +295,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(backgroundButton);
     }
+
     public void initMusicButton() {
         System.out.println("ChessGameFrame button Music button is initializing...");
 
@@ -330,6 +336,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(musicButton);
     }
+
     public void initExitButton() {
         System.out.println("ChessGameFrame button Exit button is initializing...");
 
@@ -370,6 +377,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(exitButton);
     }
+
     public void initReturnButton() {
         System.out.println("ChessGameFrame button Return button is initializing...");
 
@@ -410,13 +418,24 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         });
         this.getContentPane().add(returnButton);
     }
+
     public void initBackground() {
         this.seasons = 0;
         System.out.println("InitFrame background is initializing...");
         background = new JLabel(new ImageIcon(Address));
-        background.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
+        background.setBounds(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
         this.getContentPane().add(background);
     }
+    public void initTurnLabel(){
+        turnLabel.setBorder(new ChessComponent.RoundBorder(20, Color.BLUE));
+        turnLabel.setBackground(Color.BLUE);
+        turnLabel.setForeground(Color.WHITE);
+        turnLabel.setText("1");
+        turnLabel.setFont(new Font("Calibri", Font.BOLD, 30));
+        turnLabel.setBounds(10,10,50,50);
+        this.getContentPane().add(turnLabel);
+    }
+
     public void changeBackground() {
         this.getContentPane().remove(background);
         System.out.println("ChessGameFrame background is changing...");

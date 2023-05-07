@@ -1,9 +1,15 @@
 package view.Frame;
+
 import controller.GameController;
 import model.ChessBoard.Chessboard;
+import model.ChessBoard.Move;
 import model.User.User;
+import view.ChessComponent.ChessComponent;
+import view.Dialog.SuccessDialog;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 public class Frame {
     private GameController gameController;
@@ -13,38 +19,68 @@ public class Frame {
     private StartFrame startFrame = new StartFrame(this);
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
-
+    private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
 
 
     public Frame() {
-        gameController= new GameController(this.chessGameFrame.getChessboardComponent(), new Chessboard());
         initFrame.setVisible(true);
     }
 
-    public void playerClickLoginButton(){
+    //Register Code
+    public void registerFrame(GameController gameController) {
+        this.gameController = gameController;
+    }
+
+    //Button Logic in GUI below.
+    public void playerClickLoginButton() {
         loginFrame.setVisible(true);
         initFrame.setVisible(false);
     }
-    public void playerClickRegisterButton(){
+
+    public void playerClickRegisterButton() {
         registerFrame.setVisible(true);
         initFrame.setVisible(false);
     }
-    public void playerClickLocalPVPButton(){
+
+    public void playerClickLocalPVPButton() {
+        new SuccessDialog("Please log in User 2", loginFrame);
+        startFrame.setVisible(false);
+    }
+
+    public void playerClickNetPVPButton() {
         chessGameFrame.setVisible(true);
         startFrame.setVisible(false);
     }
-    public void playerClickNetPVPButton(){
-        chessGameFrame.setVisible(true);
+
+    public void playerClickPVEButton() {
+        selectFrame.setVisible(true);
         startFrame.setVisible(false);
     }
-    public void playerClickPVEButton(){
+
+    public void playerClickModesButton() {
         chessGameFrame.setVisible(true);
-        startFrame.setVisible(false);
+        selectFrame.setVisible(false);
     }
-    public void playerClickReturnButton(JFrame fromFrame,JFrame toFrame){
+
+    public void playerClickReturnButton(JFrame fromFrame, JFrame toFrame) {
         fromFrame.setVisible(false);
         toFrame.setVisible(true);
     }
+    //Here are the methods for all the moves on board.
+    public void move(){
+
+    }
+    public void eat(){
+
+    }
+    public void showAllPossibleMoves(ArrayList<Move> Moves){
+
+    }
+    public void removeAllPossibleMoves(ArrayList<Move> Moves){
+
+    }
+
+    //Getter and Setter below
     public GameController getGameController() {
         return gameController;
     }
@@ -92,6 +128,7 @@ public class Frame {
     public void setChessGameFrame(ChessGameFrame chessGameFrame) {
         this.chessGameFrame = chessGameFrame;
     }
+
     public MusicPlayerFrame getMusicPlayerFrame() {
         return musicPlayerFrame;
     }

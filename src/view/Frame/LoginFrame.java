@@ -20,10 +20,12 @@ public class LoginFrame extends JFrame implements ActionListener{
     private final int WIDTH = 300;
     private final int HEIGHT = 250;
 */
-    private JTextField userText, passText;
-    private JPasswordField passwordField;//这里要设置PassField，但是还没写
+    private JTextField userText;
+    private JPasswordField passwordField;
     private JButton loginButton = new JButton();
     private Frame frame;
+    //This variable is used to distinguish the Login Frame for User1 Login and User2 Login
+    private int state;
 
     public LoginFrame(Frame frame) {
         this.frame = frame;
@@ -113,7 +115,7 @@ public class LoginFrame extends JFrame implements ActionListener{
         passwordField.setBounds(50, 90, 200, 50);
         this.getContentPane().add(passwordField);
     }
-    //初始化按钮
+    //The Button Initiation
     public void initButton() {
         System.out.println("LoginFrame:loginButton is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Login_Light.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
@@ -145,16 +147,29 @@ public class LoginFrame extends JFrame implements ActionListener{
         loginButton.addActionListener(this);
         this.getContentPane().add(loginButton);
     }
-    //设置按钮的动作，触发之后会读取并比对本地文件中的用户名和密码
+    //ActionListener, the method will call the method in Game Controller.
     public void actionPerformed(ActionEvent e) {
         if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
-            this.setVisible(false);
-            new SuccessDialog("Login successful",frame.getStartFrame());
-            userText.setText("Enter your Username here");
-            userText.setFont(new Font("Calibri", Font.ITALIC, 12));
-            passwordField.setText("Enter your Password here");
-            passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
-            passwordField.setEchoChar('\0');
+            if (getState() == 0) {
+                this.setVisible(false);
+                new SuccessDialog("Login successful",frame.getStartFrame());
+                //Initialize the UserText and PasswordField
+                userText.setText("Enter your Username here");
+                userText.setFont(new Font("Calibri", Font.ITALIC, 12));
+                passwordField.setText("Enter your Password here");
+                passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+                passwordField.setEchoChar('\0');
+            }else if(getState() == 1){
+                this.setVisible(false);
+                new SuccessDialog("Login successful",frame.getChessGameFrame());
+                //Initialize the UserText and PasswordField
+                userText.setText("Enter your Username here");
+                userText.setFont(new Font("Calibri", Font.ITALIC, 12));
+                passwordField.setText("Enter your Password here");
+                passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+                passwordField.setEchoChar('\0');
+            }
+
         }else{
             new FailDialog("Incorrect username or password",this);
             userText.setText("Enter your Username here");
@@ -163,6 +178,15 @@ public class LoginFrame extends JFrame implements ActionListener{
             passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
             passwordField.setEchoChar('\0');
         }
+    }
+
+    @Override
+    public int getState() {
+        return state;
+    }
+    @Override
+    public void setState(int state) {
+        this.state = state;
     }
 
     //设置圆角边框

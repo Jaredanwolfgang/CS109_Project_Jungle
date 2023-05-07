@@ -10,7 +10,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Frame frame = new Frame();
+            GameController gameController = new GameController(new Frame(), new Chessboard());
         });
     }
 }
