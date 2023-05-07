@@ -152,6 +152,7 @@ public class LoginFrame extends JFrame implements ActionListener{
         if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
             if (getState() == 0) {
                 this.setVisible(false);
+                frame.getStartFrame().setVisible(true);
                 new SuccessDialog("Login successful",frame.getStartFrame());
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");

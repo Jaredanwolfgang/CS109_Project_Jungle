@@ -23,17 +23,22 @@ import view.Frame.Frame;
  * Changes:
  * 1. I put some comments in code, you can search "Comment:".
  * 2. There is too much information in the console output, try to simplify it.(For example, print the chessboard, selected point
- * and turn counter only once at the end of the two methods, instead of both the beginning and the end)
- * (Another example: if the move is invalid, it returns immediately and print a message in the console, and it will not print the chess board neither.
- * So you don't need to print "Move successfully")
+ *    and turn counter only once at the end of the two methods, instead of both the beginning and the end)
+ *    (Another example: if the move is invalid, it returns immediately and print a message in the console, and it will not print the chess board neither.
+ *    So you don't need to print "Move successfully")
  * 3. Too much init information in console output(Actually, I think that once you know the init method works perfectly, you can delete them).
  * 4. Perhaps the new enum class Mode is unnecessary? You can access game mode in the controller directly.
  * 5. Be careful about the order of methods.(For example, you put deSelect method after setting selected point to null. I've corrected it for you)
  * 6. The timer is not appropriate for testing, you can disable it when debugging.
  * 7. Timer will start to count once you call onPlayerSelectLocalPVPMode() method, so you need to adjust the order of methods
- * to make sure the timer starts after a valid login.
+ *    to make sure the timer starts after a valid login.
  * 8. I've fixed the null pointer bug you said, now you can go on testing with GUI.
- * 9. MOST IMPORTANT: please separate the GUI part, the logic part and any output to console.
+ * 9. For the success dialog, we can display the toFrame first and let the dialog display above it.
+ *    I've modified line 155 in LoginFrame.java which will let the login success dialog to be displayed above the StartFrame, you can check it.
+ *    If you want it to work like that in the future, you can delete to toFrame part, actually.
+ * 10. Status variable in LoginFrame is unnecessary? You can check whether User 1 is null to determine whether the user has logged in.
+ * 11. As we create new dialog each time and we have windowListeners, we can set the default close operation to do nothing, and dispose the dialog in the windowClosing event manually.
+ * 12. MOST IMPORTANT: please separate the GUI part, the logic part and any output to console.
  *    If it's a small change, you can combine them and create blank line on the top and bottom of the code.
  *    EXAMPLE:
  *           BLANK LINE
