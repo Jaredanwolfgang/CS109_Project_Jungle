@@ -20,10 +20,51 @@ import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
 
 /**
- * Controller is the connection between model and view,
- * when a Controller receive a request from a view, the Controller
- * analyzes and then hands over to the model for processing
-*/
+ * Changes:
+ * 1. I put some comments in code, you can search "Comment:".
+ * 2. There is too much information in the console output, try to simplify it.(For example, print the chessboard, selected point
+ * and turn counter only once at the end of the two methods, instead of both the beginning and the end)
+ * (Another example: if the move is invalid, it returns immediately and print a message in the console, and it will not print the chess board neither.
+ * So you don't need to print "Move successfully")
+ * 3. Too much init information in console output(Actually, I think that once you know the init method works perfectly, you can delete them).
+ * 4. Perhaps the new enum class Mode is unnecessary? You can access game mode in the controller directly.
+ * 5. Be careful about the order of methods.(For example, you put deSelect method after setting selected point to null. I've corrected it for you)
+ * 6. The timer is not appropriate for testing, you can disable it when debugging.
+ * 7. Timer will start to count once you call onPlayerSelectLocalPVPMode() method, so you need to adjust the order of methods
+ * to make sure the timer starts after a valid login.
+ * 8. I've fixed the null pointer bug you said, now you can go on testing with GUI.
+ * 9. MOST IMPORTANT: please separate the GUI part, the logic part and any output to console.
+ *    If it's a small change, you can combine them and create blank line on the top and bottom of the code.
+ *    EXAMPLE:
+ *           BLANK LINE
+ *       turnCount++;
+ *       GUI.updateTurnCount(turnCount);
+ *           BLANK LINE
+ *
+ *    If it's a big change, please separate them into two parts and leave a blank line between them.
+ *    EXAMPLE:
+ *    System.out.printf("Try to move %s at point (%d , %d) to point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol(),point.getRow(),point.getCol());
+ *
+ *    Move moveToMake=model.moveChessPiece(selectedPoint,point);
+ *
+ *    chessboardComponent.setChessComponentAtGrid(point,chessboardComponent.removeChessComponentAtGrid(selectedPoint));
+ *    chessboardComponent.repaint();
+ *
+ *    System.out.println("Move successfully!");
+ *
+ *    if(!onAutoPlayback){
+ *        allMovesOnBoard.add(moveToMake);
+ *    }
+ *    if((gameMode==GameMode.Online_PVP_Server||gameMode==GameMode.Online_PVP_Client)&&currentPlayer==colorOfUser&&!onAutoPlayback){
+ *        this.client.makeMove(moveToMake);
+ *    }
+ *    selectedPoint=null;
+ *    if(gameMode==GameMode.Local_PVP){
+ *        this.swapUser();
+ *    }
+ *    swapColor();
+ * */
+
 public class GameController implements GameListener {
     public static final long animationInterval = 400;
     private static final String USER_FILE_PATH = "src\\model\\User\\users.txt";
@@ -32,9 +73,11 @@ public class GameController implements GameListener {
     private ServerThread server;
     private ClientThread client;
     public Timer timer;
+
     //Color of User is used for distinguishing different modes and
     //locking the chessboard to prevent user from moving chess invalidly.
     private PlayerColor colorOfUser;
+
     //Current User will change every round.
     private PlayerColor currentPlayer;
     public static User user1;
@@ -67,7 +110,7 @@ public class GameController implements GameListener {
 
         model.registerController(this);
         view.registerFrame(this);
-        view.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getModel());
+        view.getChessGameFrame().getChessboardComponent().initiateChessComponent(model);
         view.getChessGameFrame().getChessboardComponent().registerGameController(this);
         view.getChessGameFrame().getChessboardComponent().repaint();
     }
@@ -187,45 +230,60 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, PlayerColor playerColor) {
-        System.out.println("=================Click on a Cell=================");
-        ChessboardComponent chessboardComponent = view.getChessGameFrame().getChessboardComponent();
         if(playerColor != currentPlayer){
             System.out.println("Not your turn!");
+
             //* TODO: Here should be code for GUI to tell user that it's not his turn
+
             new FailDialog("Not your turn!",view.getChessGameFrame());
             return;
         }
+
+        /** Comment: This part should show the board after the move has been made, not before.
+         * You can put it at the end of these two methods.
+         * */
+        System.out.println("=================Click on a Cell=================");
+        ChessboardComponent chessboardComponent = view.getChessGameFrame().getChessboardComponent();
         if(selectedPoint != null){
             System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
         }else{
             System.out.println("No point is selected");
         }
         System.out.printf("-------------------Turn: %d-----------------------------\n", turnCount);
+
         if (selectedPoint != null) {
             //Try to move the selected piece to the clicked cell.
             try{
                 System.out.printf("Try to move %s at point (%d , %d) to point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol(),point.getRow(),point.getCol());
+
+                /** Comment: The moveChessPiece method already moved the piece, do not use it again in the later code!!!
+                 * This is why the null point exception occurs.(I've fixed it, now you can test with gui)
+                 * */
                 Move moveToMake = model.moveChessPiece(selectedPoint,point);
                 //If the move is invalid, the try sentence ends here.
+
+                /** TODO: Here should be code for GUI to repaint the board.(One piece moved) */
+                chessboardComponent.setChessComponentAtGrid(point, chessboardComponent.removeChessComponentAtGrid(selectedPoint));
+                /** Comment: you need to deselect the piece after the move has been made.
+                 * However, this part is missing in your previous code.(In both moving methods)
+                * TODO: remove possible moves and deselect the previous point*/
+                chessboardComponent.repaint();
+                System.out.println("Move successfully!");
+
                 if(!onAutoPlayback){
                     allMovesOnBoard.add(moveToMake);
                 }
                 if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser && !onAutoPlayback){
                     this.client.makeMove(moveToMake);
                 }
-
-                /** TODO: Here should be code for GUI to repaint the board.(One piece moved) */
-                model.moveChessPiece(selectedPoint, point);
-                chessboardComponent.setChessComponentAtGrid(point, chessboardComponent.removeChessComponentAtGrid(selectedPoint));
-                System.out.println("Move successfully!");
-                chessboardComponent.repaint();
-
-                /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
-
+                selectedPoint = null;
                 if(gameMode == GameMode.Local_PVP){
                     this.swapUser();
                 }
                 swapColor();
+
+                /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+
                 turnCount++;
 
                 /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
@@ -236,7 +294,9 @@ public class GameController implements GameListener {
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
+
                 /** TODO: NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
+
                 return;
             }
 
@@ -289,14 +349,15 @@ public class GameController implements GameListener {
     // click a cell with a chess
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor) {
-        ChessboardComponent chessboardComponent = view.getChessGameFrame().getChessboardComponent();
-        ChessComponent chessComponent = (ChessComponent) chessboardComponent.getGridComponentAt(point).getComponents()[0];
-
         if(playerColor != currentPlayer){
             /** TODO: Here should be code for GUI to tell user that it's not his turn */
             System.out.println("Not your turn!");
             return;
         }
+
+        ChessboardComponent chessboardComponent = view.getChessGameFrame().getChessboardComponent();
+        ChessComponent chessComponent = (ChessComponent) chessboardComponent.getGridComponentAt(point).getComponents()[0];
+
         //Print the state, whether the selected point is null.
         if(selectedPoint != null){
             System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
@@ -324,9 +385,10 @@ public class GameController implements GameListener {
                     //If the clicked piece is the current player's piece, select it.
                     chessComponent.setSelected(true);
                     chessComponentOrigin.setSelected(false);
-                    selectedPoint = point;
+
                     /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
 
+                    selectedPoint = point;
 
                     /** TODO: Here should be code for GUI to show all available moves for the selected piece */
 
@@ -345,18 +407,21 @@ public class GameController implements GameListener {
 
                         /** TODO: Here should be code for GUI to repaint the board.(One piece captured)*/
                         chessComponentOrigin.setSelected(false);
-                        model.moveChessPiece(selectedPoint, point);
                         chessboardComponent.removeChessComponentAtGrid(point);
                         chessboardComponent.setChessComponentAtGrid(point, chessboardComponent.removeChessComponentAtGrid(selectedPoint));
-                        selectedPoint = null;
+
+                        /** TODO: delete all possible moves shown on board*/
+
                         chessboardComponent.repaint();
 
-                        /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
-
+                        selectedPoint = null;
                         if(gameMode == GameMode.Local_PVP){
                             this.swapUser();
                         }
                         swapColor();
+
+                        /** TODO: NOT NECESSARY: Here should be code for GUI to swap color (color of which player should perform a move) */
+
                         turnCount++;
 
                         /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
@@ -415,9 +480,9 @@ public class GameController implements GameListener {
                 }
             }
         }
-        Chessboard.printChessBoard(model.getGrid());
 
         System.out.println("Turn: " + turnCount);
+        Chessboard.printChessBoard(model.getGrid());
     }
 
     //TODO: Add GUI for Undo/Playback/Reset/Save/Load
@@ -955,11 +1020,6 @@ public class GameController implements GameListener {
     }
 
     //Getter and Setter
-
-    public Chessboard getModel() {
-        return model;
-    }
-
     public void setColorOfUser(PlayerColor colorOfUser) {
         this.colorOfUser = colorOfUser;
     }

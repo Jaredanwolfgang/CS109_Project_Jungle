@@ -190,7 +190,7 @@ public class Chessboard {
 
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
-        System.out.println("Here is "+ srcPiece.getCategory().getName());
+        System.out.println("Here is "+ srcPiece.getName());
         if(srcPiece == null){
             return false;
         }
