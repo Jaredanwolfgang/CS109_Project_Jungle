@@ -16,6 +16,7 @@ import java.util.Comparator;
 import Server.*;
 import view.ChessComponent.ChessComponent;
 import view.Dialog.FailDialog;
+import view.Dialog.SuccessDialog;
 import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
 
@@ -308,7 +309,9 @@ public class GameController implements GameListener {
                 }
 
                 /** TODO: Here should be code for GUI to display game over message to user */
-
+                new SuccessDialog("End of the Game!\n"+user1.getUsername()+"'s Score: "+user1.getScore()+"\n"+user2.getUsername()+"'s Score: "+user2.getScore(),view.getStartFrame());
+                onPlayerExitGameFrame();
+                view.resetChessBoardComponent();
                 return;
             }else{
                 if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback) {
@@ -443,7 +446,9 @@ public class GameController implements GameListener {
                         }
 
                         /** TODO: Here should be code for GUI to display game over message to user */
-
+                        new SuccessDialog("End of the Game!\n"+user1.getUsername()+"'s Score: "+user1.getScore()+"\n"+user2.getUsername()+"'s Score: "+user2.getScore(),view.getStartFrame());
+                        onPlayerExitGameFrame();
+                        view.resetChessBoardComponent();
                         return;
                     }else{
                         if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback){
@@ -486,6 +491,7 @@ public class GameController implements GameListener {
             System.out.println("Undo is not allowed in online mode.");
             return false;
         }
+
         if (allMovesOnBoard.size() == 0) {
             System.out.println("No move to undo");
             return false;
@@ -493,7 +499,6 @@ public class GameController implements GameListener {
         selectedPoint = null;
 
         /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
-
         for (int i = 0; i < numberOfLoop; i++) {
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
             model.undoMove(lastMove);
@@ -1014,6 +1019,9 @@ public class GameController implements GameListener {
     }
     public PlayerColor getColorOfUser(){
         return this.colorOfUser;
+    }
+    public Chessboard getModel() {
+        return model;
     }
 
     public static GameMode getGameMode() {

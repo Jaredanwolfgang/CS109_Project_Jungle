@@ -428,7 +428,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         background.setBounds(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
         this.getContentPane().add(background);
     }
-//The TurnLabel format is not entirely correct. It needs to be modified.
+//FIXME: The TurnLabel format is not entirely correct. It needs to be modified.
     public void initTurnLabel(){
         turnLabel= new JLabel("1");
         turnLabel.setBounds(10,10, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);

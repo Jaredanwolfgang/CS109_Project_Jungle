@@ -184,7 +184,13 @@ public class ChessboardComponent extends JComponent {
             }
         }
     }
-
+    public void removeAllComponents(){
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                gridComponents[i][j].removeAll();
+            }
+        }
+    }
 
     public void setChessComponentAtGrid(ChessboardPoint point, ChessComponent chess) {
         getGridComponentAt(point).add(chess);

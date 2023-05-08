@@ -4,6 +4,7 @@ import controller.GameController;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessBoard.Move;
+import model.Enum.Seasons;
 import model.User.User;
 import view.ChessComponent.ChessComponent;
 import view.Dialog.SuccessDialog;
@@ -97,7 +98,13 @@ public class Frame {
     public void updateTurnAccount(int turnAccount){
 
     }
-
+    //FIXME: The reset function is not functioning properly.
+    public void resetChessBoardComponent(){
+        this.getChessGameFrame().getChessboardComponent().setSeason(Seasons.SPRING);
+        this.getChessGameFrame().getChessboardComponent().removeAllComponents();
+        this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
+        this.getChessGameFrame().getChessboardComponent().initiateGridComponents();
+    }
     //Gettersbelow
     public GameController getGameController() {
         return gameController;
