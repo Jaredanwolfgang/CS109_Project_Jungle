@@ -140,7 +140,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
     }
 
     public void initButton() {
-        System.out.println("RegisterFrame: registerButton is initializing...");
+//        System.out.println("RegisterFrame: registerButton is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Register_Light.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Register_Dark.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
 
@@ -173,7 +173,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(passwordField.getText().equals(passwordCheckField.getText())){
+        if(!passwordField.getText().equals(passwordCheckField.getText())){
             new FailDialog("The passwords do not match.",this);
             return;
         }

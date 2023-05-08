@@ -117,7 +117,7 @@ public class LoginFrame extends JFrame implements ActionListener{
     }
     //The Button Initiation
     public void initButton() {
-        System.out.println("LoginFrame:loginButton is initializing...");
+//        System.out.println("LoginFrame:loginButton is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Login_Light.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\InitFrame\\Login_Dark.png").getScaledInstance(100, 56, Image.SCALE_SMOOTH));
 

@@ -41,7 +41,7 @@ public class StartFrame extends JFrame {
 
     //Initialize the Framesw
     public void initJFrame() {
-        System.out.println("StartFrame is initializing...");
+//        System.out.println("StartFrame is initializing...");
         this.setLayout(null);
         this.setSize((int)screenSize.getWidth(), (int)screenSize.getHeight());
         this.setTitle("Jungle");
@@ -53,14 +53,14 @@ public class StartFrame extends JFrame {
 
     //Initialize the background image
     public void initBackground() {
-        System.out.println("StartFrame background is initializing...");
+//        System.out.println("StartFrame background is initializing...");
         JLabel background = new JLabel(new ImageIcon("Background\\Spring.gif"));
         background.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
         this.getContentPane().add(background);
     }
     //Initialize the Label(Title)
     public void initLabel() {
-        System.out.println("StartFrame label is initializing...");
+//        System.out.println("StartFrame label is initializing...");
         ImageIcon newIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Jungle.png").getScaledInstance(500, 729, Image.SCALE_SMOOTH));
 
         JLabel label = new JLabel(newIcon);
@@ -71,7 +71,7 @@ public class StartFrame extends JFrame {
 
     //Initialize the Buttons
     public void initLocalPVPButton() {
-        System.out.println("Local PVP Button is initializing...");
+//        System.out.println("Local PVP Button is initializing...");
 
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\LocalButton_Light.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\LocalButton_Dark.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
@@ -110,7 +110,7 @@ public class StartFrame extends JFrame {
         this.getContentPane().add(localButton);
     }
     public void initNetPVPButton() {
-        System.out.println("Net PVP Button is initializing...");
+//        System.out.println("Net PVP Button is initializing...");
 
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\NetButton_Light.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\NetButton_Dark.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
@@ -148,7 +148,7 @@ public class StartFrame extends JFrame {
         this.getContentPane().add(netButton);
     }
     public void initMusicButton() {
-        System.out.println("Music button is initializing...");
+//        System.out.println("Music button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
@@ -180,7 +180,7 @@ public class StartFrame extends JFrame {
         this.getContentPane().add(musicButton);
     }
     public void initExitButton() {
-        System.out.println("Exit button is initializing...");
+//        System.out.println("Exit button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
@@ -212,7 +212,7 @@ public class StartFrame extends JFrame {
         this.getContentPane().add(exitButton);
     }
     public void initReturnButton(){
-        System.out.println("Return button is initializing...");
+//        System.out.println("Return button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
@@ -247,7 +247,7 @@ public class StartFrame extends JFrame {
 
     //TODO: The ModesSelectFrame is not finished.
     public void initPVEButton() {
-        System.out.println("PVE Button is initializing...");
+//        System.out.println("PVE Button is initializing...");
 
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\AIButton_Light.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\AIButton_Dark.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
@@ -285,7 +285,7 @@ public class StartFrame extends JFrame {
     }
     //TODO: In the Frame, the RankFrame has not been added yet.
     public void initRankButton(){
-        System.out.println("Rank Button is initializing...");
+//        System.out.println("Rank Button is initializing...");
 
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\RankButton_Light.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\StartFrame\\RankButton_Dark.png").getScaledInstance(145, 145, Image.SCALE_SMOOTH));

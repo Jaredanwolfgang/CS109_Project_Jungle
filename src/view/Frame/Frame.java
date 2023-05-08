@@ -2,6 +2,7 @@ package view.Frame;
 
 import controller.GameController;
 import model.ChessBoard.Chessboard;
+import model.ChessBoard.ChessboardPoint;
 import model.ChessBoard.Move;
 import model.User.User;
 import view.ChessComponent.ChessComponent;
@@ -66,74 +67,57 @@ public class Frame {
         fromFrame.setVisible(false);
         toFrame.setVisible(true);
     }
+
     //Here are the methods for all the moves on board.
-    public void move(){
-
+    public void move(ChessboardPoint point, ChessboardPoint selectedPoint){
+        ChessComponent chessComponent = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
+        chessComponent.setSelected(false);
+        this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
     }
-    public void eat(){
-
+    public void eat(ChessboardPoint point, ChessboardPoint selectedPoint){
+        ChessComponent predator = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
+        ChessComponent prey = this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(point);
+        predator.setSelected(false);
+        this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
     }
     public void showAllPossibleMoves(ArrayList<Move> Moves){
-
+        for (int i = 0; i < Moves.size(); i++) {
+            System.out.println(Moves.get(i).getToPoint());
+            this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).setLabelled(true);
+            this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).repaint();
+        }
     }
     public void removeAllPossibleMoves(ArrayList<Move> Moves){
+        for (int i = 0; i < Moves.size(); i++) {
+            System.out.println(Moves.get(i).getToPoint());
+            this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).setLabelled(false);
+            this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).repaint();
+        }
+    }
+    public void updateTurnAccount(int turnAccount){
 
     }
 
-    //Getter and Setter below
+    //Gettersbelow
     public GameController getGameController() {
         return gameController;
     }
-
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
-
     public InitFrame getInitFrame() {
         return initFrame;
     }
-
-    public void setInitFrame(InitFrame initFrame) {
-        this.initFrame = initFrame;
-    }
-
     public LoginFrame getLoginFrame() {
         return loginFrame;
     }
-
-    public void setLoginFrame(LoginFrame loginFrame) {
-        this.loginFrame = loginFrame;
-    }
-
     public RegisterFrame getRegisterFrame() {
         return registerFrame;
     }
-
-    public void setRegisterFrame(RegisterFrame registerFrame) {
-        this.registerFrame = registerFrame;
-    }
-
     public StartFrame getStartFrame() {
         return startFrame;
     }
-
-    public void setStartFrame(StartFrame startFrame) {
-        this.startFrame = startFrame;
-    }
-
     public ChessGameFrame getChessGameFrame() {
         return chessGameFrame;
     }
-
-    public void setChessGameFrame(ChessGameFrame chessGameFrame) {
-        this.chessGameFrame = chessGameFrame;
-    }
-
     public MusicPlayerFrame getMusicPlayerFrame() {
         return musicPlayerFrame;
-    }
-
-    public void setMusicPlayerFrame(MusicPlayerFrame musicPlayerFrame) {
-        this.musicPlayerFrame = musicPlayerFrame;
     }
 }

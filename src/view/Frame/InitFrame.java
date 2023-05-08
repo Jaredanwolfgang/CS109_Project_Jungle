@@ -42,7 +42,7 @@ public class InitFrame extends JFrame{
     //关闭模式是关掉就退出
     //不可改变大小
     public void initJFrame() {
-        System.out.println("InitFrame is initializing...");
+//        System.out.println("InitFrame is initializing...");
         this.setLayout(null);
         this.setSize((int) screenSize.getWidth(), (int) screenSize.getHeight());
         this.setTitle("Jungle");
@@ -54,7 +54,7 @@ public class InitFrame extends JFrame{
 
     //初始化背景，使用的是JLabel
     public void initBackground(String Address) {
-        System.out.println("InitFrame background is initializing...");
+//        System.out.println("InitFrame background is initializing...");
         JLabel background = new JLabel(new ImageIcon(Address));
         background.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
         this.getContentPane().add(background);
@@ -65,7 +65,7 @@ public class InitFrame extends JFrame{
     //2. 按钮的位置
     //3. 按钮的目标大小（在方法当中有resize按钮的大小）
     public void initLoginButton() {
-        System.out.println("Login button is initializing...");
+//        System.out.println("Login button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Light.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
@@ -100,7 +100,7 @@ public class InitFrame extends JFrame{
         this.getContentPane().add(loginButton);
     }
     public void initRegisterButton() {
-        System.out.println("Register button is initializing...");
+//        System.out.println("Register button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Light.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
@@ -132,7 +132,7 @@ public class InitFrame extends JFrame{
         this.getContentPane().add(registerButton);
     }
     public void initMusicButton() {
-        System.out.println("Music button is initializing...");
+//        System.out.println("Music button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
@@ -172,7 +172,7 @@ public class InitFrame extends JFrame{
         this.getContentPane().add(musicButton);
     }
     public void initExitButton() {
-        System.out.println("Exit button is initializing...");
+//        System.out.println("Exit button is initializing...");
 
         /** To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
@@ -206,7 +206,7 @@ public class InitFrame extends JFrame{
 
     //初始化Label，为游戏的标题
     public void initLabel() {
-        System.out.println("InitFrame label is initializing...");
+//        System.out.println("InitFrame label is initializing...");
 
         /** To get the scaled image. */
         ImageIcon newIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Jungle.png").getScaledInstance(512, 324, Image.SCALE_SMOOTH));

@@ -171,6 +171,7 @@ public class GameController implements GameListener {
             writer = new BufferedWriter(new FileWriter(USER_FILE_PATH));
             for (User user : allUsers) {
                 writer.write(user.toString());
+                writer.newLine();
             }
         } catch (IOException e) {
             System.err.println("Error writing file: " + e.getMessage());
@@ -237,42 +238,23 @@ public class GameController implements GameListener {
     public void onPlayerClickCell(ChessboardPoint point, PlayerColor playerColor) {
         if(playerColor != currentPlayer){
             System.out.println("Not your turn!");
-
-            //* TODO: Here should be code for GUI to tell user that it's not his turn
-
+            //* Here is code for GUI to tell user that it's not his turn
             new FailDialog("Not your turn!",view.getChessGameFrame());
             return;
         }
-
-        /** Comment: This part should show the board after the move has been made, not before.
-         * You can put it at the end of these two methods.
-         * */
-        System.out.println("=================Click on a Cell=================");
-        ChessboardComponent chessboardComponent = view.getChessGameFrame().getChessboardComponent();
-        if(selectedPoint != null){
-            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
-        }else{
-            System.out.println("No point is selected");
-        }
-        System.out.printf("-------------------Turn: %d-----------------------------\n", turnCount);
-
+        System.out.printf("=================Click on a Cell | Turn: %d=================\n", turnCount);
         if (selectedPoint != null) {
-            //Try to move the selected piece to the clicked cell.
             try{
+                //To avoid Null pointer
+                ArrayList<Move> Moves = model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid());
+                //Try to move the selected piece to the clicked cell.
                 System.out.printf("Try to move %s at point (%d , %d) to point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol(),point.getRow(),point.getCol());
-
-                /** Comment: The moveChessPiece method already moved the piece, do not use it again in the later code!!!
-                 * This is why the null point exception occurs.(I've fixed it, now you can test with gui)
-                 * */
                 Move moveToMake = model.moveChessPiece(selectedPoint,point);
-                //If the move is invalid, the try sentence ends here.
-
-                /** TODO: Here should be code for GUI to repaint the board.(One piece moved) */
-                chessboardComponent.setChessComponentAtGrid(point, chessboardComponent.removeChessComponentAtGrid(selectedPoint));
-                /** Comment: you need to deselect the piece after the move has been made.
-                 * However, this part is missing in your previous code.(In both moving methods)
-                * TODO: remove possible moves and deselect the previous point*/
-                chessboardComponent.repaint();
+                //Remove possible moves and deselect the previous point
+                view.removeAllPossibleMoves(Moves);
+                //Here is the code for GUI to repaint the board.(One piece moved)
+                view.move(point,selectedPoint);
+                view.getChessGameFrame().getChessboardComponent().repaint();
                 System.out.println("Move successfully!");
 
                 if(!onAutoPlayback){
@@ -299,9 +281,8 @@ public class GameController implements GameListener {
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
-
-                /** TODO: NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
-
+                //NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid
+                new FailDialog(e.getMessage(),view.getChessGameFrame());
                 return;
             }
 
@@ -347,6 +328,11 @@ public class GameController implements GameListener {
             }
         }
 
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
         System.out.println("Turn: " + turnCount);
         Chessboard.printChessBoard(model.getGrid());
     }
@@ -355,53 +341,56 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, PlayerColor playerColor) {
         if(playerColor != currentPlayer){
-            /** TODO: Here should be code for GUI to tell user that it's not his turn */
+            // Here should be code for GUI to tell user that it's not his turn
             System.out.println("Not your turn!");
+            new FailDialog("Not your turn!",view.getChessGameFrame());
             return;
         }
+        System.out.printf("=================Click on a Chess | Turn: %d=================\n", turnCount);
 
         ChessboardComponent chessboardComponent = view.getChessGameFrame().getChessboardComponent();
         ChessComponent chessComponent = (ChessComponent) chessboardComponent.getGridComponentAt(point).getComponents()[0];
-
-        //Print the state, whether the selected point is null.
-        if(selectedPoint != null){
-            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
-        }else{
-            System.out.println("No point is selected");
-        }
 
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point) == currentPlayer) {
                 //If the clicked piece is the current player's piece, select it.
                 chessComponent.setSelected(true);
                 selectedPoint = point;
-                /** TODO: Here should be code for GUI to show all available moves for the selected piece */
+                // Here is the code for GUI to show all available moves for the selected piece.
+                view.showAllPossibleMoves(model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid()));
+                view.getChessGameFrame().getChessboardComponent().repaint();
             }
         }else{
             ChessComponent chessComponentOrigin = (ChessComponent)chessboardComponent.getGridComponentAt(selectedPoint).getComponents()[0];
             if (selectedPoint.equals(point)) {
                 //If the clicked piece is the selected piece, deselect it.
                 chessComponent.setSelected(false);
+                //Here is the code for GUI to remove all possible moves of the previous selected piece.
+                view.removeAllPossibleMoves(model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid()));
+                view.getChessGameFrame().getChessboardComponent().repaint();
                 selectedPoint = null;
-                /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
-
             }else{
                 if(model.getChessPieceOwner(point) == currentPlayer){
                     //If the clicked piece is the current player's piece, select it.
                     chessComponent.setSelected(true);
                     chessComponentOrigin.setSelected(false);
-
-                    /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
-
+                    //Here is the code for GUI to remove all possible moves of the previous selected piece.
+                    view.removeAllPossibleMoves(model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid()));
                     selectedPoint = point;
-
-                    /** TODO: Here should be code for GUI to show all available moves for the selected piece */
-
+                    //Here is the code for GUI to show all available moves for the selected piece
+                    view.showAllPossibleMoves(model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid()));
+                    view.getChessGameFrame().getChessboardComponent().repaint();
                 }else{
                     //Try to capture the clicked piece with the selected piece.
                     try{
+                        ArrayList<Move> Moves = model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid());
                         Move moveToMake = model.captureChessPiece(selectedPoint,point);
                         //If the capture is invalid, the try sentence ends here.
+                        //delete all possible moves shown on board
+                        view.removeAllPossibleMoves(Moves);
+                        //Here is the code for GUI to repaint the board.(One piece captured)
+                        view.eat(point,selectedPoint);
+                        view.getChessGameFrame().getChessboardComponent().repaint();
 
                         if(!onAutoPlayback) {
                             allMovesOnBoard.add(moveToMake);
@@ -409,16 +398,6 @@ public class GameController implements GameListener {
                         if((gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Client) && currentPlayer == colorOfUser && !onAutoPlayback){
                             this.client.makeMove(moveToMake);
                         }
-
-                        /** TODO: Here should be code for GUI to repaint the board.(One piece captured)*/
-                        chessComponentOrigin.setSelected(false);
-                        chessboardComponent.removeChessComponentAtGrid(point);
-                        chessboardComponent.setChessComponentAtGrid(point, chessboardComponent.removeChessComponentAtGrid(selectedPoint));
-
-                        /** TODO: delete all possible moves shown on board*/
-
-                        chessboardComponent.repaint();
-
                         selectedPoint = null;
                         if(gameMode == GameMode.Local_PVP){
                             this.swapUser();
@@ -437,8 +416,8 @@ public class GameController implements GameListener {
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
-
-                        /** TODO: NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid */
+                        //NOT NECESSARY: Here should be code for GUI to tell user that the move is invalid
+                        new FailDialog(e.getMessage(),view.getChessGameFrame());
                         return;
                     }
 
@@ -485,7 +464,12 @@ public class GameController implements GameListener {
                 }
             }
         }
-
+        //Print the state, whether the selected point is null.
+        if(selectedPoint != null){
+            System.out.printf("Selected piece is %s at point (%d , %d)\n",model.getChessPieceAt(selectedPoint).getName(),selectedPoint.getRow(),selectedPoint.getCol());
+        }else{
+            System.out.println("No point is selected");
+        }
         System.out.println("Turn: " + turnCount);
         Chessboard.printChessBoard(model.getGrid());
     }
@@ -917,7 +901,7 @@ public class GameController implements GameListener {
     @Override
     public boolean onPlayerClickRegisterButton(String username, String password) {
         for (User user : allUsers) {
-            if(user.getUsername().equals(username) && user.validatePassword(password)){
+            if(user.getUsername().equals(username)){
                 return false;
             }
         }

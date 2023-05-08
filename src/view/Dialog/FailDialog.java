@@ -18,7 +18,7 @@ public class FailDialog extends JDialog{
     }
     public void initDialog(){
         this.setSize(320,180);
-        this.setTitle("Success Dialog");
+        this.setTitle("Fail Dialog");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
