@@ -2,6 +2,7 @@ package view.Frame;
 
 import controller.GameController;
 import model.Enum.Mode;
+import model.Enum.PlayerColor;
 import model.Enum.Seasons;
 import model.User.User;
 import view.ChessComponent.ChessComponent;
@@ -21,7 +22,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     private int HEIGHT = (int) screenSize.getHeight();
 
     private JLabel background;
-    private JLabel turnLabel = new JLabel();
+    private JLabel turnLabel;
     private int seasons;
 
     /**
@@ -427,15 +428,18 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         background.setBounds(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
         this.getContentPane().add(background);
     }
-
+//The TurnLabel format is not entirely correct. It needs to be modified.
     public void initTurnLabel(){
-        turnLabel.setBorder(new ChessComponent.RoundBorder(20, Color.BLUE));
-        turnLabel.setBackground(Color.BLUE);
+        turnLabel= new JLabel("1");
+        turnLabel.setBounds(10,10, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
+        turnLabel.setFont(new Font("TimesRoman", Font.BOLD, ONE_BUTTON_SIZE/2));
         turnLabel.setForeground(Color.WHITE);
-        turnLabel.setText("1");
-        turnLabel.setFont(new Font("Calibri", Font.BOLD, 30));
-        turnLabel.setBounds(10,10,50,50);
+        turnLabel.setBorder(new ChessComponent.RoundBorder(ONE_BUTTON_SIZE/2, Color.WHITE));
+
         this.getContentPane().add(turnLabel);
+    }
+    public void changeTurnLabel(int turnCount, PlayerColor playerColor){
+
     }
 
     public void changeBackground() {
