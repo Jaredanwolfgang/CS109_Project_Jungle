@@ -1,6 +1,6 @@
 import controller.GameController;
 import model.ChessBoard.Chessboard;
-import model.Enum.Mode;
+
 import model.User.User;
 import view.Dialog.SuccessDialog;
 import view.Frame.*;

@@ -49,8 +49,14 @@ public class LoginFrame extends JFrame implements ActionListener{
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                frame.getLoginFrame().setVisible(false);
-                frame.getInitFrame().setVisible(true);
+                if(getState()==0) {
+                    frame.getLoginFrame().setVisible(false);
+                    frame.getInitFrame().setVisible(true);
+                }else{
+                    frame.getLoginFrame().setVisible(false);
+                    frame.getGameController().onPlayerExitGameFrame();
+                    frame.getStartFrame().setVisible(true);
+                }
             }
         });
     }
@@ -151,9 +157,13 @@ public class LoginFrame extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
             if (getState() == 0) {
-                this.setVisible(false);
-                frame.getStartFrame().setVisible(true);
-                new SuccessDialog("Login successful",frame.getStartFrame());
+                if (frame.getGameController().user1 != null){
+                    this.setVisible(false);
+                    frame.getStartFrame().setVisible(true);
+                    new SuccessDialog("Login successful",frame.getStartFrame());
+                }else{
+                    new FailDialog("Login failed",this);
+                }
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");
                 userText.setFont(new Font("Calibri", Font.ITALIC, 12));
@@ -161,8 +171,13 @@ public class LoginFrame extends JFrame implements ActionListener{
                 passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
                 passwordField.setEchoChar('\0');
             }else if(getState() == 1){
-                this.setVisible(false);
-                new SuccessDialog("Login successful",frame.getChessGameFrame());
+                if (frame.getGameController().user2 != null){
+                    this.setVisible(false);
+                    frame.getChessGameFrame().setVisible(true);
+                    new SuccessDialog("Login successful",frame.getChessGameFrame());
+                }else{
+                    new FailDialog("Login failed",this);
+                }
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");
                 userText.setFont(new Font("Calibri", Font.ITALIC, 12));
@@ -173,6 +188,7 @@ public class LoginFrame extends JFrame implements ActionListener{
 
         }else{
             new FailDialog("Incorrect username or password",this);
+            //Initialize the UserText and PasswordField
             userText.setText("Enter your Username here");
             userText.setFont(new Font("Calibri", Font.ITALIC, 12));
             passwordField.setText("Enter your Password here");

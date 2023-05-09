@@ -1,5 +1,6 @@
 package view.ChessComponent;
 
+import model.ChessPieces.ChessPiece;
 import model.Enum.PlayerColor;
 import model.User.User;
 
@@ -26,6 +27,7 @@ public class ChessComponent extends JComponent {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
     public static class RoundBorder extends AbstractBorder {
         private final int radius;
         private final Color color;

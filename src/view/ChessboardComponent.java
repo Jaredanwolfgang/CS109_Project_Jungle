@@ -46,7 +46,6 @@ public class ChessboardComponent extends JComponent {
         initSet();
         initiateGridComponents();
         repaint();
-
     }
 
     /**
@@ -80,8 +79,6 @@ public class ChessboardComponent extends JComponent {
                         case CAT -> gridComponents[i][j].add(new CatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
                         case RAT -> gridComponents[i][j].add(new RatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
                     }
-                    ;
-
                 }
             }
         }
@@ -112,7 +109,6 @@ public class ChessboardComponent extends JComponent {
         densCell.add(new ChessboardPoint(0, 3));
         densCell.add(new ChessboardPoint(8, 3));
     }
-
     public void initiateGridComponents() {
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
@@ -181,13 +177,6 @@ public class ChessboardComponent extends JComponent {
                         repaint();
                     }
                 });
-            }
-        }
-    }
-    public void removeAllComponents(){
-        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
-                gridComponents[i][j].removeAll();
             }
         }
     }

@@ -17,7 +17,6 @@ public class Chessboard {
     private Cell[][] grid;
     private ArrayList<ChessPiece> bluePieces;
     private ArrayList<ChessPiece> redPieces;
-
     private GameController gameController;
 
     public Chessboard() {
@@ -72,6 +71,7 @@ public class Chessboard {
         //This method place all chess pieces on the chessboard.
         bluePieces.clear();
         redPieces.clear();
+
         ChessPiece piece;
         piece = new LionChessPiece(PlayerColor.BLUE);
         grid[0][0].setPiece(piece);

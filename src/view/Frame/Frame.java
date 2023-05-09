@@ -22,7 +22,7 @@ public class Frame {
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
     private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
-
+    private OutputFrame outputFrame;
 
     public Frame() {
         initFrame.setVisible(true);
@@ -68,6 +68,10 @@ public class Frame {
         fromFrame.setVisible(false);
         toFrame.setVisible(true);
     }
+    public void playerClickSaveButton(){
+        outputFrame = new OutputFrame(this);
+        outputFrame.setVisible(true);
+    }
 
     //Here are the methods for all the moves on board.
     public void move(ChessboardPoint point, ChessboardPoint selectedPoint){
@@ -80,6 +84,14 @@ public class Frame {
         ChessComponent prey = this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(point);
         predator.setSelected(false);
         this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
+    }
+    public void undo(Move move){
+        if(move.isDoesCapture()){
+            this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(move.getFromPoint(),this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(move.getToPoint()));
+            this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(move.getToPoint(),this.getChessGameFrame().getChessComponent(move.getCapturedPiece()));
+        }else{
+            this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(move.getFromPoint(),this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(move.getToPoint()));
+        }
     }
     public void showAllPossibleMoves(ArrayList<Move> Moves){
         for (int i = 0; i < Moves.size(); i++) {
@@ -96,16 +108,18 @@ public class Frame {
         }
     }
     public void updateTurnAccount(int turnAccount){
-
+        this.getChessGameFrame().changeTurnLabel(turnAccount, gameController.getCurrentPlayer());
     }
-    //FIXME: The reset function is not functioning properly.
+    //The reset function is not functioning properly.
     public void resetChessBoardComponent(){
-        this.getChessGameFrame().getChessboardComponent().setSeason(Seasons.SPRING);
-        this.getChessGameFrame().getChessboardComponent().removeAllComponents();
-        this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
+        this.getChessGameFrame().getChessboardComponent().removeAll();
         this.getChessGameFrame().getChessboardComponent().initiateGridComponents();
+        this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
+        this.getChessGameFrame().revalidate();
+        this.getChessGameFrame().repaint();
     }
-    //Gettersbelow
+
+    //Getters below
     public GameController getGameController() {
         return gameController;
     }

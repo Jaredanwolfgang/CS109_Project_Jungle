@@ -2,7 +2,6 @@ package view.Frame;
 
 import controller.GameController;
 import model.ChessBoard.Chessboard;
-import model.Enum.Mode;
 import model.User.User;
 
 import javax.swing.*;

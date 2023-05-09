@@ -31,7 +31,7 @@ public class CellComponent extends JPanel {
         this.normalBackground = normalBackground;
         this.hoverBackground = hoverBackground;
         this.labelledBackground = labelledBackground;
-        this.cornerRadius = size / 10;
+        this.cornerRadius = size / 4;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -86,41 +86,8 @@ public class CellComponent extends JPanel {
         } else {
             g.setColor(normalBackground);
         }
-        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(1, 1, this.getWidth() - 1, this.getHeight() - 1, cornerRadius, cornerRadius);
+        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(0, 0, this.getWidth() , this.getHeight(), cornerRadius, cornerRadius);
         g2d.fill(roundedRectangle);
-        RoundBorder roundBorder = new RoundBorder(cornerRadius, Color.LIGHT_GRAY);
-        setBorder(roundBorder);
     }
 
-    public static class RoundBorder extends AbstractBorder {
-        private final int radius;
-        private final Color color;
-
-        public RoundBorder(int radius, Color color) {
-            this.radius = radius;
-            this.color = color;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(color);
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
-            g2d.dispose();
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c) {
-            return new Insets(radius + 1, radius + 1, radius + 2, radius);
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c, Insets insets) {
-            insets.left = insets.right = radius + 1;
-            insets.top = radius + 1;
-            insets.bottom = radius + 2;
-            return insets;
-        }
-    }
 }
