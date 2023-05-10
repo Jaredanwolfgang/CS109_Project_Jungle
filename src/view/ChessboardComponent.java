@@ -60,7 +60,7 @@ public class ChessboardComponent extends JComponent {
         Cell[][] grid = chessboard.getGrid();
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
-                // TODO: Implement the initialization checkerboard
+                //Implement the initialization checkerboard
                 if (grid[i][j].getPiece() != null) {
                     ChessPiece chessPiece = grid[i][j].getPiece();
                     System.out.println(chessPiece.getOwner());
@@ -116,16 +116,12 @@ public class ChessboardComponent extends JComponent {
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
                     cell = new CellComponent(season.getColors()[1],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
-                    cell.setBorder(new RoundBorder(1, season.getColors()[1]));
                 } else if (trapCell.contains(temp)) {
                     cell = new CellComponent(season.getColors()[2],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
-                    cell.setBorder(new RoundBorder(1, season.getColors()[2]));
                 } else if (densCell.contains(temp)) {
                     cell = new CellComponent(season.getColors()[3],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
-                    cell.setBorder(new RoundBorder(1, season.getColors()[3]));
                 } else {
                     cell = new CellComponent(season.getColors()[0],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
-                    cell.setBorder(new RoundBorder(1, season.getColors()[0]));
                 }
                 this.add(cell);
                 gridComponents[i][j] = cell;
@@ -239,6 +235,9 @@ public class ChessboardComponent extends JComponent {
         return densCell;
     }
 
+    public Seasons getSeason() {
+        return season;
+    }
     public void setSeason(Seasons season) {
         this.season = season;
     }

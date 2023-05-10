@@ -23,8 +23,8 @@ public enum Seasons {
     FALL("Autumn.gif",
             new Color(203, 128, 128),
             new Color(130, 157, 129),
-            new Color(105, 125, 208),
-            new Color(66, 86, 145),
+            new Color(189, 91, 91),
+            new Color(145, 61, 61),
             new Color(255, 206, 100),
             new Color(255, 229, 100)
             ),

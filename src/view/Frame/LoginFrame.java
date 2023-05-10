@@ -174,6 +174,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                 if (frame.getGameController().user2 != null){
                     this.setVisible(false);
                     frame.getChessGameFrame().setVisible(true);
+                    frame.getGameController().onPlayerSelectLocalPVPMode();
                     new SuccessDialog("Login successful",frame.getChessGameFrame());
                 }else{
                     new FailDialog("Login failed",this);

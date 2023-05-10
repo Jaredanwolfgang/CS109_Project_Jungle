@@ -19,6 +19,7 @@ import view.Dialog.FailDialog;
 import view.Dialog.SuccessDialog;
 import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
+import view.UI.SoundEffect;
 
 import javax.swing.*;
 
@@ -69,7 +70,6 @@ public class GameController implements GameListener {
         turnCount = 1;
         this.readUsers();
 
-        model.registerController(this);
         view.registerFrame(this);
         view.getChessGameFrame().getChessboardComponent().initiateChessComponent(model);
         view.getChessGameFrame().getChessboardComponent().registerGameController(this);
@@ -232,9 +232,9 @@ public class GameController implements GameListener {
                 turnCount++;
                 view.updateTurnAccount(turnCount);
 
-                if (!onAutoPlayback) {
-                    timer.reset();
-                }
+//                if (!onAutoPlayback) {
+                timer.reset();
+//                }
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
@@ -311,6 +311,9 @@ public class GameController implements GameListener {
 
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point) == currentPlayer) {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/ChessClick.wav");
+                player.play();
+
                 //If the clicked piece is the current player's piece, select it.
                 chessComponent.setSelected(true);
                 selectedPoint = point;
@@ -321,6 +324,8 @@ public class GameController implements GameListener {
         }else{
             ChessComponent chessComponentOrigin = (ChessComponent)chessboardComponent.getGridComponentAt(selectedPoint).getComponents()[0];
             if (selectedPoint.equals(point)) {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/ChessClick.wav");
+                player.play();
                 //If the clicked piece is the selected piece, deselect it.
                 chessComponent.setSelected(false);
                 //Here is the code for GUI to remove all possible moves of the previous selected piece.
@@ -329,6 +334,8 @@ public class GameController implements GameListener {
                 selectedPoint = null;
             }else{
                 if(model.getChessPieceOwner(point) == currentPlayer){
+                    SoundEffect player = new SoundEffect("Music/SoundEffect/ChessClick.wav");
+                    player.play();
                     //If the clicked piece is the current player's piece, select it.
                     chessComponent.setSelected(true);
                     chessComponentOrigin.setSelected(false);
@@ -365,11 +372,12 @@ public class GameController implements GameListener {
                         swapColor();
                         turnCount++;
 
-                        /** NOT NECESSARY: Here should be code for GUI to update turn count */
+                        //NOT NECESSARY: Here should be code for GUI to update turn count */
                         view.updateTurnAccount(turnCount);
-                        if (!onAutoPlayback) {
-                            timer.reset();
-                        }
+
+//                        if (!onAutoPlayback) {
+                        timer.reset();
+//                        }
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
@@ -399,7 +407,7 @@ public class GameController implements GameListener {
                             }
                         }
 
-                        /** Here should be code for GUI to display game over message to user */
+                        //Here should be code for GUI to display game over message to user */
                         new SuccessDialog("End of the Game!\n"+user1.getUsername()+"'s Score: "+user1.getScore()+"\n"+user2.getUsername()+"'s Score: "+user2.getScore(),view.getStartFrame());
                         onPlayerExitGameFrame();
                         view.resetChessBoardComponent();
@@ -433,7 +441,6 @@ public class GameController implements GameListener {
         Chessboard.printChessBoard(model.getGrid());
     }
 
-    //TODO: Add GUI for Undo/Playback/Reset/Save/Load
     @Override
     public boolean onPlayerClickUndoButton() {
         int numberOfLoop;
@@ -452,14 +459,15 @@ public class GameController implements GameListener {
         }
         selectedPoint = null;
 
-        /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
+        //Here should be code for GUI to remove all possible moves of the previous selected piece */
         for (int i = 0; i < numberOfLoop; i++) {
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
 
-            /** TODO: Here should be code for GUI to undo a move */
+            //Here should be code for GUI to undo a move */
             view.undo(lastMove);
             this.swapColor();
             model.undoMove(lastMove);
+
             if(gameMode == GameMode.Local_PVP){
                 this.swapUser();
             }
@@ -475,45 +483,48 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerClickPlayBackButton() {
+        System.out.println("Click on PlayBackButton");
         selectedPoint = null;
-
-        /** TODO: Here should be code for GUI to remove all possible moves of the previous selected piece */
-
-        model.reset();
         this.currentPlayer = PlayerColor.BLUE;
-
-        /** TODO: NOT NECESSARY: Here should be code for GUI to update color (color of which player should perform a move) */
 
         if(gameMode == GameMode.Local_PVP){
             this.colorOfUser = PlayerColor.BLUE;
         }
         turnCount = 1;
 
-        /** TODO: NOT NECESSARY: Here should be code for GUI to update turn count */
+        model.reset();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                view.resetChessBoardComponent();
 
-        onAutoPlayback = true;
-        for (Move move : allMovesOnBoard) {
-            this.onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
+                onAutoPlayback = true;
+                for (Move move : allMovesOnBoard) {
+                    onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
-            try {
-                Thread.sleep(GameController.animationInterval);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                    try {
+                        Thread.sleep(GameController.animationInterval);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    if(move.isDoesCapture()){
+                        onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
+                    }else{
+                        onPlayerClickCell(move.getToPoint(), currentPlayer);
+                    }
+
+                    try {
+                        Thread.sleep(GameController.animationInterval);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                onAutoPlayback = false;
+                return;
             }
-
-            if(move.isDoesCapture()){
-                this.onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
-            }else{
-                this.onPlayerClickCell(move.getToPoint(), currentPlayer);
-            }
-
-            try {
-                Thread.sleep(GameController.animationInterval);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        onAutoPlayback = false;
+        });
+        thread.start();
     }
 
     @Override
@@ -528,10 +539,6 @@ public class GameController implements GameListener {
 
         model.reset();
         this.currentPlayer = PlayerColor.BLUE;
-
-        /* Here should be code for GUI to update turn count */
-        /* Here should be code for GUI to update color (color of which player should perform a move) */
-        view.getChessGameFrame().changeTurnLabel(1,PlayerColor.BLUE);
 
         this.colorOfUser = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
@@ -715,9 +722,10 @@ public class GameController implements GameListener {
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
 
-            /** TODO: NOT NECESSARY: Here should be a pop-up window to show the error message.
+            /** NOT NECESSARY: Here should be a pop-up window to show the error message.
              * (I don't think the three other exceptions below need this)
             */
+            new FailDialog(e.getMessage(),view.getChessGameFrame());
             return;
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filePath);
@@ -798,9 +806,8 @@ public class GameController implements GameListener {
         }else{
             System.out.println("File Check Passed: Valid file.");
 
-            /** TODO: NOT NECESSARY: Here should be a pop-up window to show file reads successfully. */
-
-            this.onPlayerClickResetButton();
+            //NOT NECESSARY: Here should be a pop-up window to show file reads successfully. */
+            /*this.onPlayerClickResetButton();
             for(Move move : moves){
                 this.onPlayerClickChessPiece(move.getFromPoint(),currentPlayer);
 
@@ -822,7 +829,39 @@ public class GameController implements GameListener {
                     throw new RuntimeException(e);
                 }
 
-            }
+            }*/
+            /** Jerry: I have added a new Thread here so that it can show the playback process of the chess*/
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    onPlayerClickResetButton();
+                    onAutoPlayback = true;
+                    for (Move move : moves) {
+                        onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
+
+                        try {
+                            Thread.sleep(GameController.animationInterval);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        if(move.isDoesCapture()){
+                            onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
+                        }else{
+                            onPlayerClickCell(move.getToPoint(), currentPlayer);
+                        }
+
+                        try {
+                            Thread.sleep(GameController.animationInterval);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    onAutoPlayback = false;
+                    return;
+                }
+            });
+            thread.start();
         }
     }
 
@@ -859,12 +898,6 @@ public class GameController implements GameListener {
         allUsers.add(new User(username,password));
         this.writeUsers();
         return true;
-    }
-
-    //Logout is used when you return to the InitFrame
-    @Override
-    public void onPlayerClickLogoutButton() {
-        user1 = null;
     }
 
     @Override
@@ -945,6 +978,12 @@ public class GameController implements GameListener {
     public ArrayList<User> onPlayerClickRankListButton() {
         allUsers.sort(Comparator.comparing(User::getScore).reversed());
         return allUsers;
+    }
+
+    //Logout is used when you return to the InitFrame
+    @Override
+    public void onPlayerClickLogoutButton() {
+        user1 = null;
     }
 
     //Exit is used when you end a ChessGameFrame and Return to the Start Frame

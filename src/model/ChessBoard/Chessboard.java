@@ -17,7 +17,6 @@ public class Chessboard {
     private Cell[][] grid;
     private ArrayList<ChessPiece> bluePieces;
     private ArrayList<ChessPiece> redPieces;
-    private GameController gameController;
 
     public Chessboard() {
         this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
@@ -125,9 +124,10 @@ public class Chessboard {
     }
 
     //Only used once when model is created in GameController.java.
-    public void registerController(GameController gameController){
-        this.gameController = gameController;
-    }
+    //Jerry: I have deleted the register method in GameController, the gameController here has never been used.
+//    public void registerController(GameController gameController){
+//        this.gameController = gameController;
+//    }
 
     public Move moveChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         //First check if the move is valid.

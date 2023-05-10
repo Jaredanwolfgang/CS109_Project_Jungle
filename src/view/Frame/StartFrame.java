@@ -86,7 +86,6 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 frame.getLoginFrame().setState(1);
-                frame.getGameController().onPlayerSelectLocalPVPMode();
                 frame.playerClickLocalPVPButton();
             }
 
@@ -244,7 +243,7 @@ public class StartFrame extends JFrame {
         this.getContentPane().add(returnButton);
     }
 
-    //TODO: The ModesSelectFrame is not finished.
+
     public void initPVEButton() {
 //        System.out.println("PVE Button is initializing...");
 

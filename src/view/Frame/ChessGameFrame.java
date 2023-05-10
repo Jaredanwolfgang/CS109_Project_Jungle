@@ -240,6 +240,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         loadButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                frame.playerClickLoadButton();
             }
 
             @Override
@@ -456,6 +457,12 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseExited(MouseEvent e) {
                 playbackButton.setIcon(Button_Light_New);
+            }
+        });
+        playbackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.getGameController().onPlayerClickPlayBackButton();
             }
         });
         this.getContentPane().add(playbackButton);

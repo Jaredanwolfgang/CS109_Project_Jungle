@@ -20,14 +20,6 @@ public class InitFrame extends JFrame{
         this.frame = frame;
         initJFrame();
 
-        /** If the path to files never change, could we put it into the specific init method?
-         * You might want to keep the constructor simple and clean.
-         * like this:
-         *   initLabel();
-         *   initButton();
-         *   initBackground();
-         * As some of the initialization might be used in other methods.(Like a reset of chessboard)
-         */
         initLabel();
         initLoginButton();
         initRegisterButton();

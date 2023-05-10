@@ -4,10 +4,13 @@ import controller.GameController;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessBoard.Move;
+import model.ChessPieces.ChessPiece;
+import model.Enum.PlayerColor;
 import model.Enum.Seasons;
 import model.User.User;
 import view.ChessComponent.ChessComponent;
 import view.Dialog.SuccessDialog;
+import view.UI.SoundEffect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +26,7 @@ public class Frame {
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
     private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
     private OutputFrame outputFrame;
+    private FileChooserFrame fileChooserFrame;
 
     public Frame() {
         initFrame.setVisible(true);
@@ -72,14 +76,61 @@ public class Frame {
         outputFrame = new OutputFrame(this);
         outputFrame.setVisible(true);
     }
+    public void playerClickLoadButton(){
+        fileChooserFrame = new FileChooserFrame(this);
+        fileChooserFrame.setVisible(true);
+    }
 
     //Here are the methods for all the moves on board.
     public void move(ChessboardPoint point, ChessboardPoint selectedPoint){
+        if(this.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.WINTER){
+            SoundEffect player = new SoundEffect("Music/SoundEffect/Move_on_ice.wav");
+            player.play();
+        }else if(this.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.SPRING){
+            SoundEffect player = new SoundEffect("Music/SoundEffect/Move_in_grass.wav");
+            player.play();
+        }else{
+            SoundEffect player = new SoundEffect("Music/SoundEffect/ChessMove.wav");
+            player.play();
+        }
         ChessComponent chessComponent = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
         chessComponent.setSelected(false);
         this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
     }
     public void eat(ChessboardPoint point, ChessboardPoint selectedPoint){
+        ChessPiece toGetPredatorSound = this.getGameController().getModel().getChessPieceAt(point);
+        switch (toGetPredatorSound.getCategory()){
+            case CAT -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Cat.wav");
+                player.play();
+            }
+            case DOG -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Dog.wav");
+                player.play();
+            }
+            case ELEPHANT -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Elephant.wav");
+                player.play();
+            }
+            case LION -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Lion.wav");
+                player.play();
+            }
+            case LEOPARD, TIGER -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Tiger_Leopard.wav");
+                player.play();
+            }
+            case RAT -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Rat.wav");
+                player.play();
+            }
+            case WOLF -> {
+                SoundEffect player = new SoundEffect("Music/SoundEffect/Wolf.wav");
+                player.play();
+            }
+            default -> {}
+
+        }
         ChessComponent predator = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
         ChessComponent prey = this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(point);
         predator.setSelected(false);
@@ -95,14 +146,14 @@ public class Frame {
     }
     public void showAllPossibleMoves(ArrayList<Move> Moves){
         for (int i = 0; i < Moves.size(); i++) {
-            System.out.println(Moves.get(i).getToPoint());
+//            System.out.println(Moves.get(i).getToPoint());
             this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).setLabelled(true);
             this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).repaint();
         }
     }
     public void removeAllPossibleMoves(ArrayList<Move> Moves){
         for (int i = 0; i < Moves.size(); i++) {
-            System.out.println(Moves.get(i).getToPoint());
+//            System.out.println(Moves.get(i).getToPoint());
             this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).setLabelled(false);
             this.getChessGameFrame().getChessboardComponent().getGridComponentAt(Moves.get(i).getToPoint()).repaint();
         }
@@ -110,11 +161,20 @@ public class Frame {
     public void updateTurnAccount(int turnAccount){
         this.getChessGameFrame().changeTurnLabel(turnAccount, gameController.getCurrentPlayer());
     }
-    //The reset function is not functioning properly.
+
     public void resetChessBoardComponent(){
+        System.out.println("Chess Component resetting");
         this.getChessGameFrame().getChessboardComponent().removeAll();
-        this.getChessGameFrame().getChessboardComponent().initiateGridComponents();
-        this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
+
+        try {
+            this.getChessGameFrame().changeTurnLabel(1, PlayerColor.BLUE);
+            this.getChessGameFrame().getChessboardComponent().initiateGridComponents();
+            this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
+        } catch (Exception e) {
+            System.out.println("The Chess Component reset failed");
+            throw new RuntimeException(e);
+        }
+
         this.getChessGameFrame().revalidate();
         this.getChessGameFrame().repaint();
     }
