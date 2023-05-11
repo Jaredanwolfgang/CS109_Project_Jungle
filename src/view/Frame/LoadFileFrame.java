@@ -15,7 +15,7 @@ public class LoadFileFrame extends JFrame implements ActionListener {
     public LoadFileFrame(Frame frame) {
         this.frame = frame;
         setTitle("File Chooser Frame");
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(400, 100);
         setLocationRelativeTo(null);
 
@@ -24,7 +24,7 @@ public class LoadFileFrame extends JFrame implements ActionListener {
         textField.setPreferredSize(new Dimension(300, 20));
 
         // Create the button to choose a file
-        button = new JButton("Select File");
+        button = new JButton("Please Select File");
         button.addActionListener(this);
 
         // Add the components to the frame
@@ -34,6 +34,13 @@ public class LoadFileFrame extends JFrame implements ActionListener {
         getContentPane().add(panel, BorderLayout.CENTER);
 
         setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -47,8 +54,8 @@ public class LoadFileFrame extends JFrame implements ActionListener {
                 if (file.getName().endsWith(".txt")) {
                     textField.setText(file.getAbsolutePath());
                     // Here you can input the file to the system
-                    this.setVisible(false);
                     frame.getGameController().onPlayerClickLoadButton(textField.getText());
+                    dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Please select a .txt file.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }

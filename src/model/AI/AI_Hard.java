@@ -39,6 +39,10 @@ class MonteCarloTreeSearch {
             }
             if (node.children.isEmpty()) {
                 generateChildren(node);
+                if(node.children.size() == 0){
+                    node.winner = JungleSimulator.flipColor(node.player);
+                    return node;
+                }
                 return node.children.get(0);
             } else {
                 for (Node child : node.children) {

@@ -35,7 +35,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
         this.setTitle("Jungle Register");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(null);
         addWindowListener(new WindowAdapter() {

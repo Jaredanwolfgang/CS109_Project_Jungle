@@ -63,7 +63,6 @@ public class SaveFileFrame extends JFrame implements ActionListener {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
                 dispose();
             }
         });
@@ -80,8 +79,12 @@ public class SaveFileFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "Please choose an output directory.");
             return;
         }
-
-        String filePath = directoryField.getText() + File.separator + filenameField.getText() + ".txt";
+        String filePath;
+        if(!directoryField.getText().endsWith(".txt")){
+            filePath = directoryField.getText() + File.separator + filenameField.getText() + ".txt";
+        }else{
+            filePath = directoryField.getText() + File.separator + filenameField.getText();
+        }
         frame.getGameController().onPlayerClickSaveButton(filePath);
         JOptionPane.showMessageDialog(this, "Output written to: " + filePath);
     }
