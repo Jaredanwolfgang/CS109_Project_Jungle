@@ -8,9 +8,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class AI_Hard {
     static final int NUMBER_OF_ITERATIONS = 10000;
+    static HashMap<CellGrid, ArrayList<Move>> historyMoves = new HashMap<>();
 
     public static Move findBestOneMove(Cell[][] board, Color player) {
         long current1 = System.currentTimeMillis();
@@ -37,10 +39,6 @@ class MonteCarloTreeSearch {
             }
             if (node.children.isEmpty()) {
                 generateChildren(node);
-                if(node.children.size() == 0){
-                    node.winner = JungleSimulator.flipColor(node.player);
-                    return node;
-                }
                 return node.children.get(0);
             } else {
                 for (Node child : node.children) {
@@ -56,7 +54,7 @@ class MonteCarloTreeSearch {
     }
 
     void generateChildren(Node node) {
-        ArrayList<Move> moves = JungleSimulator.getAvailableMoves(node.board, node.player);
+        ArrayList<Move> moves = JungleSimulator.getAvailableMoves(node.board, node.player, 0);
         for (Move move : moves) {
             Cell[][] newBoard = Chessboard.cloneBoard(node.board);
             if (move.isDoesCapture()) {
@@ -133,7 +131,7 @@ class Node implements Comparable<Node> {
         if (visits == 0) {
             UCTValue = Double.MAX_VALUE;
         } else {
-            UCTValue = wins/ visits + Math.sqrt(2 * Math.log(parent.visits) / visits);
+            UCTValue = (wins - losses) / visits + Math.sqrt(2 * Math.log(parent.visits) / visits);
         }
     }
 
@@ -152,10 +150,10 @@ class JungleSimulator {
         }
         Color player = node.player;
         Cell[][] currentBoard = Chessboard.cloneBoard(node.board);
-        /*int[] bluePieces = new int[9];
+        int[] bluePieces = new int[9];
         int[] redPieces = new int[9];
-        int maxBlue = 1;
-        int maxRed = 1;
+        int maxBlue = 0;
+        int maxRed = 0;
         int minBlue = 8;
         int minRed = 8;
         int count = 0;
@@ -174,21 +172,18 @@ class JungleSimulator {
                 }
             }
         }
-        bluePieces[0] = 1;
-        redPieces[0] = 1;*/
         while (true) {
-            ArrayList<Move> moves = JungleSimulator.getAvailableMoves(currentBoard, player);
+            ArrayList<Move> moves = JungleSimulator.getAvailableMoves(currentBoard, player, count);
             if (moves.isEmpty()) {
                 return player;
             }
             int randomMoveIndex = (int) (Math.random() * moves.size());
             Move moveToMake = moves.get(randomMoveIndex);
             if (moveToMake.isDoesCapture()) {
-                /*if (flipColor(player) == Color.BLUE) {
+                if (flipColor(player) == Color.BLUE) {
                     bluePieces[currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank()]--;
                     if (currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == maxBlue) {
-                        maxBlue--;
-                        for (int i = maxBlue; i >= 0; i--) {
+                        for (int i = maxBlue - 1; i >= 0; i--) {
                             if (bluePieces[i] > 0) {
                                 maxBlue = i;
                                 break;
@@ -196,8 +191,7 @@ class JungleSimulator {
                         }
                     }
                     if (currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == minBlue) {
-                        minBlue++;
-                        for (int i = minBlue; i < 9; i++) {
+                        for (int i = minBlue + 1; i < 9; i++) {
                             if (bluePieces[i] > 0) {
                                 minBlue = i;
                                 break;
@@ -207,8 +201,7 @@ class JungleSimulator {
                 } else {
                     redPieces[currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank()]--;
                     if (currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == maxRed) {
-                        maxRed--;
-                        for (int i = maxRed; i >= 0; i--) {
+                        for (int i = maxRed - 1; i >= 0; i--) {
                             if (redPieces[i] > 0) {
                                 maxRed = i;
                                 break;
@@ -216,8 +209,7 @@ class JungleSimulator {
                         }
                     }
                     if (currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].getPiece().getRank() == minRed) {
-                        minRed++;
-                        for (int i = minRed; i < 9; i++) {
+                        for (int i = minRed + 1; i < 9; i++) {
                             if (redPieces[i] > 0) {
                                 minRed = i;
                                 break;
@@ -230,7 +222,7 @@ class JungleSimulator {
                 }
                 if (minBlue > maxRed) {
                     return Color.BLUE;
-                }*/
+                }
                 currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].removePiece();
             }
             currentBoard[moveToMake.getToPoint().getRow()][moveToMake.getToPoint().getCol()].setPiece(currentBoard[moveToMake.getFromPoint().getRow()][moveToMake.getFromPoint().getCol()].getPiece());
@@ -282,10 +274,11 @@ class JungleSimulator {
                 }
             }
             player = flipColor(player);
+            count++;
         }
     }
 
-    static ArrayList<Move> getAvailableMoves(Cell[][] board, Color player) {
+    static ArrayList<Move> getAvailableMoves(Cell[][] board, Color player, int depth) {
         /*if(depth < 10){
             CellGrid cells = new CellGrid(Chessboard.cloneBoard(board));
             if (AI_MCTS.historyMoves.containsKey(cells)) {
@@ -305,7 +298,7 @@ class JungleSimulator {
         if (player == Color.RED && board[0][3].getPiece() != null && board[0][3].getPiece().getOwner().getColor() == Color.RED) {
             return player;
         }
-        boolean opponentHasNoPiece = true;
+        /*boolean opponentHasNoPiece = true;
         Color opponent = flipColor(player);
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 7; j++){
@@ -317,7 +310,7 @@ class JungleSimulator {
         }
         if(opponentHasNoPiece){
             return player;
-        }
+        }*/
         return GAME_CONTINUES;
     }
 
@@ -326,5 +319,43 @@ class JungleSimulator {
             return Color.RED;
         }
         return Color.BLUE;
+    }
+}
+
+class CellGrid {
+    private Cell[][] cells;
+
+    public CellGrid(Cell[][] cells) {
+        this.cells = cells;
+    }
+
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CellGrid)) {
+            return false;
+        }
+        CellGrid other = (CellGrid) o;
+        boolean isEqual = true;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (!cells[i][j].equals(other.getCells()[i][j])) {
+                    isEqual = false;
+                    break;
+                }
+            }
+        }
+        return isEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(cells);
     }
 }
