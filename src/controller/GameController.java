@@ -589,7 +589,7 @@ public class GameController implements GameListener {
                 String[] parts = line.split(",");
 
                 if(parts.length < 7){
-                    throw new IllegalArgumentException("Invalid input format: " + line);
+                    throw new IllegalArgumentException("ERROR 106: Invalid input format: " + line);
                 }
                 
                 String movingPieceName = parts[0];
@@ -602,7 +602,7 @@ public class GameController implements GameListener {
                 }else if(movingPieceOwner.equals("RED")){
                     movingPieceOwnerColor = PlayerColor.RED;
                 }else{
-                    throw new IllegalArgumentException("Invalid input format(illegal moving chess piece color): " + line);
+                    throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal moving chess piece color): " + line);
                 }
 
                 movingPiece = switch (movingPieceName) {
@@ -615,7 +615,7 @@ public class GameController implements GameListener {
                     case "Cat" -> new CatChessPiece(movingPieceOwnerColor);
                     case "Rat" -> new RatChessPiece(movingPieceOwnerColor);
                     default ->
-                            throw new IllegalArgumentException("Invalid input format(illegal moving chess piece type): " + line);
+                            throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal moving chess piece type): " + line);
                 };
 
                 int fromRow;
@@ -625,7 +625,7 @@ public class GameController implements GameListener {
                         throw new NumberFormatException();
                     }
                 }catch (NumberFormatException e){
-                    throw new IllegalArgumentException("Invalid input format(illegal from point coordinate): " + line);
+                    throw new IllegalArgumentException("ERROR 102: Invalid input format(illegal from point coordinate): " + line);
                 }
 
                 int fromCol;
@@ -635,7 +635,7 @@ public class GameController implements GameListener {
                         throw new NumberFormatException();
                     }
                 }catch (NumberFormatException e){
-                    throw new IllegalArgumentException("Invalid input format(illegal from point coordinate): " + line);
+                    throw new IllegalArgumentException("ERROR 102: Invalid input format(illegal from point coordinate): " + line);
                 }
 
                 ChessboardPoint fromPoint = new ChessboardPoint(fromRow, fromCol);
@@ -647,7 +647,7 @@ public class GameController implements GameListener {
                         throw new NumberFormatException();
                     }
                 }catch (NumberFormatException e){
-                    throw new IllegalArgumentException("Invalid input format(illegal to point coordinate): " + line);
+                    throw new IllegalArgumentException("ERROR 102: Invalid input format(illegal to point coordinate): " + line);
                 }
 
                 int toCol;
@@ -657,7 +657,7 @@ public class GameController implements GameListener {
                         throw new NumberFormatException();
                     }
                 }catch (NumberFormatException e){
-                    throw new IllegalArgumentException("Invalid input format(illegal to point coordinate): " + line);
+                    throw new IllegalArgumentException("ERROR 102: Invalid input format(illegal to point coordinate): " + line);
                 }
                 ChessboardPoint toPoint = new ChessboardPoint(toRow, toCol);
 
@@ -667,13 +667,13 @@ public class GameController implements GameListener {
                 }else if(parts[6].equals("false")){
                     doesCapture = false;
                 }else {
-                    throw new IllegalArgumentException("Invalid input format(illegal doesCapture flag): " + line);
+                    throw new IllegalArgumentException("ERROR 106: Invalid input format(illegal doesCapture flag): " + line);
                 }
 
                 if (doesCapture) {
 
                     if(parts.length != 9){
-                        throw new IllegalArgumentException("Invalid input format: " + line);
+                        throw new IllegalArgumentException("ERROR 106: Invalid input format: " + line);
                     }
 
                     String capturedPieceName = parts[7];
@@ -685,7 +685,7 @@ public class GameController implements GameListener {
                     }else if(capturedPieceOwner.equals("RED")){
                         capturedPieceOwnerColor = PlayerColor.RED;
                     }else{
-                        throw new IllegalArgumentException("Invalid input format(illegal captured chess piece color): " + line);
+                        throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal captured chess piece color): " + line);
                     }
                     capturedPiece = switch (capturedPieceName) {
                         case "Elephant" -> new ElephantChessPiece(capturedPieceOwnerColor);
@@ -697,13 +697,13 @@ public class GameController implements GameListener {
                         case "Cat" -> new CatChessPiece(capturedPieceOwnerColor);
                         case "Rat" -> new RatChessPiece(capturedPieceOwnerColor);
                         default ->
-                                throw new IllegalArgumentException("Invalid input format(illegal captured piece type): " + line);
+                                throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal captured piece type): " + line);
                     };
                     move = new Move(movingPiece, fromPoint, toPoint, true, capturedPiece);
                 }else{
 
                     if(parts.length != 7){
-                        throw new IllegalArgumentException("Invalid input format: " + line);
+                        throw new IllegalArgumentException("ERROR 106: Invalid input format: " + line);
                     }
 
                     move = new Move(movingPiece, fromPoint, toPoint, false, null);
@@ -716,7 +716,7 @@ public class GameController implements GameListener {
             /** NOT NECESSARY: Here should be a pop-up window to show the error message.
              * (I don't think the three other exceptions below need this)
             */
-            new FailDialog(e.getMessage());
+            JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filePath);
@@ -744,38 +744,44 @@ public class GameController implements GameListener {
         for(Move move : moves){
             try{
                 if(move.isDoesCapture()){
+                    if(this.currentPlayer != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("ERROR 104: Invalid move(it's not your turn)");
+                    }
                     if(model.getChessPieceAt(move.getFromPoint()) == null || model.getChessPieceAt(move.getToPoint()) == null){
-                        throw new IllegalArgumentException("Invalid move(piece does not exist)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not exist)");
                     }
                     if(model.getChessPieceAt(move.getFromPoint()).getCategory() != move.getMovingPiece().getCategory() || model.getChessPieceAt(move.getToPoint()).getCategory() != move.getCapturedPiece().getCategory()
                         || model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || model.getChessPieceAt(move.getToPoint()).getOwner() != move.getCapturedPiece().getOwner()){
-                        throw new IllegalArgumentException("Invalid move(piece does not match)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not match)");
                     }
-                    if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || this.currentPlayer != move.getMovingPiece().getOwner()){
-                        throw new IllegalArgumentException("Invalid move(piece does not belong to the player)");
+                    if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not belong to the player)");
                     }
                     if(model.getChessPieceAt(move.getToPoint()).getOwner() == move.getMovingPiece().getOwner()){
-                        throw new IllegalArgumentException("Invalid move(cannot capture your own piece)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(cannot capture your own piece)");
                     }
                     if (!model.isValidCapture(move.getFromPoint(), move.getToPoint())) {
-                        throw new IllegalArgumentException("Invalid move(piece can't reach the destination or piece can't capture the target)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece can't reach the destination or piece can't capture the target)");
                     }
                     allMovesOnBoard.add(model.captureChessPiece(move.getFromPoint(),move.getToPoint()));
                 }else{
+                    if(this.currentPlayer != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("ERROR 104: Invalid move(it's not your turn)");
+                    }
                     if(model.getChessPieceAt(move.getFromPoint()) == null){
-                        throw new IllegalArgumentException("Invalid move(piece does not exist)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not exist)");
                     }
                     if(model.getChessPieceAt(move.getFromPoint()).getCategory() != move.getMovingPiece().getCategory() || model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner()){
-                        throw new IllegalArgumentException("Invalid move(piece does not match)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not match)");
                     }
                     if(model.getChessPieceAt(move.getToPoint()) != null){
-                        throw new IllegalArgumentException("Invalid move(there is a piece in the target cell)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(there is a piece in the target cell)");
                     }
-                    if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || this.currentPlayer != move.getMovingPiece().getOwner()){
-                        throw new IllegalArgumentException("Invalid move(piece does not belong to the player)");
+                    if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner()){
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not belong to the player)");
                     }
                     if (!model.isValidMove(move.getFromPoint(), move.getToPoint())) {
-                        throw new IllegalArgumentException("Invalid move(piece can't reach the destination)");
+                        throw new IllegalArgumentException("ERROR 105: Invalid move(piece can't reach the destination)");
                     }
                     allMovesOnBoard.add(model.moveChessPiece(move.getFromPoint(), move.getToPoint()));
                 }
@@ -785,7 +791,7 @@ public class GameController implements GameListener {
                 isValidFile = false;
                 System.out.println(e.getMessage() + ": " + move);
 
-                new FailDialog(e.getMessage());
+                JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 
                 break;
             }

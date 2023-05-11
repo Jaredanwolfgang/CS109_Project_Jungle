@@ -133,7 +133,7 @@ public class Chessboard {
         //First check if the move is valid.
         //If not, throw an exception and end the method.
         if (!isValidMove(src, dest)) {
-            throw new IllegalArgumentException("Invalid move(piece can't reach the destination)");
+            throw new IllegalArgumentException("ERROR 105: Invalid move(piece can't reach the destination)");
         }
 
         //If the move is valid, generate a move instance.
@@ -160,7 +160,7 @@ public class Chessboard {
         //First check if the capture is valid.
         //If not, throw an exception and end the method.
         if (!isValidCapture(src, dest)) {
-            throw new IllegalArgumentException("Invalid move(piece can't reach the destination or piece can't capture the target)");
+            throw new IllegalArgumentException("ERROR 105: Invalid move(piece can't reach the destination or piece can't capture the target)");
         }
 
         //If the capture is valid, generate a move instance.

@@ -58,7 +58,7 @@ public class LoadFileFrame extends JFrame implements ActionListener {
                     frame.getGameController().onPlayerClickLoadButton(textField.getText());
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Please select a .txt file.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "ERROR 101: Please select a .txt file.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
