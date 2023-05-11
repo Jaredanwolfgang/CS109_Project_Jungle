@@ -42,8 +42,8 @@ public class ClientThread extends Thread{
             gameController.setColorOfUser(playerColor);
 
             if(playerColor != PlayerColor.GRAY){
-                if(gameController.getGameMode()!=GameMode.Online_PVP_Server){
-                    gameController.setGameMode(GameMode.Online_PVP_Client);
+                if(GameController.getGameMode()!=GameMode.Online_PVP_Server){
+                    GameController.gameMode = GameMode.Online_PVP_Client;
                 }
 
                 outPut.writeObject(GameController.user1);
@@ -51,7 +51,13 @@ public class ClientThread extends Thread{
                 System.out.println("Client: Sent local user profile to server");
 
                 User opponent = (User) inPut.readObject();
-                GameController.user2 = opponent;
+                tempUser = GameController.user1;
+                if(GameController.gameMode == GameMode.Online_PVP_Server) {
+                    GameController.user2 = opponent;
+                }else{
+                    GameController.user2 = GameController.user1;
+                    GameController.user1 = opponent;
+                }
                 System.out.println("Client: Received opponent profile from server: " + opponent.toString());
 
                 try {
@@ -69,7 +75,7 @@ public class ClientThread extends Thread{
                 }
 
             }else{
-                gameController.setGameMode(GameMode.Online_PVP_Spectator);
+                GameController.gameMode = GameMode.Online_PVP_Spectator;
 
                 tempUser = GameController.user1;
 
@@ -148,8 +154,6 @@ public class ClientThread extends Thread{
                 break;
             }
         }
-        GameController.user1 = tempUser;
-
         this.shutDown();
     }
 
@@ -242,6 +246,7 @@ public class ClientThread extends Thread{
         this.shutDown();
     }
     public void shutDown(){
+        GameController.user1 = tempUser;
         try {
             outPut.close();
             inPut.close();

@@ -26,7 +26,7 @@ import javax.swing.*;
 
 public class GameController implements GameListener {
     public static final long animationInterval = 400;
-    private static final String USER_FILE_PATH = "src\\model\\User\\users.txt";
+    private static final String USER_FILE_PATH = "Information\\users.txt";
     private Chessboard model;
     private Frame view;
     private ServerThread server;

@@ -6,13 +6,25 @@ import java.awt.event.WindowListener;
 
 public class FailDialog extends JDialog{
     private String message;
+    private JButton confirmButton;
     public FailDialog(String message){
         this.message = message;
 
         initLabel(this.message);
         initDialog();
 
+        initConfirmButton();
+
         this.setVisible(true);
+    }
+
+    private void initConfirmButton() {
+        confirmButton = new JButton("Confirm");
+        confirmButton.setBounds(100,90,100,30);
+        confirmButton.addActionListener(e -> {
+            dispose();
+        });
+        this.add(confirmButton);
     }
     public void initDialog(){
         this.setSize(320,180);
@@ -39,7 +51,7 @@ public class FailDialog extends JDialog{
     }
     public void initLabel(String message){
         JLabel label = new JLabel(message);
-        label.setBounds(60,10,200,100);
+        label.setBounds(60,10,200,80);
         this.add(label);
     }
 }
