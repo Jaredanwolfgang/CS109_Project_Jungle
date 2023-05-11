@@ -179,7 +179,7 @@ class JungleSimulator {
         while (true) {
             ArrayList<Move> moves = JungleSimulator.getAvailableMoves(currentBoard, player, count);
             if (moves.isEmpty()) {
-                return player;
+                return JungleSimulator.flipColor(player);
             }
             int randomMoveIndex = (int) (Math.random() * moves.size());
             Move moveToMake = moves.get(randomMoveIndex);
