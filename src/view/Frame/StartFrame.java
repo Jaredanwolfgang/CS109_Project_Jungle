@@ -166,7 +166,7 @@ public class StartFrame extends JFrame {
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.getMusicPlayerFrame().setVisible(true);
+                frame.playerClickMusicButton();
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}

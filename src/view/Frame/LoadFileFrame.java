@@ -1,19 +1,18 @@
 package view.Frame;
 
-import java.lang.Object;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class FileChooserFrame extends JFrame implements ActionListener {
+public class LoadFileFrame extends JFrame implements ActionListener {
 
     private JTextField textField;
     private JButton button;
     private Frame frame;
 
-    public FileChooserFrame(Frame frame) {
+    public LoadFileFrame(Frame frame) {
         this.frame = frame;
         setTitle("File Chooser Frame");
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -39,11 +38,12 @@ public class FileChooserFrame extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == button) {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
-            int result = chooser.showOpenDialog(this);
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("Save Files"));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+            int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File file = chooser.getSelectedFile();
+                File file = fileChooser.getSelectedFile();
                 if (file.getName().endsWith(".txt")) {
                     textField.setText(file.getAbsolutePath());
                     // Here you can input the file to the system

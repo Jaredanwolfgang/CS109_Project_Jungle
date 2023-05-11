@@ -7,20 +7,13 @@ import javax.sound.sampled.*;
 import java.io.File;
 
 public class ChessMove{
-    private Frame frame;
-
     public ChessMove(Frame frame) {
-        this.frame = frame;
-        play();
-    }
-
-    public void play() {
-            if(frame.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.WINTER){
-                new SoundEffect("Music/SoundEffect/Move_on_ice.wav");
-            }else if(frame.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.SPRING){
-                new SoundEffect("Music/SoundEffect/Move_in_grass.wav");
-            }else{
-                new SoundEffect("Music/SoundEffect/ChessMove.wav");
-            }
+        if(frame.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.WINTER){
+            new SoundEffect("Music/SoundEffect/Move_on_ice.wav");
+        }else if(frame.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.SPRING){
+            new SoundEffect("Music/SoundEffect/Move_in_grass.wav");
+        }else{
+            new SoundEffect("Music/SoundEffect/ChessMove.wav");
+        }
     }
 }

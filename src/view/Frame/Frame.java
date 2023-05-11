@@ -1,17 +1,12 @@
 package view.Frame;
 
 import controller.GameController;
-import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessBoard.Move;
-import model.ChessPieces.ChessPiece;
 import model.Enum.PlayerColor;
-import model.Enum.Seasons;
-import model.User.User;
 import view.ChessComponent.ChessComponent;
 import view.Dialog.SuccessDialog;
 import view.UI.ChessMove;
-import view.UI.SoundEffect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,8 +22,8 @@ public class Frame {
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
     private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
 /*    private RankFrame rankFrame = new RankFrame(this);*/
-    private OutputFrame outputFrame;
-    private FileChooserFrame fileChooserFrame;
+    private SaveFileFrame saveFileFrame;
+    private LoadFileFrame loadFileFrame;
 
     public Frame() {
         initFrame.setVisible(true);
@@ -75,12 +70,12 @@ public class Frame {
         toFrame.setVisible(true);
     }
     public void playerClickSaveButton(){
-        outputFrame = new OutputFrame(this);
-        outputFrame.setVisible(true);
+        saveFileFrame = new SaveFileFrame(this);
+        saveFileFrame.setVisible(true);
     }
     public void playerClickLoadButton(){
-        fileChooserFrame = new FileChooserFrame(this);
-        fileChooserFrame.setVisible(true);
+        loadFileFrame = new LoadFileFrame(this);
+        loadFileFrame.setVisible(true);
     }
 
     //Here are the methods for all the moves on board.
@@ -139,7 +134,9 @@ public class Frame {
         this.getChessGameFrame().revalidate();
         this.getChessGameFrame().repaint();
     }
-
+    public void playerClickMusicButton() {
+        musicPlayerFrame.setVisible(!musicPlayerFrame.isVisible());
+    }
     //Getters below
     public GameController getGameController() {
         return gameController;
@@ -161,5 +158,8 @@ public class Frame {
     }
     public MusicPlayerFrame getMusicPlayerFrame() {
         return musicPlayerFrame;
+    }
+    public SelectPVEModeFrame getSelectPVEModeFrame() {
+        return selectFrame;
     }
 }

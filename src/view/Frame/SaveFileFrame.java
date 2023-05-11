@@ -16,12 +16,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class OutputFrame extends JFrame implements ActionListener {
+public class SaveFileFrame extends JFrame implements ActionListener {
     private JTextField filenameField;
     private JTextField directoryField;
     private Frame frame;
 
-    public OutputFrame(Frame frame) {
+    public SaveFileFrame(Frame frame) {
         super("Output Frame");
         this.frame = frame;
 
@@ -81,7 +81,7 @@ public class OutputFrame extends JFrame implements ActionListener {
             return;
         }
 
-        String filePath = directoryField.getText() + "\\" + filenameField.getText() + ".txt";
+        String filePath = directoryField.getText() + File.separator + filenameField.getText() + ".txt";
         frame.getGameController().onPlayerClickSaveButton(filePath);
         JOptionPane.showMessageDialog(this, "Output written to: " + filePath);
     }
@@ -89,6 +89,7 @@ public class OutputFrame extends JFrame implements ActionListener {
     private void chooseOutputDirectory() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Choose Output Directory");
+        fileChooser.setCurrentDirectory(new File("Save Files"));
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {

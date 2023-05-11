@@ -48,8 +48,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     private final JButton playbackButton = new JButton();
 
     private Frame frame;
-    private int ONE_CHESS_SIZE = 45;
-    private int ONE_BUTTON_SIZE = 50;
+    private final int ONE_CHESS_SIZE = 45;
+    private final int ONE_BUTTON_SIZE = 50;
     private String Address = "Background\\Spring.gif";
 
     private ChessboardComponent chessboardComponent;
@@ -127,16 +127,9 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 frame.getGameController().onPlayerClickResetButton();
-                frame.resetChessBoardComponent();
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
 
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -324,7 +317,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.getMusicPlayerFrame().setVisible(true);
+                frame.playerClickMusicButton();
             }
 
             @Override

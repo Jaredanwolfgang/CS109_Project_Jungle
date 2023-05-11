@@ -63,7 +63,6 @@ public class ChessboardComponent extends JComponent {
                 //Implement the initialization checkerboard
                 if (grid[i][j].getPiece() != null) {
                     ChessPiece chessPiece = grid[i][j].getPiece();
-                    System.out.println(chessPiece.getOwner());
                     switch (chessPiece.getCategory()) {
                         case ELEPHANT ->
                                 gridComponents[i][j].add(new ElephantChessComponent(chessPiece.getOwner(), CHESS_SIZE));

@@ -58,7 +58,7 @@ public class EndLabel extends JLabel {
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                gameController.getView().getMusicPlayerFrame().setVisible(true);
+                gameController.getView().playerClickMusicButton();
             }
 
             @Override

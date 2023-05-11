@@ -23,9 +23,11 @@ public class RoundLabel extends JLabel {
             public void mouseEntered(MouseEvent e) {
                 JLabel source = (JLabel) e.getSource();
                 ToolTipManager.sharedInstance().setInitialDelay(0);
-                if(backgroundColor.equals(new Color(78, 150, 253))){
+                Color blueColor = new Color(78, 150, 253);
+                Color redColor = new Color(218, 60, 45);
+                if(backgroundColor.getRGB() == blueColor.getRGB()){
                     source.setToolTipText(String.format("Player: %s Score: %.2f Win rate: %.2f", GameController.user1.getUsername(), GameController.user1.getScore(), GameController.user1.getWinRate()));
-                } else if (backgroundColor.equals(new Color(218, 60, 45))){
+                } else if (backgroundColor.getRGB() == redColor.getRGB()){
                     source.setToolTipText(String.format("Player: %s Score: %.2f Win rate: %.2f", GameController.user2.getUsername(), GameController.user2.getScore(), GameController.user2.getWinRate()));
                 }
             }
@@ -39,6 +41,10 @@ public class RoundLabel extends JLabel {
 
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
     }
 
     @Override

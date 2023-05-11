@@ -7,9 +7,6 @@ import java.io.File;
 
 public class ChessClick {
     public ChessClick() {
-        play();
-    }
-    public void play() {
         new SoundEffect("Music/SoundEffect/ChessClick.wav");
     }
 }

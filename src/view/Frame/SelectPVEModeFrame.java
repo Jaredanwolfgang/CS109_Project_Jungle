@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 //Draw Pictures First
 public class SelectPVEModeFrame extends JFrame {
@@ -25,6 +27,14 @@ public class SelectPVEModeFrame extends JFrame {
 
         initBackground("Background\\Jungle2.gif");
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.getStartFrame().setVisible(true);
+                frame.getSelectPVEModeFrame().setVisible(false);
+            }
+        });
+
         this.setVisible(false);
     }
 
@@ -35,7 +45,7 @@ public class SelectPVEModeFrame extends JFrame {
         this.setTitle("Mode Selection");
         //this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
     }
 

@@ -37,14 +37,14 @@ public class MusicPlayerFrame extends JFrame {
         //播放按钮按下时
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("音乐播放器：播放按钮按下");
+                System.out.println("MusicPlayer: playButton pressed");
                 playMusic();
             }
         });
         //暂停按钮按下时
         pauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("音乐播放器：暂停按钮按下");
+                System.out.println("MusicPlayer: pauseButton pressed");
                 if (clip != null && clip.isRunning()) {
                     //用clipTimePosition记录目前位置
                     clipTimePosition = clip.getMicrosecondPosition();
@@ -55,7 +55,7 @@ public class MusicPlayerFrame extends JFrame {
         //停止按钮按下时
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("音乐播放器：停止按钮按下");
+                System.out.println("MusicPlayer: stopButton pressed");
                 if (clip != null) {
                     clip.stop();
                     //将音乐位置改回起点
@@ -79,7 +79,7 @@ public class MusicPlayerFrame extends JFrame {
                 JSlider source = (JSlider) e.getSource();
                 //volume是滑轨的值，大小在0-100之间
                 volume = source.getValue();
-                System.out.println("音乐播放器：音量值改变为 " + volume + "%" );
+                System.out.println("MusicPlayer: change volume to " + volume + " %" );
 
                 if(clip != null){
                     //修改音量
@@ -100,7 +100,7 @@ public class MusicPlayerFrame extends JFrame {
         add(panel);
 
         //设置音乐播放器本身Frame的属性   注意：创建时播放器默认为不可见
-        setTitle("Music Player");
+        setTitle("MusicPlayer");
         setSize(500, 100);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);//关闭操作由windowListener接管
         setLocationRelativeTo(null);
@@ -116,7 +116,7 @@ public class MusicPlayerFrame extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 //当窗口右上角关闭按钮按下时，只隐藏窗口
-                System.out.println("音乐播放器：隐藏");
+                System.out.println("MusicPlayer: Hide MusicPlayer");
                 setVisible(false);
             }
 
@@ -149,7 +149,7 @@ public class MusicPlayerFrame extends JFrame {
 
         try {
             //获取音乐文件
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Music\\music.wav"));
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Music\\BGM.wav"));
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
 
