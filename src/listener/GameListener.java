@@ -74,7 +74,8 @@ public interface GameListener {
     //call this method when player click the rank list button
     //return an array list of user, sorted by their score already
     /** ATTENTION: please do not change user data in the GUI part, all changes have been dealt with in controller. */
-    ArrayList<User> onPlayerClickRankListButton();
+    ArrayList<User> onPlayerClickRankListButtonByScore();
+    ArrayList<User> onPlayerClickRankListButtonByWinRate();
 
     //call this method when player exit the game frame and go back to the mode selection frame
     //(I need to reset the second user to null and reset the chessboard)

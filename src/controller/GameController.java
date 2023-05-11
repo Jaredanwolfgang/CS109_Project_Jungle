@@ -154,7 +154,8 @@ public class GameController implements GameListener {
     //Judge if there is a winner in two ways.
     //First: One player's piece enters the other player's den.
     //Second: After a capture, one player has no piece left.
-    private PlayerColor win() {
+    /** Jerry: I have changed the win() method to public, because I need to implement the method in frame.*/
+    public PlayerColor win() {
         PlayerColor noPieceLeft = model.noPieceLeft();
         if((model.getGrid()[0][3].getPiece() != null && model.getGrid()[0][3].getPiece().getOwner() == PlayerColor.RED) || noPieceLeft == PlayerColor.BLUE){
             return PlayerColor.RED;
@@ -262,9 +263,7 @@ public class GameController implements GameListener {
                 }
 
                 /* Here should be code for GUI to display game over message to user */
-                new SuccessDialog("End of the Game!\n"+user1.getUsername()+"'s Score: "+user1.getScore()+"\n"+user2.getUsername()+"'s Score: "+user2.getScore(),view.getStartFrame());
-                onPlayerExitGameFrame();
-                view.resetChessBoardComponent();
+                view.getChessGameFrame().addWinLabel();
                 return;
             }else{
                 if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback) {
@@ -404,9 +403,7 @@ public class GameController implements GameListener {
                         }
 
                         //Here should be code for GUI to display game over message to user */
-                        new SuccessDialog("End of the Game!\n"+user1.getUsername()+"'s Score: "+user1.getScore()+"\n"+user2.getUsername()+"'s Score: "+user2.getScore(),view.getStartFrame());
-                        onPlayerExitGameFrame();
-                        view.resetChessBoardComponent();
+                        view.getChessGameFrame().addWinLabel();
                         return;
                     }else{
                         if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback){
@@ -534,6 +531,8 @@ public class GameController implements GameListener {
         selectedPoint = null;
 
         model.reset();
+        view.resetChessBoardComponent();
+
         this.currentPlayer = PlayerColor.BLUE;
 
         this.colorOfUser = PlayerColor.BLUE;
@@ -971,8 +970,13 @@ public class GameController implements GameListener {
     }
 
     @Override
-    public ArrayList<User> onPlayerClickRankListButton() {
+    public ArrayList<User> onPlayerClickRankListButtonByScore() {
         allUsers.sort(Comparator.comparing(User::getScore).reversed());
+        return allUsers;
+    }
+    @Override
+    public ArrayList<User> onPlayerClickRankListButtonByWinRate() {
+        allUsers.sort(Comparator.comparing(User::getWinRate).reversed());
         return allUsers;
     }
 
@@ -987,7 +991,10 @@ public class GameController implements GameListener {
     public void onPlayerExitGameFrame() {
         turnCount = 1;
         selectedPoint = null;
+
         model.reset();
+        view.resetChessBoardComponent();
+
         currentPlayer = PlayerColor.BLUE;
         allMovesOnBoard.clear();
         timer.shutdown();

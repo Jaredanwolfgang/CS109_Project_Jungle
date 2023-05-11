@@ -1,16 +1,40 @@
 package view.UI;
 
+import controller.GameController;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class RoundLabel extends JLabel {
     private Color backgroundColor;
     private int cornerRadius;
-    public RoundLabel(String text, Color backgroundColor, int cornerRadius) {
+    public RoundLabel(String text, Color bgColor, int cornerRadius) {
         super(text);
-        this.backgroundColor = backgroundColor;
+        this.backgroundColor = bgColor;
         this.cornerRadius = cornerRadius;
         setOpaque(false); // 设置透明度
+        this.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {}
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JLabel source = (JLabel) e.getSource();
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                if(backgroundColor.equals(new Color(78, 150, 253))){
+                    source.setToolTipText(String.format("Player: %s Score: %.2f Win rate: %.2f", GameController.user1.getUsername(), GameController.user1.getScore(), GameController.user1.getWinRate()));
+                } else if (backgroundColor.equals(new Color(218, 60, 45))){
+                    source.setToolTipText(String.format("Player: %s Score: %.2f Win rate: %.2f", GameController.user2.getUsername(), GameController.user2.getScore(), GameController.user2.getWinRate()));
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JLabel source = (JLabel) e.getSource();
+                source.setToolTipText(null);
+            }
+        });
     }
 
     public void setBackgroundColor(Color backgroundColor) {

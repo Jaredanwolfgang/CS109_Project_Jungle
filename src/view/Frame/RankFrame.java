@@ -1,23 +1,18 @@
 package view.Frame;
-import view.Dialog.SuccessDialog;
+import model.User.User;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.lang.Object;
 
 public class RankFrame extends JFrame {
     private final int WIDTH = 500;
     private final int HEIGHT = 729;
-    private Map<String,Double> players;
+    private ArrayList<User> users = new ArrayList<>();
     private JTable rankTable;
     private DefaultTableModel tableModel;
     private Frame frame;
@@ -25,16 +20,11 @@ public class RankFrame extends JFrame {
     /** Now you can get the ArrayList of players by calling a method in gameListener */
     public RankFrame(Frame frame){
         this.frame = frame;
-        initFrame();
-        try {
-            this.players = initRank();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.users = frame.getGameController().onPlayerClickRankListButtonByScore();
 
         initTable();
         initBackground("Background/Spring.gif");
-
+        initFrame();
         this.setVisible(false);
     }
     public void initFrame(){
@@ -54,22 +44,16 @@ public class RankFrame extends JFrame {
         this.getContentPane().add(background);
     }
     public void initTable(){
-        System.out.println("Sorting the players by scores...");
-        // First, sort the players by scores
-        // Convert the map to a list and sort it by scores in descending order
-        List<Map.Entry<String, Double>> sortedPlayers = new ArrayList<>(players.entrySet());
-        // Lambda expression: sort the list by scores in descending order
-        Collections.sort(sortedPlayers, (p1, p2) -> p2.getValue().compareTo(p1.getValue()));
         // Create a table model with columns for rank, name, and score
         System.out.println("Initializing the table...");
         tableModel = new DefaultTableModel(new String[]{"Rank", "Name", "Score"}, 0);
         int rank = 1;
-        for (Map.Entry<String, Double> entry : sortedPlayers) {
+        /*for (Map.Entry<String, Double> entry : sortedPlayers) {
             String name = entry.getKey();
             double score = entry.getValue();
             tableModel.addRow(new Object[]{rank, name, score});
             rank++;
-        }
+        }*/
         System.out.println("Initializing the JTable...");
         rankTable = new JTable(tableModel);
         rankTable.setFont(new Font("Calibri", Font.PLAIN, 12));
@@ -95,69 +79,6 @@ public class RankFrame extends JFrame {
         panel.setOpaque(false);
 
         this.getContentPane().add(panel);
-    }
-    public void initButton(String Address1, String Address2, JButton jb, int index, int x, int y, int width, int height) {
-        System.out.println("RankFrame button" + jb + " is initializing...");
-        ImageIcon Button_Light = new ImageIcon(Address1);
-        Image img = Button_Light.getImage();
-        Image newimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Light_New = new ImageIcon(newimg);
-        ImageIcon Button_Dark = new ImageIcon(Address2);
-        Image img2 = Button_Dark.getImage();
-        Image newimg2 = img2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon Button_Dark_New = new ImageIcon(newimg2);
-
-        jb.setBorderPainted(false);
-        jb.setContentAreaFilled(false);
-        jb.setFocusPainted(false);
-        jb.setOpaque(false);
-
-        jb.setBounds(x, y, width, height);
-        jb.setIcon(Button_Light_New);
-        jb.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                jb.setIcon(Button_Dark_New);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                jb.setIcon(Button_Light_New);
-            }
-        });
-
-        this.getContentPane().add(jb);
-    }
-    public Map<String, Double> initRank() throws IOException {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("Information\\users.txt"));
-            String line;
-            Map<String, Double> players = new HashMap<>();
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":");
-                String storedUsername = parts[0];
-                Double storedScore = Double.parseDouble(parts[2]);
-                players.put(storedUsername, storedScore);
-                System.out.println("Player " + storedUsername + " is added to the rank list. With score: "+storedScore);
-            }
-            return players;
-        } catch (IOException e) {
-            System.out.println("Error reading file.");
-            e.printStackTrace();
-            return null;
-        }
     }
     private static class RoundBorder extends AbstractBorder {
         private final int radius;

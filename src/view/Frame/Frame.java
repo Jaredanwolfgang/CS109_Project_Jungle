@@ -26,7 +26,7 @@ public class Frame {
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
     private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
-    private RankFrame rankFrame = new RankFrame(this);
+/*    private RankFrame rankFrame = new RankFrame(this);*/
     private OutputFrame outputFrame;
     private FileChooserFrame fileChooserFrame;
 

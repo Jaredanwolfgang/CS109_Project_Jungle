@@ -7,6 +7,7 @@ import model.Enum.Seasons;
 import model.User.User;
 import view.ChessComponent.*;
 import view.ChessboardComponent;
+import view.UI.EndLabel;
 import view.UI.RoundLabel;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public Dimension screenSize = new Dimension(500, 729);
     private int WIDTH = (int) screenSize.getWidth();
     private int HEIGHT = (int) screenSize.getHeight();
-
+    private JLayeredPane layeredPane = new JLayeredPane();
     private JLabel background;
     private RoundLabel turnLabel;
     private int seasons;
@@ -52,11 +53,15 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     private String Address = "Background\\Spring.gif";
 
     private ChessboardComponent chessboardComponent;
+    private EndLabel winLabel;
 
 
     public ChessGameFrame(Frame frame) {
         this.frame = frame;
         setTitle("Jungle Game"); //设置标题
+
+        layeredPane.setLayout(null);
+        layeredPane.setBounds(0,0,500,729);
 
         initFrame();
         addChessboard();
@@ -73,6 +78,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
 
         initTurnLabel();
         initBackground();
+
+        this.add(layeredPane);
         this.setVisible(false);
     }
 
@@ -94,16 +101,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     private void addChessboard() {
         chessboardComponent = new ChessboardComponent(ONE_CHESS_SIZE);
         chessboardComponent.setLocation((WIDTH - 7 * ONE_CHESS_SIZE) / 2, (HEIGHT - 9 * ONE_CHESS_SIZE) / 2);
-        add(chessboardComponent);
-    }
-
-
-    public ChessboardComponent getChessboardComponent() {
-        return chessboardComponent;
-    }
-
-    public void setChessboardComponent(ChessboardComponent chessboardComponent) {
-        this.chessboardComponent = chessboardComponent;
+        layeredPane.add(chessboardComponent,JLayeredPane.PALETTE_LAYER);
     }
 
     @Override
@@ -152,7 +150,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 resetButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(resetButton);
+        layeredPane.add(resetButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initUndoButton() {
 //        System.out.println("ChessGameFrame button Undo Button is initializing...");
@@ -191,7 +189,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 undoButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(undoButton);
+        layeredPane.add(undoButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initSaveButton() {
 //        System.out.println("ChessGameFrame button Save Button is initializing...");
@@ -230,7 +228,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 saveButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(saveButton);
+        layeredPane.add(saveButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initLoadButton() {
 //        System.out.println("ChessGameFrame button Load Button is initializing...");
@@ -269,7 +267,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 loadButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(loadButton);
+        layeredPane.add(loadButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initBackgroundButton() {
 //        System.out.println("ChessGameFrame button BackgroundButton is initializing...");
@@ -307,7 +305,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 backgroundButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(backgroundButton);
+        layeredPane.add(backgroundButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initMusicButton() {
 //        System.out.println("ChessGameFrame button Music button is initializing...");
@@ -349,7 +347,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 musicButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(musicButton);
+        layeredPane.add(musicButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initExitButton() {
 //        System.out.println("ChessGameFrame button Exit button is initializing...");
@@ -391,7 +389,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 exitButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(exitButton);
+        layeredPane.add(exitButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initReturnButton() {
 //        System.out.println("ChessGameFrame button Return button is initializing...");
@@ -434,7 +432,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 returnButton.setIcon(Button_Light_New);
             }
         });
-        this.getContentPane().add(returnButton);
+        layeredPane.add(returnButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initPlayBackButton() {
 //        System.out.println("ChessGameFrame button Playback button is initializing...");
@@ -481,14 +479,14 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 frame.getGameController().onPlayerClickPlayBackButton();
             }
         });
-        this.getContentPane().add(playbackButton);
+        layeredPane.add(playbackButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initBackground() {
         this.seasons = 0;
 //        System.out.println("InitFrame background is initializing...");
         background = new JLabel(new ImageIcon(Address));
         background.setBounds(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
-        this.getContentPane().add(background);
+        layeredPane.add(background,JLayeredPane.DEFAULT_LAYER);
     }
 
     public void initTurnLabel(){
@@ -500,9 +498,18 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
         turnLabel.setVerticalAlignment(SwingConstants.CENTER);
         turnLabel.repaint();
-        this.getContentPane().add(turnLabel);
+        layeredPane.add(turnLabel,JLayeredPane.PALETTE_LAYER);
     }
 
+    public void addWinLabel(){
+        winLabel = new EndLabel(frame.getGameController());
+        layeredPane.add(winLabel,JLayeredPane.POPUP_LAYER);
+        repaint();
+    }
+    public void removeWinLabel() {
+        layeredPane.remove(winLabel);
+        repaint();
+    }
     //Change Methods
     public void changeTurnLabel(int turnCount, PlayerColor playerColor){
         turnLabel.setText(String.valueOf(turnCount));
@@ -513,12 +520,12 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         }
     }
     public void changeBackground() {
-        this.getContentPane().remove(background);
+        layeredPane.remove(background);
 //        System.out.println("ChessGameFrame background is changing...");
         Address = "Background\\" + Seasons.values()[seasons].getName();
         background = new JLabel(new ImageIcon(Address));
         background.setBounds(0, 0, WIDTH, HEIGHT);
-        this.getContentPane().add(background);
+        layeredPane.add(background,JLayeredPane.DEFAULT_LAYER);
         repaint();
     }
     public void changeChessBoard(){
@@ -558,6 +565,10 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             }
         }
     }
+    public ChessboardComponent getChessboardComponent() {
+        return chessboardComponent;
+    }
+
     //The following listener is not used.
     @Override
     public void componentMoved(ComponentEvent e) {}
