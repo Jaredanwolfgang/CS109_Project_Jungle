@@ -230,9 +230,7 @@ public class GameController implements GameListener {
                 turnCount++;
                 view.updateTurnAccount(turnCount);
 
-                if (!onAutoPlayback) {
-                    timer.reset();
-                }
+                timer.reset();
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
@@ -370,9 +368,7 @@ public class GameController implements GameListener {
                         //NOT NECESSARY: Here should be code for GUI to update turn count */
                         view.updateTurnAccount(turnCount);
 
-                        if (!onAutoPlayback) {
-                            timer.reset();
-                        }
+                        timer.reset();
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());

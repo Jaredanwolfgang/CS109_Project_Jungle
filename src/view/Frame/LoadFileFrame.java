@@ -34,6 +34,7 @@ public class LoadFileFrame extends JFrame implements ActionListener {
         getContentPane().add(panel, BorderLayout.CENTER);
 
         setVisible(true);
+        setResizable(false);
 
         addWindowListener(new WindowAdapter() {
             @Override

@@ -71,7 +71,7 @@ public class SaveFileFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String filename = filenameField.getText();
         String directory = directoryField.getText();
-        if (filename == null || filename.isEmpty()) {
+        if (filename == null || filename.isEmpty()){
             JOptionPane.showMessageDialog(this, "Please enter a file name.");
             return;
         }
