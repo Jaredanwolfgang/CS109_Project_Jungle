@@ -7,16 +7,29 @@ import java.awt.event.WindowListener;
 
 public class SuccessDialog extends JDialog {
     private String message;
+    private JButton confirmButton;
     public SuccessDialog(String message){
         this.message = message;
 
         initLabel(this.message);
         initDialog();
 
+        initConfirmButton();
+
         this.setVisible(true);
     }
+
+    private void initConfirmButton() {
+        confirmButton = new JButton("Confirm");
+        confirmButton.setBounds(120,30,100,30);
+        confirmButton.addActionListener(e -> {
+            dispose();
+        });
+        this.add(confirmButton);
+    }
+
     public void initDialog(){
-        this.setSize(320,180);
+        this.setSize(350,100);
         this.setTitle("Success Dialog");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
@@ -39,7 +52,7 @@ public class SuccessDialog extends JDialog {
     }
     public void initLabel(String message){
         JLabel label = new JLabel(message);
-        label.setBounds(60,10,200,100);
+        label.setBounds(110,10,200,20);
         this.add(label);
     }
 }

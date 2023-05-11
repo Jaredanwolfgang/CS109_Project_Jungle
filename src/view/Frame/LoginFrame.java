@@ -159,7 +159,7 @@ public class LoginFrame extends JFrame implements ActionListener{
             if (GameController.user2 == null) {
                 this.setVisible(false);
                 frame.getStartFrame().setVisible(true);
-                new SuccessDialog("Login successful");
+                new SuccessDialog("Login successfully!");
 
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");
@@ -172,7 +172,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                 frame.getChessGameFrame().setVisible(true);
                 frame.getGameController().onPlayerSelectLocalPVPMode();
                 frame.getChessGameFrame().setVisible(true);
-                new SuccessDialog("Login successful");
+                new SuccessDialog("Login successfully!");
 
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");
