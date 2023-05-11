@@ -20,9 +20,11 @@ public class RankFrame extends JFrame {
     private Map<String,Double> players;
     private JTable rankTable;
     private DefaultTableModel tableModel;
+    private Frame frame;
 
     /** Now you can get the ArrayList of players by calling a method in gameListener */
-    public RankFrame(){
+    public RankFrame(Frame frame){
+        this.frame = frame;
         initFrame();
         try {
             this.players = initRank();

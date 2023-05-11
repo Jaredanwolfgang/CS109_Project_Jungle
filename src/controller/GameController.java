@@ -19,13 +19,10 @@ import view.Dialog.FailDialog;
 import view.Dialog.SuccessDialog;
 import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
+import view.UI.ChessClick;
 import view.UI.SoundEffect;
 
 import javax.swing.*;
-
-/**
- *
- * */
 
 public class GameController implements GameListener {
     public static final long animationInterval = 400;
@@ -311,8 +308,7 @@ public class GameController implements GameListener {
 
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point) == currentPlayer) {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/ChessClick.wav");
-                player.play();
+                new ChessClick();
 
                 //If the clicked piece is the current player's piece, select it.
                 chessComponent.setSelected(true);
@@ -324,8 +320,8 @@ public class GameController implements GameListener {
         }else{
             ChessComponent chessComponentOrigin = (ChessComponent)chessboardComponent.getGridComponentAt(selectedPoint).getComponents()[0];
             if (selectedPoint.equals(point)) {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/ChessClick.wav");
-                player.play();
+                new ChessClick();
+
                 //If the clicked piece is the selected piece, deselect it.
                 chessComponent.setSelected(false);
                 //Here is the code for GUI to remove all possible moves of the previous selected piece.
@@ -334,8 +330,8 @@ public class GameController implements GameListener {
                 selectedPoint = null;
             }else{
                 if(model.getChessPieceOwner(point) == currentPlayer){
-                    SoundEffect player = new SoundEffect("Music/SoundEffect/ChessClick.wav");
-                    player.play();
+                    new ChessClick();
+
                     //If the clicked piece is the current player's piece, select it.
                     chessComponent.setSelected(true);
                     chessComponentOrigin.setSelected(false);
@@ -989,13 +985,17 @@ public class GameController implements GameListener {
     //Exit is used when you end a ChessGameFrame and Return to the Start Frame
     @Override
     public void onPlayerExitGameFrame() {
-        this.onPlayerClickResetButton();
+        turnCount = 1;
+        selectedPoint = null;
+        model.reset();
+        currentPlayer = PlayerColor.BLUE;
+        allMovesOnBoard.clear();
+        timer.shutdown();
+        timer = null;
         aiDifficulty = AIDifficulty.EASY;
         user2 = null;
         gameMode = null;
         colorOfUser = null;
-        timer.shutdown();
-        timer = null;
     }
 
     //Getter and Setter
@@ -1012,6 +1012,10 @@ public class GameController implements GameListener {
 
     public Chessboard getModel() {
         return model;
+    }
+
+    public Frame getView() {
+        return view;
     }
 
     public static GameMode getGameMode() {

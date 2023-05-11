@@ -5,11 +5,13 @@ import model.Enum.PlayerColor;
 import model.User.User;
 import view.ChessboardComponent;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.*;
+import java.io.File;
 import java.util.Vector;
 
 //Draw the chesspiece on the board.
@@ -34,6 +36,19 @@ public class ElephantChessComponent extends ChessComponent {
         g2.setClip(clipShape);
         if (isSelected()) {
             g2.drawImage(image, 0, 0, getWidth(), getHeight(), getOwner().getColor(), null);
+        }
+    }
+
+    @Override
+    public void play() {
+        try {
+            // Open an audio input stream from the file
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("Music/SoundEffect/Elephant.wav"));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

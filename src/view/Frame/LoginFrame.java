@@ -1,5 +1,6 @@
 package view.Frame;
 
+import controller.GameController;
 import model.User.User;
 import view.Dialog.FailDialog;
 import view.Dialog.SuccessDialog;
@@ -157,7 +158,7 @@ public class LoginFrame extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
             if (getState() == 0) {
-                if (frame.getGameController().user1 != null){
+                if (GameController.user1 != null){
                     this.setVisible(false);
                     frame.getStartFrame().setVisible(true);
                     new SuccessDialog("Login successful",frame.getStartFrame());
@@ -171,7 +172,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                 passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
                 passwordField.setEchoChar('\0');
             }else if(getState() == 1){
-                if (frame.getGameController().user2 != null){
+                if (GameController.user2 != null){
                     this.setVisible(false);
                     frame.getChessGameFrame().setVisible(true);
                     frame.getGameController().onPlayerSelectLocalPVPMode();

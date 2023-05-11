@@ -1,11 +1,14 @@
 package view.ChessComponent;
 
 import model.Enum.PlayerColor;
+import view.UI.SoundEffect;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
 
 public class DogChessComponent extends ChessComponent{
 
@@ -29,5 +32,10 @@ public class DogChessComponent extends ChessComponent{
         if (isSelected()) {
             g2.drawImage(image, 0, 0, getWidth(), getHeight(), getOwner().getColor(), null);
         }
+    }
+
+    @Override
+    public void play() {
+        new SoundEffect("Music/SoundEffect/Dog.wav");
     }
 }

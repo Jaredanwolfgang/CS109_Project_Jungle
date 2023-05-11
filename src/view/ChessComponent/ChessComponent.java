@@ -3,15 +3,17 @@ package view.ChessComponent;
 import model.ChessPieces.ChessPiece;
 import model.Enum.PlayerColor;
 import model.User.User;
+import view.UI.SoundEffect;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 
-public class ChessComponent extends JComponent {
+public abstract class ChessComponent extends JComponent {
     private PlayerColor owner;
     private boolean selected;
 
+    public abstract void play();
     public PlayerColor getOwner() {
         return owner;
     }

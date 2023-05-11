@@ -2,6 +2,7 @@ package view.Frame;
 
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -39,6 +40,7 @@ public class FileChooserFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == button) {
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
             int result = chooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();

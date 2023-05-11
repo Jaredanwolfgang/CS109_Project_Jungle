@@ -143,6 +143,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 resetButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                resetButton.setToolTipText("Reset the chess game");
             }
 
             @Override
@@ -180,6 +182,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 undoButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                undoButton.setToolTipText("Undo move(s)");
             }
 
             @Override
@@ -217,6 +221,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 saveButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                saveButton.setToolTipText("Save chess game to local .txt file");
             }
 
             @Override
@@ -254,6 +260,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 loadButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                loadButton.setToolTipText("Load a chess game from local .txt file");
             }
 
             @Override
@@ -332,6 +340,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                musicButton.setToolTipText("Music adjustment");
             }
 
             @Override
@@ -372,6 +382,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 exitButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                exitButton.setToolTipText("Exit the game");
             }
 
             @Override
@@ -413,6 +425,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 returnButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Return to mode choosing frame");
             }
 
             @Override
@@ -452,6 +466,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 playbackButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                playbackButton.setToolTipText("Auto playback the game");
             }
 
             @Override

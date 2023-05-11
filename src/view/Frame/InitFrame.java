@@ -154,6 +154,8 @@ public class InitFrame extends JFrame{
             @Override
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                musicButton.setToolTipText("Music Adjustment");
             }
 
             @Override
@@ -187,6 +189,8 @@ public class InitFrame extends JFrame{
             @Override
             public void mouseEntered(MouseEvent e) {
                 exitButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                exitButton.setToolTipText("Exit the game");
             }
             @Override
             public void mouseExited(MouseEvent e) {

@@ -98,6 +98,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 localButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                localButton.setToolTipText("Local PVP mode");
             }
 
             @Override
@@ -136,6 +138,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 netButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                netButton.setToolTipText("Online PVP mode");
             }
 
             @Override
@@ -169,6 +173,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                musicButton.setToolTipText("Music adjustment");
             }
             @Override
             public void mouseExited(MouseEvent e) {
@@ -201,6 +207,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 exitButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                exitButton.setToolTipText("Exit the game");
             }
             @Override
             public void mouseExited(MouseEvent e) {
@@ -234,6 +242,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 returnButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Return to the last frame");
             }
             @Override
             public void mouseExited(MouseEvent e) {
@@ -272,6 +282,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 aiButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                aiButton.setToolTipText("AI mode");
             }
 
             @Override
@@ -309,6 +321,8 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 rankButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                rankButton.setToolTipText("Rank");
             }
 
             @Override

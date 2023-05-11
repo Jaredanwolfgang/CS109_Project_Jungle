@@ -1,11 +1,14 @@
 package view.ChessComponent;
 
 import model.Enum.PlayerColor;
+import view.UI.SoundEffect;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
 
 public class CatChessComponent extends ChessComponent {
     public CatChessComponent(PlayerColor owner, int size) {
@@ -31,4 +34,8 @@ public class CatChessComponent extends ChessComponent {
     }
 
 
+    @Override
+    public void play() {
+        new SoundEffect("Music/SoundEffect/Cat.wav");
+    }
 }

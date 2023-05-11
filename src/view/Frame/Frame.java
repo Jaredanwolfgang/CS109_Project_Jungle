@@ -10,6 +10,7 @@ import model.Enum.Seasons;
 import model.User.User;
 import view.ChessComponent.ChessComponent;
 import view.Dialog.SuccessDialog;
+import view.UI.ChessMove;
 import view.UI.SoundEffect;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class Frame {
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
     private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
+    private RankFrame rankFrame = new RankFrame(this);
     private OutputFrame outputFrame;
     private FileChooserFrame fileChooserFrame;
 
@@ -83,55 +85,14 @@ public class Frame {
 
     //Here are the methods for all the moves on board.
     public void move(ChessboardPoint point, ChessboardPoint selectedPoint){
-        if(this.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.WINTER){
-            SoundEffect player = new SoundEffect("Music/SoundEffect/Move_on_ice.wav");
-            player.play();
-        }else if(this.getChessGameFrame().getChessboardComponent().getSeason() == Seasons.SPRING){
-            SoundEffect player = new SoundEffect("Music/SoundEffect/Move_in_grass.wav");
-            player.play();
-        }else{
-            SoundEffect player = new SoundEffect("Music/SoundEffect/ChessMove.wav");
-            player.play();
-        }
+        new ChessMove(this);
         ChessComponent chessComponent = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
         chessComponent.setSelected(false);
         this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
     }
     public void eat(ChessboardPoint point, ChessboardPoint selectedPoint){
-        ChessPiece toGetPredatorSound = this.getGameController().getModel().getChessPieceAt(point);
-        switch (toGetPredatorSound.getCategory()){
-            case CAT -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Cat.wav");
-                player.play();
-            }
-            case DOG -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Dog.wav");
-                player.play();
-            }
-            case ELEPHANT -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Elephant.wav");
-                player.play();
-            }
-            case LION -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Lion.wav");
-                player.play();
-            }
-            case LEOPARD, TIGER -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Tiger_Leopard.wav");
-                player.play();
-            }
-            case RAT -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Rat.wav");
-                player.play();
-            }
-            case WOLF -> {
-                SoundEffect player = new SoundEffect("Music/SoundEffect/Wolf.wav");
-                player.play();
-            }
-            default -> {}
-
-        }
         ChessComponent predator = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
+        predator.play();
         ChessComponent prey = this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(point);
         predator.setSelected(false);
         this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
