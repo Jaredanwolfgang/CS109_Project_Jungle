@@ -73,7 +73,6 @@ public class InitFrame extends JFrame{
         loginButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.getLoginFrame().setState(0);
                 frame.playerClickLoginButton();
             }
 

@@ -85,7 +85,6 @@ public class StartFrame extends JFrame {
         localButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.getLoginFrame().setState(1);
                 frame.playerClickLocalPVPButton();
             }
 

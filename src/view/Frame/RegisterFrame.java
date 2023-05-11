@@ -179,7 +179,8 @@ public class RegisterFrame extends JFrame implements ActionListener {
         }
         if(frame.getGameController().onPlayerClickRegisterButton(userText.getText(),passwordField.getText())){
             this.setVisible(false);
-            new SuccessDialog("Successfully registered!",frame.getLoginFrame());
+            frame.getLoginFrame().setVisible(true);
+            new SuccessDialog("Successfully registered!");
         }else{
             new FailDialog("The username has been used.",this);
         }

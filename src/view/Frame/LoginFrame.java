@@ -159,7 +159,7 @@ public class LoginFrame extends JFrame implements ActionListener{
             if (GameController.user2 == null) {
                 this.setVisible(false);
                 frame.getStartFrame().setVisible(true);
-                new SuccessDialog("Login successful",frame.getStartFrame());
+                new SuccessDialog("Login successful");
 
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");
@@ -171,7 +171,8 @@ public class LoginFrame extends JFrame implements ActionListener{
                 this.setVisible(false);
                 frame.getChessGameFrame().setVisible(true);
                 frame.getGameController().onPlayerSelectLocalPVPMode();
-                new SuccessDialog("Login successful",frame.getChessGameFrame());
+                frame.getChessGameFrame().setVisible(true);
+                new SuccessDialog("Login successful");
 
                 //Initialize the UserText and PasswordField
                 userText.setText("Enter your Username here");
@@ -189,15 +190,6 @@ public class LoginFrame extends JFrame implements ActionListener{
             passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
             passwordField.setEchoChar('\0');
         }
-    }
-
-    @Override
-    public int getState() {
-        return state;
-    }
-    @Override
-    public void setState(int state) {
-        this.state = state;
     }
 
     //设置圆角边框
