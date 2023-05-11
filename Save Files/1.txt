@@ -1,0 +1,2 @@
+Leopard,BLUE,2,2,2,3,false
+Wolf,RED,6,2,6,3,false
