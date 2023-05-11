@@ -6,12 +6,10 @@ import java.awt.event.WindowListener;
 
 public class FailDialog extends JDialog{
     private String message;
-    private JFrame fromFrame;
-    public FailDialog(String message,JFrame fromFrame){
+    public FailDialog(String message){
         this.message = message;
-        this.fromFrame = fromFrame;
 
-        initLabel(message);
+        initLabel(this.message);
         initDialog();
 
         this.setVisible(true);
@@ -21,45 +19,22 @@ public class FailDialog extends JDialog{
         this.setTitle("Fail Dialog");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(null);
         //WindowListenr会使得Dialog在关闭之后导入到toFrame中
         this.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
+            @Override public void windowOpened(WindowEvent e) {}
 
             @Override
             public void windowClosing(WindowEvent e) {
-                fromFrame.setVisible(true);
+                dispose();
             }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
+            @Override public void windowClosed(WindowEvent e) {}
+            @Override public void windowIconified(WindowEvent e) {}
+            @Override public void windowDeiconified(WindowEvent e) {}
+            @Override public void windowActivated(WindowEvent e) {}
+            @Override public void windowDeactivated(WindowEvent e) {}
         });
     }
     public void initLabel(String message){

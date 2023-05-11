@@ -720,7 +720,7 @@ public class GameController implements GameListener {
             /** NOT NECESSARY: Here should be a pop-up window to show the error message.
              * (I don't think the three other exceptions below need this)
             */
-            new FailDialog(e.getMessage(),view.getChessGameFrame());
+            new FailDialog(e.getMessage());
             return;
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filePath);
@@ -789,7 +789,7 @@ public class GameController implements GameListener {
                 isValidFile = false;
                 System.out.println(e.getMessage() + ": " + move);
 
-                /** TODO: NOT NECESSARY: Here should be a pop-up window to show the error message. */
+                new FailDialog(e.getMessage());
 
                 break;
             }

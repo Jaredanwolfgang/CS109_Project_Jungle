@@ -182,7 +182,7 @@ public class LoginFrame extends JFrame implements ActionListener{
                 passwordField.setEchoChar('\0');
             }
         }else{
-            new FailDialog("Incorrect username or password",this);
+            new FailDialog("Incorrect username or password");
             //Initialize the UserText and PasswordField
             userText.setText("Enter your Username here");
             userText.setFont(new Font("Calibri", Font.ITALIC, 12));

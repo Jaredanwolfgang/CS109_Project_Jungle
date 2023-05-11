@@ -174,7 +174,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if(!passwordField.getText().equals(passwordCheckField.getText())){
-            new FailDialog("The passwords do not match.",this);
+            new FailDialog("The passwords do not match.");
             return;
         }
         if(frame.getGameController().onPlayerClickRegisterButton(userText.getText(),passwordField.getText())){
@@ -182,7 +182,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
             frame.getLoginFrame().setVisible(true);
             new SuccessDialog("Successfully registered!");
         }else{
-            new FailDialog("The username has been used.",this);
+            new FailDialog("The username has been used.");
         }
     }
 
