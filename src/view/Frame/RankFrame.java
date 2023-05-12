@@ -62,7 +62,7 @@ public class RankFrame extends JFrame {
     }
 
     public void initFrame() {
-        System.out.println("RankFrame is initializing...");
+        //System.out.println("RankFrame is initializing...");
         this.setLayout(null);
         this.setSize(WIDTH, HEIGHT);
         this.setTitle("Rank");
@@ -74,7 +74,7 @@ public class RankFrame extends JFrame {
     }
 
     public void initBackground(String Address) {
-        System.out.println("RankFrame background is initializing...");
+        //System.out.println("RankFrame background is initializing...");
         JLabel background = new JLabel(new ImageIcon(Address));
         background.setBounds(0, 0, WIDTH, HEIGHT);
         layeredPane.add(background,JLayeredPane.DEFAULT_LAYER);
