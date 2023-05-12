@@ -169,8 +169,8 @@ public class LoginFrame extends JFrame implements ActionListener{
                 passwordField.setEchoChar('\0');
             }else {
                 this.setVisible(false);
-                frame.getChessGameFrame().setVisible(true);
                 frame.getGameController().onPlayerSelectLocalPVPMode();
+                frame.getChessGameFrame().initFunctionalButtons();
                 frame.getChessGameFrame().setVisible(true);
                 new SuccessDialog("Login successfully!");
 

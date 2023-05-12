@@ -120,6 +120,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 frame.getGameController().onPlayerSelectOnlinePVPMode();
+                frame.getChessGameFrame().initFunctionalButtons();
                 frame.playerClickNetPVPButton();
             }
 

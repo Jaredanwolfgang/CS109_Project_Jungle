@@ -73,6 +73,7 @@ public class SelectPVEModeFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
                 frame.getGameController().onPlayerSelectLocalPVEMode(AIDifficulty.EASY);
+                frame.getChessGameFrame().initFunctionalButtons();
                 frame.playerClickModesButton();
             }
 
@@ -107,6 +108,7 @@ public class SelectPVEModeFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
                 frame.getGameController().onPlayerSelectLocalPVEMode(AIDifficulty.MEDIUM);
+                frame.getChessGameFrame().initFunctionalButtons();
                 frame.playerClickModesButton();
             }
 
@@ -141,6 +143,7 @@ public class SelectPVEModeFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
                 frame.getGameController().onPlayerSelectLocalPVEMode(AIDifficulty.HARD);
+                frame.getChessGameFrame().initFunctionalButtons();
                 frame.playerClickModesButton();
             }
 

@@ -1,6 +1,8 @@
 package view.Frame;
 
+import controller.GameController;
 import model.ChessPieces.ChessPiece;
+import model.Enum.GameMode;
 import model.Enum.PlayerColor;
 import model.Enum.Seasons;
 import view.ChessComponent.*;
@@ -35,14 +37,14 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
      */
 
     private final JButton backgroundButton = new JButton();
-    private final JButton loadButton = new JButton();
-    private final JButton saveButton = new JButton();
-    private final JButton undoButton = new JButton();
-    private final JButton resetButton = new JButton();
+    private JButton loadButton = new JButton();
+    private JButton saveButton = new JButton();
+    private JButton undoButton = new JButton();
+    private JButton resetButton = new JButton();
     private final JButton musicButton = new JButton();
     private final JButton exitButton = new JButton();
     private final JButton returnButton = new JButton();
-    private final JButton playbackButton = new JButton();
+    private JButton playbackButton = new JButton();
 
     private final Frame frame;
     private final int ONE_CHESS_SIZE = 45;
@@ -63,15 +65,16 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         initFrame();
         addChessboard();
 
+        initPlayBackButton();
         initLoadButton();
         initResetButton();
         initUndoButton();
-        initExitButton();
-        initReturnButton();
         initSaveButton();
+
         initMusicButton();
         initBackgroundButton();
-        initPlayBackButton();
+        initExitButton();
+        initReturnButton();
 
         initTurnLabel();
         initBackground();
@@ -110,6 +113,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
 
     //Init Methods
     public void initResetButton() {
+        resetButton = new JButton();
 //        System.out.println("ChessGameFrame button Reset Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RestartButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RestartButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -119,30 +123,35 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         resetButton.setFocusPainted(false);
         resetButton.setOpaque(false);
         resetButton.setBounds(HEIGHT / 50, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, 50, 50);
-        resetButton.setIcon(Button_Light_New);
-        resetButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                frame.getGameController().onPlayerClickResetButton();
-            }
-            @Override public void mousePressed(MouseEvent e) {}
-            @Override public void mouseReleased(MouseEvent e) {}
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                resetButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                resetButton.setToolTipText("Reset the chess game");
-            }
+        if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator){
+            resetButton.setIcon(Button_Dark_New);
+        }else{
+            resetButton.setIcon(Button_Light_New);
+            resetButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    frame.getGameController().onPlayerClickResetButton();
+                }
+                @Override public void mousePressed(MouseEvent e) {}
+                @Override public void mouseReleased(MouseEvent e) {}
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                resetButton.setIcon(Button_Light_New);
-            }
-        });
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    resetButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    resetButton.setToolTipText("Reset the chess game");
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    resetButton.setIcon(Button_Light_New);
+                }
+            });
+        }
         layeredPane.add(resetButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initUndoButton() {
+        undoButton = new JButton();
 //        System.out.println("ChessGameFrame button Undo Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -152,36 +161,42 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         undoButton.setFocusPainted(false);
         undoButton.setOpaque(false);
         undoButton.setBounds(HEIGHT * 2 / 50 + ONE_CHESS_SIZE, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, 50, 50);
-        undoButton.setIcon(Button_Light_New);
-        undoButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                frame.getGameController().onPlayerClickUndoButton();
-            }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
+        if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator){
+            undoButton.setIcon(Button_Dark_New);
+        }else {
+            undoButton.setIcon(Button_Light_New);
+            undoButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    frame.getGameController().onPlayerClickUndoButton();
+                }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                undoButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                undoButton.setToolTipText("Undo move(s)");
-            }
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                undoButton.setIcon(Button_Light_New);
-            }
-        });
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    undoButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    undoButton.setToolTipText("Undo move(s)");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    undoButton.setIcon(Button_Light_New);
+                }
+            });
+        }
         layeredPane.add(undoButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initSaveButton() {
+        saveButton = new JButton();
 //        System.out.println("ChessGameFrame button Save Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -221,6 +236,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         layeredPane.add(saveButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initLoadButton() {
+        loadButton = new JButton();
 //        System.out.println("ChessGameFrame button Load Button is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -230,33 +246,37 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         loadButton.setFocusPainted(false);
         loadButton.setOpaque(false);
         loadButton.setBounds(HEIGHT * 4 / 50 + ONE_CHESS_SIZE * 3, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
-        loadButton.setIcon(Button_Light_New);
-        loadButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                frame.playerClickLoadButton();
-            }
+        if(GameController.gameMode != GameMode.Local_PVP){
+            loadButton.setIcon(Button_Dark_New);
+        }else {
+            loadButton.setIcon(Button_Light_New);
+            loadButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    frame.playerClickLoadButton();
+                }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                loadButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                loadButton.setToolTipText("Load a chess game from local .txt file");
-            }
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    loadButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    loadButton.setToolTipText("Load a chess game from local .txt file");
+                }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                loadButton.setIcon(Button_Light_New);
-            }
-        });
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    loadButton.setIcon(Button_Light_New);
+                }
+            });
+        }
         layeredPane.add(loadButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initBackgroundButton() {
@@ -429,6 +449,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public void initPlayBackButton() {
 //        System.out.println("ChessGameFrame button Playback button is initializing...");
 
+        playbackButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\PlaybackButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\PlaybackButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
@@ -492,6 +513,21 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         winLabel = new EndLabel(frame.getGameController());
         layeredPane.add(winLabel,JLayeredPane.POPUP_LAYER);
         repaint();
+    }
+
+    public void initFunctionalButtons(){
+        layeredPane.remove(playbackButton);
+        layeredPane.remove(loadButton);
+        layeredPane.remove(resetButton);
+        layeredPane.remove(undoButton);
+        layeredPane.remove(saveButton);
+        initPlayBackButton();
+        initLoadButton();
+        initResetButton();
+        initUndoButton();
+        initSaveButton();
+        layeredPane.revalidate();
+        layeredPane.repaint();
     }
 
     //Change Methods
