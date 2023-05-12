@@ -85,7 +85,8 @@ public class InitFrame extends JFrame{
     //初始化背景，使用的是JLabel
     public void initBackground(String Address) {
 //        System.out.println("InitFrame background is initializing...");
-        JLabel background = new JLabel(new ImageIcon(Address));
+        ImageIcon backgroundIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Address).getScaledInstance((int) (initFrameResize * screenSize.getWidth()), (int) (initFrameResize * screenSize.getHeight()), Image.SCALE_DEFAULT));
+        JLabel background = new JLabel(backgroundIcon);
         background.setBounds(0, 0, (int)(initFrameResize * screenSize.getWidth()), (int)(initFrameResize * screenSize.getHeight()));
         this.getContentPane().add(background);
     }
