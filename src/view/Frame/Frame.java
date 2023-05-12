@@ -21,7 +21,7 @@ public class Frame {
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
     private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
-/*    private RankFrame rankFrame = new RankFrame(this);*/
+    private RankFrame rankFrame;
     private SaveFileFrame saveFileFrame;
     private LoadFileFrame loadFileFrame;
 
@@ -77,6 +77,11 @@ public class Frame {
     public void playerClickLoadButton(){
         loadFileFrame = new LoadFileFrame(this);
         loadFileFrame.setVisible(true);
+    }
+    public void playerClickRankButton(){
+        rankFrame = new RankFrame(this);
+        startFrame.setVisible(false);
+        rankFrame.setVisible(true);
     }
 
     //Here are the methods for all the moves on board.
@@ -162,5 +167,8 @@ public class Frame {
     }
     public SelectPVEModeFrame getSelectPVEModeFrame() {
         return selectFrame;
+    }
+    public RankFrame getRankFrame() {
+        return rankFrame;
     }
 }

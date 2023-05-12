@@ -8,7 +8,7 @@ import model.User.User;
 import view.ChessComponent.*;
 import view.ChessboardComponent;
 import view.UI.EndLabel;
-import view.UI.RoundLabel;
+import view.UI.TurnLabel;
 
 import javax.swing.*;
 import javax.tools.Tool;
@@ -24,7 +24,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     private int HEIGHT = (int) screenSize.getHeight();
     private JLayeredPane layeredPane = new JLayeredPane();
     private JLabel background;
-    private RoundLabel turnLabel;
+    private TurnLabel turnLabel;
     private int seasons;
 
     /**
@@ -483,7 +483,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     }
 
     public void initTurnLabel(){
-        turnLabel= new RoundLabel("1",new Color(78, 150, 253),ONE_BUTTON_SIZE/4);
+        turnLabel= new TurnLabel("1",new Color(78, 150, 253),ONE_BUTTON_SIZE/4);
         turnLabel.setBounds(10,20, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
         turnLabel.setFont(new Font("TimesRoman", Font.BOLD, ONE_BUTTON_SIZE/2));
         turnLabel.setForeground(new Color(231,167,47));
@@ -493,16 +493,12 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         turnLabel.repaint();
         layeredPane.add(turnLabel,JLayeredPane.PALETTE_LAYER);
     }
-
     public void addWinLabel(){
         winLabel = new EndLabel(frame.getGameController());
         layeredPane.add(winLabel,JLayeredPane.POPUP_LAYER);
         repaint();
     }
-    public void removeWinLabel() {
-        layeredPane.remove(winLabel);
-        repaint();
-    }
+
     //Change Methods
     public void changeTurnLabel(int turnCount, PlayerColor playerColor){
         turnLabel.setText(String.valueOf(turnCount));
@@ -526,6 +522,11 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         getChessboardComponent().refreshGridComponents();
         seasons = (seasons + 1) % 4;
     }
+    public void removeWinLabel() {
+        layeredPane.remove(winLabel);
+        repaint();
+    }
+
     //Getters
     public ChessComponent getChessComponent(ChessPiece chessPiece) {
         switch (chessPiece.getCategory()){

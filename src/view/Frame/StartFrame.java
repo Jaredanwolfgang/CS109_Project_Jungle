@@ -309,6 +309,7 @@ public class StartFrame extends JFrame {
         rankButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                frame.playerClickRankButton();
             }
 
             @Override

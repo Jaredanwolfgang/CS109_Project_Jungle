@@ -7,30 +7,41 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class RoundLabel extends JLabel {
+public class TurnLabel extends JLabel {
     private Color backgroundColor;
     private int cornerRadius;
-    public RoundLabel(String text, Color bgColor, int cornerRadius) {
+
+    public TurnLabel(String text, Color bgColor, int cornerRadius) {
         super(text);
         this.backgroundColor = bgColor;
         this.cornerRadius = cornerRadius;
         setOpaque(false); // 设置透明度
         this.addMouseListener(new MouseListener() {
-            @Override public void mouseClicked(MouseEvent e) {}
-            @Override public void mousePressed(MouseEvent e) {}
-            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 JLabel source = (JLabel) e.getSource();
                 ToolTipManager.sharedInstance().setInitialDelay(0);
                 Color blueColor = new Color(78, 150, 253);
                 Color redColor = new Color(218, 60, 45);
-                if(backgroundColor.getRGB() == blueColor.getRGB()){
+                if (backgroundColor.getRGB() == blueColor.getRGB()) {
                     source.setToolTipText(String.format("Player: %s Score: %.2f Win rate: %.2f", GameController.user1.getUsername(), GameController.user1.getScore(), GameController.user1.getWinRate()));
-                } else if (backgroundColor.getRGB() == redColor.getRGB()){
+                } else if (backgroundColor.getRGB() == redColor.getRGB()) {
                     source.setToolTipText(String.format("Player: %s Score: %.2f Win rate: %.2f", GameController.user2.getUsername(), GameController.user2.getScore(), GameController.user2.getWinRate()));
                 }
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 JLabel source = (JLabel) e.getSource();

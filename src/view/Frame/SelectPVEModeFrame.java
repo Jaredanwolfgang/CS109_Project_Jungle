@@ -73,7 +73,7 @@ public class SelectPVEModeFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
                 frame.getGameController().onPlayerSelectLocalPVEMode(AIDifficulty.EASY);
-                frame.playerClickNetPVPButton();
+                frame.playerClickModesButton();
             }
 
             @Override public void mousePressed(MouseEvent e) {}
@@ -107,7 +107,7 @@ public class SelectPVEModeFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
                 frame.getGameController().onPlayerSelectLocalPVEMode(AIDifficulty.MEDIUM);
-                frame.playerClickNetPVPButton();
+                frame.playerClickModesButton();
             }
 
             @Override public void mousePressed(MouseEvent e) {}
@@ -141,7 +141,7 @@ public class SelectPVEModeFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
                 frame.getGameController().onPlayerSelectLocalPVEMode(AIDifficulty.HARD);
-                frame.playerClickNetPVPButton();
+                frame.playerClickModesButton();
             }
 
             @Override public void mousePressed(MouseEvent e) {}

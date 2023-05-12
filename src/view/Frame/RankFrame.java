@@ -1,33 +1,62 @@
 package view.Frame;
+
+import controller.GameController;
+import model.Enum.PlayerType;
 import model.User.User;
+import view.UI.HeadLabel;
+import view.UI.RankLabel;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 import java.lang.Object;
+
+import static java.awt.BorderLayout.*;
 
 public class RankFrame extends JFrame {
     private final int WIDTH = 500;
     private final int HEIGHT = 729;
     private ArrayList<User> users = new ArrayList<>();
+    private JPanel rankPanel = new JPanel();
+    private JLabel backgroundLabel = new JLabel(new ImageIcon("Image/ColorLabel.png"));
     private JTable rankTable;
+    private JLabel title = new JLabel("Rank", JLabel.CENTER);
     private DefaultTableModel tableModel;
     private Frame frame;
+    private boolean sortByScore = true;
+    private JButton sortByScoreButton = new JButton();
+    private JButton sortByWinrateButton = new JButton();
+    private JLayeredPane layeredPane = new JLayeredPane();
 
-    /** Now you can get the ArrayList of players by calling a method in gameListener */
-    public RankFrame(Frame frame){
+    public RankFrame(Frame frame) {
         this.frame = frame;
         this.users = frame.getGameController().onPlayerClickRankListButtonByScore();
 
-        initTable();
-        initBackground("Background/Spring.gif");
         initFrame();
-        this.setVisible(false);
+        initTitle();
+        initSortByScoreButton();
+        initSortByWinRateButton();
+        initRankPanel();
+        initBackgroundLabel();
+        initBackground("Background/Spring.gif");
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.getRankFrame().setVisible(false);
+                frame.getStartFrame().setVisible(true);
+                dispose();
+            }
+        });
+
+        this.add(layeredPane);
     }
-    public void initFrame(){
+
+    public void initFrame() {
         System.out.println("RankFrame is initializing...");
         this.setLayout(null);
         this.setSize(WIDTH, HEIGHT);
@@ -36,50 +65,160 @@ public class RankFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
+
+        layeredPane.setBounds(0,0,WIDTH,HEIGHT);
     }
-    public void initBackground(String Address){
+
+    public void initBackground(String Address) {
         System.out.println("RankFrame background is initializing...");
         JLabel background = new JLabel(new ImageIcon(Address));
         background.setBounds(0, 0, WIDTH, HEIGHT);
-        this.getContentPane().add(background);
+        layeredPane.add(background,JLayeredPane.DEFAULT_LAYER);
     }
-    public void initTable(){
+
+    public void initRankPanel() {
+        rankPanel.removeAll();
+        rankPanel.setLayout(new GridLayout(10, 1));
+        rankPanel.setBounds(50, 150, 400, 500);
+        rankPanel.setOpaque(false);
+        rankPanel.add(new HeadLabel());
+        int rank = 1;
+        for (int i = 0; i < Math.min(users.size(), 19); i++) {
+            if (users.get(i).getPlayerType()!= PlayerType.AI) {
+                boolean isCurrentUser = false;
+                boolean sortByScore = false;
+
+                if (users.get(i).getUsername().equals(frame.getGameController().user1.getUsername())) {
+                    isCurrentUser = true;
+                }
+                if(this.sortByScore){
+                    sortByScore = true;
+                }
+                RankLabel rankLabel = new RankLabel(users.get(i),rank,isCurrentUser,sortByScore);
+                rankPanel.add(rankLabel);
+                rank++;
+            }
+        }
+        layeredPane.add(rankPanel,JLayeredPane.MODAL_LAYER);
+    }
+
+    public void initBackgroundLabel() {
+        backgroundLabel.setBounds(0, 0, 500, 729);
+        backgroundLabel.setOpaque(false);
+        layeredPane.add(backgroundLabel,JLayeredPane.PALETTE_LAYER);
+    }
+
+    public void initTitle(){
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Britannic Bold", Font.BOLD, 50));
+        title.setBounds(20, 50, 460, 100);
+        layeredPane.add(title,JLayeredPane.MODAL_LAYER);
+    }
+    public void initSortByScoreButton(){
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/RankFrame/Score_Light.png").getScaledInstance(80, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/RankFrame/Score_Dark.png").getScaledInstance(80, 50, Image.SCALE_SMOOTH));
+
+        sortByScoreButton.setBorderPainted(false);
+        sortByScoreButton.setContentAreaFilled(false);
+        sortByScoreButton.setFocusPainted(false);
+        sortByScoreButton.setOpaque(false);
+
+        sortByScoreButton.setBounds(10, 10, 80, 50);
+        sortByScoreButton.setIcon(Button_Light_New);
+        sortByScoreButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!sortByScore) {
+                    sortByScore = true;
+                    users = frame.getGameController().onPlayerClickRankListButtonByScore();
+                    layeredPane.remove(rankPanel);
+                    rankPanel.removeAll();
+                    initRankPanel();
+                }
+            }
+
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                sortByScoreButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                sortByScoreButton.setIcon(Button_Light_New);
+            }
+        });
+        layeredPane.add(sortByScoreButton,JLayeredPane.MODAL_LAYER);
+    }
+    public void initSortByWinRateButton(){
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/RankFrame/WinRate_Light.png").getScaledInstance(80, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/RankFrame/WinRate_Dark.png").getScaledInstance(80, 50, Image.SCALE_SMOOTH));
+
+        sortByWinrateButton.setBorderPainted(false);
+        sortByWinrateButton.setContentAreaFilled(false);
+        sortByWinrateButton.setFocusPainted(false);
+        sortByWinrateButton.setOpaque(false);
+
+        sortByWinrateButton.setBounds(110, 10, 80, 50);
+        sortByWinrateButton.setIcon(Button_Light_New);
+        sortByWinrateButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (sortByScore) {
+                    sortByScore = false;
+                    users = frame.getGameController().onPlayerClickRankListButtonByWinRate();
+                    layeredPane.remove(rankPanel);
+                    initRankPanel();
+                }
+            }
+
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                sortByWinrateButton.setIcon(Button_Dark_New);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                sortByWinrateButton.setIcon(Button_Light_New);
+            }
+        });
+        layeredPane.add(sortByWinrateButton,JLayeredPane.MODAL_LAYER);
+    }
+    public void initTable() {
         // Create a table model with columns for rank, name, and score
         System.out.println("Initializing the table...");
-        tableModel = new DefaultTableModel(new String[]{"Rank", "Name", "Score"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Rank", "Name", "Score", "Win-Rate"}, 0);
         int rank = 1;
-        /*for (Map.Entry<String, Double> entry : sortedPlayers) {
-            String name = entry.getKey();
-            double score = entry.getValue();
-            tableModel.addRow(new Object[]{rank, name, score});
+        for (User user : users) {
+            String name = user.getUsername();
+            double score = user.getScore();
+            double winRate = user.getWinRate();
+            tableModel.addRow(new Object[]{rank, name, String.format("%.2f", score), String.format("%.2f", winRate)});
             rank++;
-        }*/
+        }
         System.out.println("Initializing the JTable...");
+
         rankTable = new JTable(tableModel);
         rankTable.setFont(new Font("Calibri", Font.PLAIN, 12));
         rankTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 18));
         rankTable.getColumnModel().getColumn(0).setPreferredWidth(50);
-        rankTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+        rankTable.getColumnModel().getColumn(1).setPreferredWidth(100);
         rankTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        rankTable.getColumnModel().getColumn(3).setPreferredWidth(100);
         rankTable.setAutoCreateRowSorter(true);
-        rankTable.setGridColor(new Color(0,0,0,128));
+        rankTable.setGridColor(new Color(0, 0, 0, 128));
 
-//        System.out.println("Initializing the JScrollPane...");
-//        JScrollPane scrollPane = new JScrollPane(rankTable);
-//        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        System.out.println("Initializing the JScrollPane...");
+        JScrollPane scrollPane = new JScrollPane(rankTable);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        System.out.println("Initializing the JPanel...");
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(new RoundBorder(20, new Color(0, 0, 0, 128)));
-        panel.setBounds(10,10,460,650);
-        panel.add(new JLabel("Rank List", JLabel.CENTER), BorderLayout.NORTH);
-//        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(rankTable, BorderLayout.CENTER);
-        panel.setOpaque(false);
 
-        this.getContentPane().add(panel);
     }
+
     private static class RoundBorder extends AbstractBorder {
         private final int radius;
         private final Color color;

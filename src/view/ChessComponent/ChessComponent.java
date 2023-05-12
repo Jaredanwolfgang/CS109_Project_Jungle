@@ -17,19 +17,15 @@ public abstract class ChessComponent extends JComponent {
     public PlayerColor getOwner() {
         return owner;
     }
-
     public void setOwner(PlayerColor owner) {
         this.owner = owner;
     }
-
     public boolean isSelected() {
         return selected;
     }
-
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-
     public static class RoundBorder extends AbstractBorder {
         private final int radius;
         private final Color color;
