@@ -12,10 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.List;
 import java.lang.Object;
 
-import static java.awt.BorderLayout.*;
 
 public class RankFrame extends JFrame {
     private final int WIDTH = 500;
@@ -92,7 +90,7 @@ public class RankFrame extends JFrame {
                 boolean isCurrentUser = false;
                 boolean sortByScore = false;
 
-                if (users.get(i).getUsername().equals(frame.getGameController().user1.getUsername())) {
+                if (users.get(i).getUsername().equals(GameController.user1.getUsername())) {
                     isCurrentUser = true;
                 }
                 if(this.sortByScore){
@@ -220,7 +218,7 @@ public class RankFrame extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
                 ToolTipManager.sharedInstance().setInitialDelay(0);
-                musicButton.setToolTipText("Music adjustment");
+                musicButton.setToolTipText("Music Player");
             }
             @Override
             public void mouseExited(MouseEvent e) {
