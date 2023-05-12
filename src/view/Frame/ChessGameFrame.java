@@ -291,6 +291,8 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
             @Override
             public void mouseEntered(MouseEvent e) {
                 backgroundButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Change the background and the chessboard.");
             }
 
             @Override
@@ -493,6 +495,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         turnLabel.repaint();
         layeredPane.add(turnLabel,JLayeredPane.PALETTE_LAYER);
     }
+
     public void addWinLabel(){
         winLabel = new EndLabel(frame.getGameController());
         layeredPane.add(winLabel,JLayeredPane.POPUP_LAYER);

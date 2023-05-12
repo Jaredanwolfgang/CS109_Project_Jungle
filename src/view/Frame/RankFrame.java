@@ -30,6 +30,9 @@ public class RankFrame extends JFrame {
     private boolean sortByScore = true;
     private JButton sortByScoreButton = new JButton();
     private JButton sortByWinrateButton = new JButton();
+    private JButton returnButton = new JButton();
+    private JButton musicButton = new JButton();
+    private JButton exitButton = new JButton();
     private JLayeredPane layeredPane = new JLayeredPane();
 
     public RankFrame(Frame frame) {
@@ -40,6 +43,9 @@ public class RankFrame extends JFrame {
         initTitle();
         initSortByScoreButton();
         initSortByWinRateButton();
+        initExitButton();
+        initMusicButton();
+        initReturnButton();
         initRankPanel();
         initBackgroundLabel();
         initBackground("Background/Spring.gif");
@@ -47,8 +53,7 @@ public class RankFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                frame.getRankFrame().setVisible(false);
-                frame.getStartFrame().setVisible(true);
+                frame.playerClickReturnButton(frame.getRankFrame(),frame.getStartFrame());
                 dispose();
             }
         });
@@ -63,7 +68,6 @@ public class RankFrame extends JFrame {
         this.setTitle("Rank");
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
 
         layeredPane.setBounds(0,0,WIDTH,HEIGHT);
@@ -142,6 +146,8 @@ public class RankFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 sortByScoreButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Sort by Scores");
             }
 
             @Override
@@ -178,6 +184,8 @@ public class RankFrame extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 sortByWinrateButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Sort by Win rate");
             }
 
             @Override
@@ -187,6 +195,110 @@ public class RankFrame extends JFrame {
         });
         layeredPane.add(sortByWinrateButton,JLayeredPane.MODAL_LAYER);
     }
+    public void initMusicButton() {
+//        System.out.println("Music button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        musicButton.setBorderPainted(false);
+        musicButton.setContentAreaFilled(false);
+        musicButton.setFocusPainted(false);
+        musicButton.setOpaque(false);
+
+        musicButton.setBounds(360, 10, 50, 50);
+        musicButton.setIcon(Button_Light_New);
+        musicButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                frame.playerClickMusicButton();
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                musicButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                musicButton.setToolTipText("Music adjustment");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                musicButton.setIcon(Button_Light_New);
+            }
+        });
+        layeredPane.add(musicButton,JLayeredPane.MODAL_LAYER);
+    }
+    public void initExitButton() {
+//        System.out.println("Exit button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        exitButton.setBorderPainted(false);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setOpaque(false);
+
+        exitButton.setBounds(430, 10, 50, 50);
+        exitButton.setIcon(Button_Light_New);
+        exitButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exitButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                exitButton.setToolTipText("Exit the game");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exitButton.setIcon(Button_Light_New);
+            }
+        });
+        layeredPane.add(exitButton,JLayeredPane.MODAL_LAYER);
+    }
+    public void initReturnButton(){
+//        System.out.println("Return button is initializing...");
+
+        /** To get the scaled Image */
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        returnButton.setBorderPainted(false);
+        returnButton.setContentAreaFilled(false);
+        returnButton.setFocusPainted(false);
+        returnButton.setOpaque(false);
+
+        returnButton.setBounds( 290, 10, 50, 50);
+        returnButton.setIcon(Button_Light_New);
+        returnButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                frame.playerClickReturnButton(frame.getRankFrame(),frame.getStartFrame());
+                dispose();
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                returnButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Return to the last frame");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                returnButton.setIcon(Button_Light_New);
+            }
+        });
+        layeredPane.add(returnButton,JLayeredPane.MODAL_LAYER);
+    }
+
     public void initTable() {
         // Create a table model with columns for rank, name, and score
         System.out.println("Initializing the table...");

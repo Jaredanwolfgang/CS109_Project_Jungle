@@ -251,8 +251,6 @@ public class StartFrame extends JFrame {
         });
         this.getContentPane().add(returnButton);
     }
-
-
     public void initPVEButton() {
 //        System.out.println("PVE Button is initializing...");
 
@@ -292,7 +290,6 @@ public class StartFrame extends JFrame {
         });
         this.getContentPane().add(aiButton);
     }
-    //TODO: In the Frame, the RankFrame has not been added yet.
     public void initRankButton(){
 //        System.out.println("Rank Button is initializing...");
 
