@@ -1,14 +1,9 @@
 package view.Frame;
 
-import controller.GameController;
-import model.ChessBoard.Chessboard;
-import model.User.User;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
 
 public class StartFrame extends JFrame {
     private final Dimension screenSize = new Dimension(500,729);
@@ -19,7 +14,7 @@ public class StartFrame extends JFrame {
     private final JButton musicButton = new JButton();
     private final JButton exitButton = new JButton();
     private final JButton returnButton = new JButton();
-    private Frame frame;
+    private final Frame frame;
 
     public StartFrame(Frame frame) {
         this.frame = frame;
@@ -38,7 +33,7 @@ public class StartFrame extends JFrame {
         this.setVisible(false);
     }
 
-    //Initialize the Framesw
+    //Initialize the Frames
     public void initJFrame() {
 //        System.out.println("StartFrame is initializing...");
         this.setLayout(null);
@@ -151,7 +146,7 @@ public class StartFrame extends JFrame {
     public void initMusicButton() {
 //        System.out.println("Music button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 
@@ -185,7 +180,7 @@ public class StartFrame extends JFrame {
     public void initExitButton() {
 //        System.out.println("Exit button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 
@@ -219,7 +214,7 @@ public class StartFrame extends JFrame {
     public void initReturnButton(){
 //        System.out.println("Return button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ReturnButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 

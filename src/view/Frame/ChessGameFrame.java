@@ -1,17 +1,14 @@
 package view.Frame;
 
-import controller.GameController;
 import model.ChessPieces.ChessPiece;
 import model.Enum.PlayerColor;
 import model.Enum.Seasons;
-import model.User.User;
 import view.ChessComponent.*;
 import view.ChessboardComponent;
 import view.UI.EndLabel;
 import view.UI.TurnLabel;
 
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -22,12 +19,12 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public Dimension screenSize = new Dimension(500, 729);
     private int WIDTH = (int) screenSize.getWidth();
     private int HEIGHT = (int) screenSize.getHeight();
-    private JLayeredPane layeredPane = new JLayeredPane();
+    private final JLayeredPane layeredPane = new JLayeredPane();
     private JLabel background;
     private TurnLabel turnLabel;
     private int seasons;
 
-    /**
+    /*
      * You can know which button can be used in which mode by reading the comments in gameListener class.
      * Here I summarized it for you:
      * 1. saveButton: all modes
@@ -47,7 +44,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     private final JButton returnButton = new JButton();
     private final JButton playbackButton = new JButton();
 
-    private Frame frame;
+    private final Frame frame;
     private final int ONE_CHESS_SIZE = 45;
     private final int ONE_BUTTON_SIZE = 50;
     private String Address = "Background\\Spring.gif";
@@ -305,7 +302,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public void initMusicButton() {
 //        System.out.println("ChessGameFrame button Music button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
 
@@ -347,7 +344,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public void initExitButton() {
 //        System.out.println("ChessGameFrame button Exit button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
 
@@ -389,7 +386,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public void initReturnButton() {
 //        System.out.println("ChessGameFrame button Return button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\AllFrame\\ReturnButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\AllFrame\\ReturnButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
 
@@ -432,7 +429,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
     public void initPlayBackButton() {
 //        System.out.println("ChessGameFrame button Playback button is initializing...");
 
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\PlaybackButton_Light.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\PlaybackButton_Dark.png").getScaledInstance(ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, Image.SCALE_SMOOTH));
 
@@ -468,12 +465,7 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
                 playbackButton.setIcon(Button_Light_New);
             }
         });
-        playbackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.getGameController().onPlayerClickPlayBackButton();
-            }
-        });
+        playbackButton.addActionListener((actionEvent) -> frame.getGameController().onPlayerClickPlayBackButton());
         layeredPane.add(playbackButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initBackground() {
