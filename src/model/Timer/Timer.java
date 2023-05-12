@@ -2,6 +2,7 @@ package model.Timer;
 
 import controller.GameController;
 import model.Enum.AIDifficulty;
+import view.Frame.Frame;
 
 public class Timer extends Thread {
     private int interval;
@@ -9,10 +10,12 @@ public class Timer extends Thread {
     private int remaining;
     private boolean running;
     private GameController gameController;
+    private Frame view;
 
-    public Timer(GameController gameController, int interval) {
+    public Timer(GameController gameController, Frame view,int interval) {
         this.remaining = period;
         this.gameController = gameController;
+        this.view = view;
         this.running = true;
         this.interval = interval;
     }

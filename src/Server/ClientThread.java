@@ -62,11 +62,11 @@ public class ClientThread extends Thread{
 
                 try {
                     if(playerColor == PlayerColor.BLUE){
-                        gameController.timer = new Timer(gameController,900);
+                        gameController.timer = new Timer(gameController,gameController.getView(),900);
                         gameController.timer.start();
                         this.runTimeBlue();
                     }else {
-                        gameController.timer = new Timer(gameController,1000);
+                        gameController.timer = new Timer(gameController,gameController.getView(),1000);
                         gameController.timer.start();
                         this.runTimeRed();
                     }
@@ -84,7 +84,7 @@ public class ClientThread extends Thread{
                 GameController.user2 = (User) inPut.readObject();
                 System.out.println("Client: Received user2 profile from server: " + GameController.user2.toString());
 
-                gameController.timer = new Timer(gameController,1000);
+                gameController.timer = new Timer(gameController,gameController.getView(),1000);
                 gameController.timer.start();
 
                 ArrayList<Move> previousMoves = (ArrayList<Move>) inPut.readObject();

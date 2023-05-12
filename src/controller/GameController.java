@@ -534,7 +534,7 @@ public class GameController implements GameListener {
         this.colorOfUser = PlayerColor.BLUE;
         this.allMovesOnBoard.clear();
         timer.shutdown();
-        timer = new Timer(this,1000);
+        timer = new Timer(this,view,1000);
         timer.start();
     }
 
@@ -902,7 +902,7 @@ public class GameController implements GameListener {
         gameMode = GameMode.Local_PVP;
         colorOfUser = PlayerColor.BLUE;
 
-        timer = new Timer(this,1000);
+        timer = new Timer(this,view,1000);
         timer.start();
     }
 
@@ -931,7 +931,7 @@ public class GameController implements GameListener {
         colorOfUser = PlayerColor.BLUE;
         gameMode = GameMode.PVE;
 
-        timer = new Timer(this,1000);
+        timer = new Timer(this,view,1000);
         timer.start();
     }
 
