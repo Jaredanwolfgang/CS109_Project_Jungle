@@ -126,6 +126,33 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
 
         if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator){
             resetButton.setIcon(Button_Dark_New);
+            resetButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    loadButton.setToolTipText("Unavailable in this game mode");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
         }else{
             resetButton.setIcon(Button_Light_New);
             resetButton.addMouseListener(new MouseListener() {
@@ -164,6 +191,33 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
 
         if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator){
             undoButton.setIcon(Button_Dark_New);
+            undoButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    loadButton.setToolTipText("Unavailable in this game mode");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
         }else {
             undoButton.setIcon(Button_Light_New);
             undoButton.addMouseListener(new MouseListener() {
@@ -248,6 +302,33 @@ public class ChessGameFrame extends JFrame implements ComponentListener {
         loadButton.setBounds(HEIGHT * 4 / 50 + ONE_CHESS_SIZE * 3, HEIGHT - HEIGHT / 50 - 2 * ONE_BUTTON_SIZE, ONE_BUTTON_SIZE, ONE_BUTTON_SIZE);
         if(GameController.gameMode != GameMode.Local_PVP){
             loadButton.setIcon(Button_Dark_New);
+            loadButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    loadButton.setToolTipText("Unavailable in this game mode");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
         }else {
             loadButton.setIcon(Button_Light_New);
             loadButton.addMouseListener(new MouseListener() {
