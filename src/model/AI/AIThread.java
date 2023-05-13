@@ -10,17 +10,19 @@ public class AIThread extends Thread{
     private GameController gameController;
     private Cell[][] grid;
     private PlayerColor playerColor;
-    public AIThread(GameController gameController, Cell[][] grid, PlayerColor playerColor){
+    private AIDifficulty aiDifficulty;
+    public AIThread(GameController gameController, Cell[][] grid, PlayerColor playerColor, AIDifficulty aiDifficulty){
         this.gameController = gameController;
         this.grid = grid;
         this.playerColor = playerColor;
+        this.aiDifficulty = aiDifficulty;
     }
     @Override
     public void run(){
         Move AIMove;
-        if(GameController.aiDifficulty == AIDifficulty.EASY){
+        if(aiDifficulty == AIDifficulty.EASY){
             AIMove = AI_Easy.findBestOneMove(grid, playerColor.getColor());
-        }else if(GameController.aiDifficulty == AIDifficulty.MEDIUM){
+        }else if(aiDifficulty == AIDifficulty.MEDIUM){
             AIMove = AI_Medium.findBestOneMove(grid, playerColor.getColor());
         }else{
             AIMove = AI_Hard.findBestOneMove(grid, playerColor.getColor());

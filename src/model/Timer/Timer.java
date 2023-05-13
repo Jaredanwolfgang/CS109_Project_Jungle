@@ -41,32 +41,24 @@ public class Timer extends Thread {
     @Override
     public void run() {
         while (running) {
-            //To show the timer countdown, I have implemented the method here.
-            view.getChessGameFrame().changeTimeLabel(remaining);
 
-            //This helps to ensure all time interval counts for 1 second.
-            if(remaining<=5){
-                view.getChessGameFrame().getChessboardComponent().shine(remaining,this);
-            } else{
-                try {
-                    Thread.sleep(interval);
-                } catch (InterruptedException e) {
-                    // ignore interruptions
-                }
+            try {
+                Thread.sleep(interval);
+            } catch (InterruptedException ignored) {
+                // ignore interruptions
             }
-            view.getChessGameFrame().getChessboardComponent().refreshGridComponents();
 
             synchronized (this) {
                 if (remaining <= 0) {
                     System.out.println("Time is up!");
-
-                    AIDifficulty temp = GameController.aiDifficulty;
-                    GameController.aiDifficulty = AIDifficulty.EASY;
-                    gameController.gatAIMove();
-                    GameController.aiDifficulty = temp;
-
+                    gameController.gatAIMove(AIDifficulty.EASY);
                     reset();
                 } else {
+                    view.getChessGameFrame().changeTimeLabel(remaining);
+                    if(remaining<=5){
+                        view.getChessGameFrame().getChessboardComponent().shine(remaining,this);
+                    }
+
                     if (remaining % 5 == 0) {
                         System.out.println(remaining + " seconds remaining");
                     }

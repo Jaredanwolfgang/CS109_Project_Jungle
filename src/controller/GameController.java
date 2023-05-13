@@ -176,10 +176,10 @@ public class GameController implements GameListener {
         this.writeUsers();
     }
 
-    public void gatAIMove() {
+    public void gatAIMove(AIDifficulty aiDifficulty) {
         //Do not use this function in view.
         //This is only a reusable method to create AI.
-        Thread AI = new AIThread(this, model.getGrid(), currentPlayer);
+        Thread AI = new AIThread(this, model.getGrid(), currentPlayer,aiDifficulty);
         AI.start();
     }
 
@@ -273,7 +273,7 @@ public class GameController implements GameListener {
                 }
             }
             if(gameMode == GameMode.PVE && currentPlayer != colorOfUser && !onAutoPlayback){
-                this.gatAIMove();
+                this.gatAIMove(GameController.aiDifficulty);
             }
         }
 
@@ -411,7 +411,7 @@ public class GameController implements GameListener {
                         }
                     }
                     if(gameMode == GameMode.PVE && currentPlayer != colorOfUser && !onAutoPlayback){
-                        this.gatAIMove();
+                        this.gatAIMove(GameController.aiDifficulty);
                     }
                 }
             }
