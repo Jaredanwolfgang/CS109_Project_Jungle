@@ -7,15 +7,13 @@ import model.ChessBoard.Cell;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessPieces.ChessPiece;
+import model.Enum.Numbers;
 import model.Enum.Seasons;
-import model.User.User;
 import view.ChessComponent.*;
 
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,7 +80,8 @@ public class ChessboardComponent extends JComponent {
             }
         }
     }
-    public void initSet(){
+
+    public void initSet() {
         riverCell.add(new ChessboardPoint(3, 1));
         riverCell.add(new ChessboardPoint(3, 2));
         riverCell.add(new ChessboardPoint(4, 1));
@@ -108,19 +107,20 @@ public class ChessboardComponent extends JComponent {
         densCell.add(new ChessboardPoint(0, 3));
         densCell.add(new ChessboardPoint(8, 3));
     }
+
     public void initiateGridComponents() {
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
-                    cell = new CellComponent(season.getColors()[1],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(season.getColors()[1], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
                 } else if (trapCell.contains(temp)) {
-                    cell = new CellComponent(season.getColors()[2],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(season.getColors()[2], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
                 } else if (densCell.contains(temp)) {
-                    cell = new CellComponent(season.getColors()[3],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(season.getColors()[3], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
                 } else {
-                    cell = new CellComponent(season.getColors()[0],season.getColors()[5],season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(season.getColors()[0], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
                 }
                 this.add(cell);
                 gridComponents[i][j] = cell;
@@ -142,19 +142,21 @@ public class ChessboardComponent extends JComponent {
             }
         }
     }
+
     public void refreshGridComponents() {
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
                 CellComponent cell = getGridComponentAt(temp);
+                cell.setTimerMode(false);
                 if (riverCell.contains(temp)) {
-                    cell.setBackground(season.getColors()[1],season.getColors()[5],season.getColors()[4]);
+                    cell.setBackground(season.getColors()[1], season.getColors()[5], season.getColors()[4]);
                 } else if (trapCell.contains(temp)) {
-                    cell.setBackground(season.getColors()[2],season.getColors()[5],season.getColors()[4]);
+                    cell.setBackground(season.getColors()[2], season.getColors()[5], season.getColors()[4]);
                 } else if (densCell.contains(temp)) {
-                    cell.setBackground(season.getColors()[3],season.getColors()[5],season.getColors()[4]);
+                    cell.setBackground(season.getColors()[3], season.getColors()[5], season.getColors()[4]);
                 } else {
-                    cell.setBackground(season.getColors()[0],season.getColors()[5],season.getColors()[4]);
+                    cell.setBackground(season.getColors()[0], season.getColors()[5], season.getColors()[4]);
                 }
                 repaint();
                 cell.setHoverListener(new HoverListener() {
@@ -173,6 +175,34 @@ public class ChessboardComponent extends JComponent {
                     }
                 });
             }
+        }
+    }
+
+    public void shine(int remaining, model.Timer.Timer timer) {
+        int[][] shineCellComponent = switch (remaining) {
+            case 0 -> Numbers.ZERO;
+            case 1 -> Numbers.ONE;
+            case 2 -> Numbers.TWO;
+            case 3 -> Numbers.THREE;
+            case 4 -> Numbers.FOUR;
+            case 5 -> Numbers.FIVE;
+            default -> null;
+        };
+        for (int[] ints : shineCellComponent) {
+            ChessboardPoint temp = new ChessboardPoint(ints[0], ints[1]);
+            CellComponent cell = getGridComponentAt(temp);
+            cell.setTimerMode(true);
+            repaint();
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                // ignore interruptions
+            }
+        }
+        try {
+            Thread.sleep(timer.getInterval() - shineCellComponent.length * 20);
+        } catch (InterruptedException e) {
+            // ignore interruptions
         }
     }
 
@@ -222,54 +252,12 @@ public class ChessboardComponent extends JComponent {
         }
     }
 
-    public Set<ChessboardPoint> getRiverCell() {
-        return riverCell;
-    }
-
-    public Set<ChessboardPoint> getTrapCell() {
-        return trapCell;
-    }
-
-    public Set<ChessboardPoint> getDensCell() {
-        return densCell;
-    }
-
     public Seasons getSeason() {
         return season;
     }
+
     public void setSeason(Seasons season) {
         this.season = season;
     }
 
-    private static class RoundBorder extends AbstractBorder {
-        private final int radius;
-        private final Color color;
-
-        public RoundBorder(int radius, Color color) {
-            this.radius = radius;
-            this.color = color;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(color);
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
-            g2d.dispose();
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c) {
-            return new Insets(radius + 1, radius + 1, radius + 2, radius);
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c, Insets insets) {
-            insets.left = insets.right = radius + 1;
-            insets.top = radius + 1;
-            insets.bottom = radius + 2;
-            return insets;
-        }
-    }
 }

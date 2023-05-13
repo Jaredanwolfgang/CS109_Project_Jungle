@@ -12,7 +12,7 @@ import java.awt.event.WindowEvent;
 //Draw Pictures First
 public class SelectPVEModeFrame extends JFrame {
     private final Dimension screenSize = new Dimension(700,500);
-    private Frame frame;
+    private final Frame frame;
     private final JButton easyButton = new JButton();
     private final JButton mediumButton = new JButton();
     private final JButton hardButton = new JButton();
@@ -66,7 +66,7 @@ public class SelectPVEModeFrame extends JFrame {
         easyButton.setFocusPainted(false);
         easyButton.setOpaque(false);
 
-        easyButton.setBounds(270, 150, 80, 80);
+        easyButton.setBounds(270, 120, 80, 80);
         easyButton.setIcon(Button_Light_New);
         easyButton.addMouseListener(new MouseListener() {
             @Override
@@ -101,7 +101,7 @@ public class SelectPVEModeFrame extends JFrame {
         mediumButton.setFocusPainted(false);
         mediumButton.setOpaque(false);
 
-        mediumButton.setBounds(400, 150, 80, 80);
+        mediumButton.setBounds(400, 120, 80, 80);
         mediumButton.setIcon(Button_Light_New);
         mediumButton.addMouseListener(new MouseListener() {
             @Override
@@ -127,7 +127,7 @@ public class SelectPVEModeFrame extends JFrame {
         this.getContentPane().add(mediumButton);
     }
     public void initHardButton() {
-        /** To get the scaled Image */
+        /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\HardButton_Light.png").getScaledInstance(80, 80, Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\HardButton_Dark.png").getScaledInstance(80, 80, Image.SCALE_SMOOTH));
 
@@ -136,7 +136,7 @@ public class SelectPVEModeFrame extends JFrame {
         hardButton.setFocusPainted(false);
         hardButton.setOpaque(false);
 
-        hardButton.setBounds(530, 150, 80, 80);
+        hardButton.setBounds(530, 120, 80, 80);
         hardButton.setIcon(Button_Light_New);
         hardButton.addMouseListener(new MouseListener() {
             @Override

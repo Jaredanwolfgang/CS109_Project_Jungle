@@ -15,12 +15,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import Server.*;
 import view.ChessComponent.ChessComponent;
-import view.Dialog.FailDialog;
-import view.Dialog.SuccessDialog;
-import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
 import view.UI.ChessClick;
-import view.UI.SoundEffect;
 
 import javax.swing.*;
 
@@ -563,9 +559,6 @@ public class GameController implements GameListener {
             }
         }
         System.out.println("Finished writing moves to file: " + filePath);
-
-        /** TODO: NOT NECESSARY: Here should be code for GUI to show a message indicating that the file is saved successfully */
-
     }
 
     @Override
@@ -855,7 +848,6 @@ public class GameController implements GameListener {
                         }
                     }
                     onAutoPlayback = false;
-                    return;
                 }
             });
             thread.start();

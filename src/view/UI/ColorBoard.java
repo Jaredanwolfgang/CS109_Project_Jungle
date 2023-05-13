@@ -7,12 +7,11 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class TurnLabel extends JLabel {
+public class ColorBoard extends JLabel {
     private Color backgroundColor;
-    private int cornerRadius;
+    private final int cornerRadius;
 
-    public TurnLabel(String text, Color bgColor, int cornerRadius) {
-        super(text);
+    public ColorBoard(Color bgColor, int cornerRadius) {
         this.backgroundColor = bgColor;
         this.cornerRadius = cornerRadius;
         setOpaque(false); // 设置透明度
@@ -52,10 +51,6 @@ public class TurnLabel extends JLabel {
 
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
-    }
-
-    public Color getBackgroundColor() {
-        return backgroundColor;
     }
 
     @Override

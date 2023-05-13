@@ -1,10 +1,8 @@
 package view;
 
 import listener.HoverListener;
-import view.ChessComponent.ChessComponent;
 
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,7 +19,8 @@ public class CellComponent extends JPanel {
     private Color labelledBackground;
     private boolean hovered;
     private boolean labelled;
-    private int cornerRadius;
+    private boolean timermode;
+    private final int cornerRadius;
     private HoverListener hoverListener;
 
     public CellComponent(Color normalBackground, Color hoverBackground, Color labelledBackground, Point location, int size) {
@@ -63,6 +62,10 @@ public class CellComponent extends JPanel {
         this.labelled = labelled;
     }
 
+    public void setTimerMode(boolean timermode) {
+        this.timermode = timermode;
+    }
+
     public void setHoverListener(HoverListener hoverListener) {
         this.hoverListener = hoverListener;
     }
@@ -73,21 +76,27 @@ public class CellComponent extends JPanel {
         this.labelledBackground = labelledBackground;
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponents(g);
         Graphics2D g2d = (Graphics2D) g;
 
         if (labelled) {
-            g.setColor(labelledBackground);
-        } else if (!labelled && hovered) {
-            g.setColor(hoverBackground);
+            g2d.setColor(labelledBackground);
+        } else if (hovered) {
+            g2d.setColor(hoverBackground);
         } else {
-            g.setColor(normalBackground);
+            g2d.setColor(normalBackground);
         }
         RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(0, 0, this.getWidth() , this.getHeight(), cornerRadius, cornerRadius);
         g2d.fill(roundedRectangle);
+
+        if (timermode) {
+            Graphics2D shine = (Graphics2D) g;
+            shine.setColor(new Color(0,0,0,128));
+            RoundRectangle2D roundRectangle2D = new RoundRectangle2D.Double(0, 0, this.getWidth() , this.getHeight(), cornerRadius, cornerRadius);
+            shine.fill(roundRectangle2D);
+        }
     }
 
 }
