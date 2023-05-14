@@ -107,6 +107,11 @@ public class Frame {
         if(move.isDoesCapture()){
             this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(move.getFromPoint(),this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(move.getToPoint()));
             this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(move.getToPoint(),this.getChessGameFrame().getChessComponent(move.getCapturedPiece()));
+            if(move.getCapturedPiece().getOwner().getColor() == Color.BLUE) {
+                this.getChessGameFrame().removeOutBlueStack();
+            }else{
+                this.getChessGameFrame().removeOutRedStack();
+            }
         }else{
             this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(move.getFromPoint(),this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(move.getToPoint()));
         }

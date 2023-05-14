@@ -25,7 +25,7 @@ public class EndLabel extends JLabel {
     private JLabel background;
 
     public EndLabel(GameController gameController) {
-        this.initFrameResize = ChessGameFrame.initFrameResize;
+        this.initFrameResize = ChessGameFrame.gameFrameResize;
         this.winPlayer = gameController.win();
         this.gameController = gameController;
 
@@ -66,23 +66,19 @@ public class EndLabel extends JLabel {
             public void mouseClicked(MouseEvent e) {
                 gameController.getView().playerClickMusicButton();
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
             @Override
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                musicButton.setToolTipText("Music Player");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 musicButton.setIcon(Button_Light_New);
+                musicButton.setToolTipText(null);
             }
         });
         this.add(musicButton);
@@ -99,18 +95,11 @@ public class EndLabel extends JLabel {
         exitButton.setBounds((int) (initFrameResize * 350), (int) (initFrameResize * 450), (int) (initFrameResize * 50), (int) (initFrameResize * 50));
         exitButton.setIcon(Button_Light_New);
         exitButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+            @Override public void mouseClicked(MouseEvent e) {
                 System.exit(0);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
 
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -138,18 +127,14 @@ public class EndLabel extends JLabel {
         returnButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                gameController.getView().getGameController().onPlayerExitGameFrame();
+                gameController.onPlayerExitGameFrame();
                 gameController.getView().playerClickReturnButton(gameController.getView().getChessGameFrame(), gameController.getView().getStartFrame());
                 gameController.getView().getChessGameFrame().removeWinLabel();
             }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
+            @Override public void mousePressed(MouseEvent e) {}
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+            @Override public void mouseReleased(MouseEvent e) {}
 
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -172,34 +157,52 @@ public class EndLabel extends JLabel {
         resetButton.setFocusPainted(false);
         resetButton.setOpaque(false);
         resetButton.setBounds((int) (initFrameResize * 100), (int) (initFrameResize * 450), (int) (initFrameResize * 50), (int) (initFrameResize * 50));
-        resetButton.setIcon(Button_Light_New);
-        resetButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                gameController.getView().getChessGameFrame().removeWinLabel();
-                gameController.onPlayerClickResetButton();
-            }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
+        if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator) {
+            resetButton.setIcon(Button_Dark_New);
+            resetButton.addMouseListener(new MouseListener() {
+                @Override public void mouseClicked(MouseEvent e) {}
+                @Override public void mousePressed(MouseEvent e) {}
+                @Override public void mouseReleased(MouseEvent e) {}
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    resetButton.setToolTipText("Unavailable in current game mode");
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    resetButton.setToolTipText(null);
+                }
+            });
+        }
+        else {
+            resetButton.setIcon(Button_Light_New);
+            resetButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    gameController.getView().getChessGameFrame().removeWinLabel();
+                    gameController.onPlayerClickResetButton();
+                }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                resetButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                resetButton.setToolTipText("Reset the chess game");
-            }
+                @Override public void mousePressed(MouseEvent e) {}
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                resetButton.setIcon(Button_Light_New);
-            }
-        });
+                @Override public void mouseReleased(MouseEvent e) {}
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    resetButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    resetButton.setToolTipText("Reset the chess game");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    resetButton.setIcon(Button_Light_New);
+                    resetButton.setToolTipText(null);
+                }
+            });
+        }
         this.add(resetButton);
     }
 

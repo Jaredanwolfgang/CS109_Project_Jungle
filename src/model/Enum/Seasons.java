@@ -12,6 +12,14 @@ public enum Seasons {
         5. The hovering color
         The order of the colors is the same as the order of the enum
     * */
+    SPRING("Spring.gif",
+            new Color(163, 220, 136),
+            new Color(157, 245, 255),
+            new Color(130, 157, 129),
+            new Color(101, 126, 100),
+            new Color(197, 151, 117),
+            new Color(255, 244, 171)
+            ),
     SUMMER("Summer.gif",
             new Color(255, 206, 100),
             new Color(133, 157, 253),
@@ -35,14 +43,7 @@ public enum Seasons {
             new Color(104, 126, 190),
             new Color(255, 229, 100),
             new Color(255, 248, 200)
-            ),
-    SPRING("Spring.gif",
-            new Color(163, 220, 136),
-            new Color(157, 245, 255),
-            new Color(130, 157, 129),
-            new Color(101, 126, 100),
-            new Color(197, 151, 117),
-            new Color(255, 244, 171));
+            );
     private final String name;
     private final Color[] colors;
 

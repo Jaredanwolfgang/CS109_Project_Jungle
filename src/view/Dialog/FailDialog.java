@@ -21,6 +21,7 @@ public class FailDialog extends JDialog{
     private void initConfirmButton() {
         confirmButton = new JButton("Confirm");
         confirmButton.setBounds(100,90,100,30);
+        confirmButton.setFocusPainted(false);
         confirmButton.addActionListener(e -> {
             dispose();
         });

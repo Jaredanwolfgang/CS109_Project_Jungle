@@ -192,12 +192,13 @@ public class InitFrame extends JFrame{
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
                 ToolTipManager.sharedInstance().setInitialDelay(0);
-                musicButton.setToolTipText("Music Adjustment");
+                musicButton.setToolTipText("Music Player");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 musicButton.setIcon(Button_Light_New);
+                musicButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(musicButton);
@@ -232,6 +233,7 @@ public class InitFrame extends JFrame{
             @Override
             public void mouseExited(MouseEvent e) {
                 exitButton.setIcon(Button_Light_New);
+                exitButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(exitButton);

@@ -22,6 +22,7 @@ public class SuccessDialog extends JDialog {
     private void initConfirmButton() {
         confirmButton = new JButton("Confirm");
         confirmButton.setBounds(120,30,100,30);
+        confirmButton.setFocusPainted(false);
         confirmButton.addActionListener(e -> {
             dispose();
         });

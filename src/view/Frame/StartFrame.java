@@ -101,6 +101,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 localButton.setIcon(Button_Light_New);
+                localButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(localButton);
@@ -142,6 +143,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 netButton.setIcon(Button_Light_New);
+                netButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(netButton);
@@ -171,11 +173,12 @@ public class StartFrame extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 musicButton.setIcon(Button_Dark_New);
                 ToolTipManager.sharedInstance().setInitialDelay(0);
-                musicButton.setToolTipText("Music adjustment");
+                musicButton.setToolTipText("Music Player");
             }
             @Override
             public void mouseExited(MouseEvent e) {
                 musicButton.setIcon(Button_Light_New);
+                musicButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(musicButton);
@@ -210,6 +213,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 exitButton.setIcon(Button_Light_New);
+                exitButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(exitButton);
@@ -240,11 +244,12 @@ public class StartFrame extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 returnButton.setIcon(Button_Dark_New);
                 ToolTipManager.sharedInstance().setInitialDelay(0);
-                returnButton.setToolTipText("Return to the last frame");
+                returnButton.setToolTipText("Return to the beginning frame");
             }
             @Override
             public void mouseExited(MouseEvent e) {
                 returnButton.setIcon(Button_Light_New);
+                returnButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(returnButton);
@@ -284,6 +289,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 aiButton.setIcon(Button_Light_New);
+                aiButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(aiButton);
@@ -323,6 +329,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 rankButton.setIcon(Button_Light_New);
+                rankButton.setToolTipText(null);
             }
         });
         this.getContentPane().add(rankButton);

@@ -188,18 +188,18 @@ public class ChessboardComponent extends JComponent {
     }
 
     public void shine(int remaining, model.Timer.Timer timer) {
-        int[][] shineCellComponent = switch (remaining) {
-            case 0 -> Numbers.ZERO;
-            case 1 -> Numbers.ONE;
-            case 2 -> Numbers.TWO;
-            case 3 -> Numbers.THREE;
-            case 4 -> Numbers.FOUR;
-            case 5 -> Numbers.FIVE;
-            default -> null;
-        };
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int[][] shineCellComponent = switch (remaining) {
+                    case 0 -> Numbers.ZERO;
+                    case 1 -> Numbers.ONE;
+                    case 2 -> Numbers.TWO;
+                    case 3 -> Numbers.THREE;
+                    case 4 -> Numbers.FOUR;
+                    case 5 -> Numbers.FIVE;
+                    default -> null;
+                };
                 for (int[] ints : shineCellComponent) {
                     ChessboardPoint temp = new ChessboardPoint(ints[0], ints[1]);
                     CellComponent cell = getGridComponentAt(temp);
@@ -212,7 +212,7 @@ public class ChessboardComponent extends JComponent {
                     }
                 }
                 try {
-                    Thread.sleep(timer.getInterval() - shineCellComponent.length * 20 - 250);
+                    Thread.sleep(timer.getInterval() - shineCellComponent.length * 20L - 250);
                 } catch (InterruptedException e) {
                     // ignore interruptions
                 }
