@@ -11,6 +11,7 @@ import javax.swing.Timer;
 public class InitFrame extends JFrame{
     public static double initFrameResize = 1.0;
     private final Dimension screenSize = new Dimension(800,600);
+
     private final JButton loginButton = new JButton();
     private final JButton registerButton = new JButton();
     private final JButton musicButton = new JButton();
@@ -31,7 +32,7 @@ public class InitFrame extends JFrame{
         this.setVisible(false);
 
         Timer resizeTimer = new Timer(150, e -> {
-            Dimension newDimension =  frame.getInitFrame().getSize();
+            Dimension newDimension =  getSize();
             if(newDimension.height != (int) (initFrameResize * screenSize.getHeight())){
                 initFrameResize = (double) newDimension.height / screenSize.height;
             }else if(newDimension.width != (int) (initFrameResize * screenSize.getWidth())){
@@ -45,14 +46,16 @@ public class InitFrame extends JFrame{
             if(initFrameResize < 0.5){
                 initFrameResize = 0.5;
             }
-            frame.getInitFrame().getContentPane().removeAll();
+//            frame.getInitFrame().getContentPane().removeAll();
+            getContentPane().removeAll();
             initLabel();
             initLoginButton();
             initRegisterButton();
             initMusicButton();
             initExitButton();
             initBackground("Background\\Jungle.gif");
-            frame.getInitFrame().setSize((int) (initFrameResize * screenSize.getWidth()), (int) (initFrameResize * screenSize.getHeight()));
+            setSize((int) (initFrameResize * screenSize.getWidth()), (int) (initFrameResize * screenSize.getHeight()));
+//            frame.getInitFrame().setSize((int) (initFrameResize * screenSize.getWidth()), (int) (initFrameResize * screenSize.getHeight()));
         });
 
         addComponentListener(new ComponentListener() {
@@ -70,11 +73,9 @@ public class InitFrame extends JFrame{
     //关闭模式是关掉就退出
     //不可改变大小
     public void initJFrame() {
-//        System.out.println("InitFrame is initializing...");
         this.setLayout(null);
         this.setSize((int) screenSize.getWidth(), (int) screenSize.getHeight());
         this.setTitle("Jungle");
-        //this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setResizable(true);

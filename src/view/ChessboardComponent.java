@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 
 import static model.Enum.Constant.CHESSBOARD_COL_SIZE;
 import static model.Enum.Constant.CHESSBOARD_ROW_SIZE;
@@ -25,7 +26,7 @@ import static model.Enum.Constant.CHESSBOARD_ROW_SIZE;
  */
 public class ChessboardComponent extends JComponent {
     private final CellComponent[][] gridComponents = new CellComponent[CHESSBOARD_ROW_SIZE.getNum()][CHESSBOARD_COL_SIZE.getNum()];
-    private final int CHESS_SIZE;
+    private int CHESS_SIZE;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
     private final Set<ChessboardPoint> trapCell = new HashSet<>();
     private final Set<ChessboardPoint> densCell = new HashSet<>();
@@ -43,7 +44,6 @@ public class ChessboardComponent extends JComponent {
 
         initSet();
         initiateGridComponents();
-        repaint();
     }
 
     /**
@@ -53,34 +53,6 @@ public class ChessboardComponent extends JComponent {
     public void registerGameController(GameController gameController) {
         this.gameController = gameController;
     }
-
-    public void initiateChessComponent(Chessboard chessboard) {
-        Cell[][] grid = chessboard.getGrid();
-        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
-                //Implement the initialization checkerboard
-                if (grid[i][j].getPiece() != null) {
-                    ChessPiece chessPiece = grid[i][j].getPiece();
-                    switch (chessPiece.getCategory()) {
-                        case ELEPHANT ->
-                                gridComponents[i][j].add(new ElephantChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case LION ->
-                                gridComponents[i][j].add(new LionChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case TIGER ->
-                                gridComponents[i][j].add(new TigerChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case LEOPARD ->
-                                gridComponents[i][j].add(new LeopardChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case WOLF ->
-                                gridComponents[i][j].add(new WolfChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case DOG -> gridComponents[i][j].add(new DogChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case CAT -> gridComponents[i][j].add(new CatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                        case RAT -> gridComponents[i][j].add(new RatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
-                    }
-                }
-            }
-        }
-    }
-
     public void initSet() {
         riverCell.add(new ChessboardPoint(3, 1));
         riverCell.add(new ChessboardPoint(3, 2));
@@ -107,7 +79,32 @@ public class ChessboardComponent extends JComponent {
         densCell.add(new ChessboardPoint(0, 3));
         densCell.add(new ChessboardPoint(8, 3));
     }
-
+    public void initiateChessComponent(Chessboard chessboard) {
+        Cell[][] grid = chessboard.getGrid();
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                //Implement the initialization checkerboard
+                if (grid[i][j].getPiece() != null) {
+                    ChessPiece chessPiece = grid[i][j].getPiece();
+                    switch (chessPiece.getCategory()) {
+                        case ELEPHANT ->
+                                gridComponents[i][j].add(new ElephantChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case LION ->
+                                gridComponents[i][j].add(new LionChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case TIGER ->
+                                gridComponents[i][j].add(new TigerChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case LEOPARD ->
+                                gridComponents[i][j].add(new LeopardChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case WOLF ->
+                                gridComponents[i][j].add(new WolfChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case DOG -> gridComponents[i][j].add(new DogChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case CAT -> gridComponents[i][j].add(new CatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                        case RAT -> gridComponents[i][j].add(new RatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    }
+                }
+            }
+        }
+    }
     public void initiateGridComponents() {
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
@@ -178,20 +175,31 @@ public class ChessboardComponent extends JComponent {
         }
     }
 
+    public void changeSize (int chessSize){
+        removeAll();
+        CHESS_SIZE = chessSize;
+        setSize(CHESS_SIZE * 7, CHESS_SIZE * 9);
+        Chessboard chessboard = gameController.getModel();
+
+        initiateGridComponents();
+        initiateChessComponent(chessboard);
+        revalidate();
+        repaint();
+    }
+
     public void shine(int remaining, model.Timer.Timer timer) {
+        int[][] shineCellComponent = switch (remaining) {
+            case 0 -> Numbers.ZERO;
+            case 1 -> Numbers.ONE;
+            case 2 -> Numbers.TWO;
+            case 3 -> Numbers.THREE;
+            case 4 -> Numbers.FOUR;
+            case 5 -> Numbers.FIVE;
+            default -> null;
+        };
         new Thread(new Runnable() {
             @Override
             public void run() {
-                refreshGridComponents();
-                int[][] shineCellComponent = switch (remaining) {
-                    case 0 -> Numbers.ZERO;
-                    case 1 -> Numbers.ONE;
-                    case 2 -> Numbers.TWO;
-                    case 3 -> Numbers.THREE;
-                    case 4 -> Numbers.FOUR;
-                    case 5 -> Numbers.FIVE;
-                    default -> null;
-                };
                 for (int[] ints : shineCellComponent) {
                     ChessboardPoint temp = new ChessboardPoint(ints[0], ints[1]);
                     CellComponent cell = getGridComponentAt(temp);
@@ -203,6 +211,12 @@ public class ChessboardComponent extends JComponent {
                         // ignore interruptions
                     }
                 }
+                try {
+                    Thread.sleep(timer.getInterval() - shineCellComponent.length * 20 - 250);
+                } catch (InterruptedException e) {
+                    // ignore interruptions
+                }
+                refreshGridComponents();
             }
         }).start();
     }

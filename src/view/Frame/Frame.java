@@ -95,6 +95,11 @@ public class Frame {
         ChessComponent predator = (ChessComponent) this.getChessGameFrame().getChessboardComponent().getGridComponentAt(selectedPoint).getComponents()[0];
         predator.play();
         ChessComponent prey = this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(point);
+        if (gameController.getCurrentPlayer() == PlayerColor.BLUE) {
+            getChessGameFrame().addInRedStack(prey);
+        }else{
+            getChessGameFrame().addInBlueStack(prey);
+        }
         predator.setSelected(false);
         this.getChessGameFrame().getChessboardComponent().setChessComponentAtGrid(point,this.getChessGameFrame().getChessboardComponent().removeChessComponentAtGrid(selectedPoint));
     }
@@ -127,11 +132,13 @@ public class Frame {
     public void resetChessBoardComponent(){
         System.out.println("Chess Component resetting");
         this.getChessGameFrame().getChessboardComponent().removeAll();
-
+        this.getChessGameFrame().initBlueStackBoard();
+        this.getChessGameFrame().initRedStackBoard();
         try {
             this.getChessGameFrame().changeTurnLabel(1, PlayerColor.BLUE);
             this.getChessGameFrame().getChessboardComponent().initiateGridComponents();
             this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
+
         } catch (Exception e) {
             System.out.println("The Chess Component reset failed");
             throw new RuntimeException(e);
