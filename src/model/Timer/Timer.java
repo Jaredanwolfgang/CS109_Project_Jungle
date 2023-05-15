@@ -36,18 +36,12 @@ public class Timer extends Thread {
 
     public synchronized void shutdown() {
         this.running = false;
+        this.interrupt();
     }
 
     @Override
     public void run() {
         while (running) {
-
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException ignored) {
-                // ignore interruptions
-            }
-
             synchronized (this) {
                 if (remaining <= 0) {
                     System.out.println("Time is up!");
@@ -64,6 +58,12 @@ public class Timer extends Thread {
                     }
                     remaining--;
                 }
+            }
+
+            try {
+                Thread.sleep(interval);
+            } catch (InterruptedException e) {
+                break;
             }
         }
     }

@@ -38,8 +38,8 @@ public class ChessGameFrame extends JFrame {
     private ColorBoard colorBoard;
     private JLabel blueStack = new JLabel();
     private JLabel redStack = new JLabel();;
-    private JLabel timeLabel;
-    private JLabel turnLabel;
+    private JLabel timeLabel = new JLabel("45");
+    private JLabel turnLabel = new JLabel("1");
     private int seasons = 0;
 
     private JButton backgroundButton = new JButton();
@@ -649,13 +649,13 @@ public class ChessGameFrame extends JFrame {
         colorBoard.setBounds((int) (25 * gameFrameResize), (int) (25 * gameFrameResize), (int) (100 * gameFrameResize), (int) (50 * gameFrameResize));
         colorBoard.setLayout(new GridLayout(1, 2));
 
-        turnLabel = new JLabel("1");
+        //turnLabel = new JLabel("1");
         turnLabel.setFont(new Font("Britannic Bold", Font.BOLD, (int) (25 * gameFrameResize)));
         turnLabel.setForeground(new Color(231, 167, 47));
         turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
         turnLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        timeLabel = new JLabel("45");
+        //timeLabel = new JLabel("45");
         timeLabel.setFont(new Font("Britannic Bold", Font.BOLD, (int) (25 * gameFrameResize)));
         timeLabel.setForeground(Color.WHITE);
         timeLabel.setHorizontalAlignment(SwingConstants.CENTER);

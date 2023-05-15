@@ -141,6 +141,7 @@ public class Frame {
         this.getChessGameFrame().initRedStackBoard();
         try {
             this.getChessGameFrame().changeTurnLabel(1, PlayerColor.BLUE);
+            this.getChessGameFrame().changeTimeLabel(45);
             this.getChessGameFrame().getChessboardComponent().initiateGridComponents();
             this.getChessGameFrame().getChessboardComponent().initiateChessComponent(this.getGameController().getModel());
 

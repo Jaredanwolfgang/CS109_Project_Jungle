@@ -518,20 +518,16 @@ public class GameController implements GameListener {
             System.out.println("Reset is not allowed in online mode.");
             return;
         }
-        turnCount = 1;
-
-        selectedPoint = null;
-
-        model.reset();
-        view.resetChessBoardComponent();
-
-        this.currentPlayer = PlayerColor.BLUE;
-
-        this.colorOfUser = PlayerColor.BLUE;
-        this.allMovesOnBoard.clear();
         timer.shutdown();
         timer = new Timer(this,view,1000);
         timer.start();
+        turnCount = 1;
+        selectedPoint = null;
+        model.reset();
+        view.resetChessBoardComponent();
+        this.currentPlayer = PlayerColor.BLUE;
+        this.colorOfUser = PlayerColor.BLUE;
+        this.allMovesOnBoard.clear();
     }
 
     @Override
