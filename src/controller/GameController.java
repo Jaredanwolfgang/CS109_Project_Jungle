@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import Server.*;
 import view.ChessComponent.ChessComponent;
+import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
 import view.UI.ChessClick;
 
@@ -484,6 +485,8 @@ public class GameController implements GameListener {
             view.resetChessBoardComponent();
 
             onAutoPlayback = true;
+            ChessGameFrame.enabled = false;
+
             for (Move move : allMovesOnBoard) {
                 onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
@@ -506,6 +509,7 @@ public class GameController implements GameListener {
                 }
             }
             onAutoPlayback = false;
+            ChessGameFrame.enabled = true;
         });
         thread.start();
     }
@@ -556,6 +560,7 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerClickLoadButton(String filePath) {
+
         if(gameMode != GameMode.Local_PVP){
             System.out.println("Load is only allowed in local PVP mode.");
             return;
@@ -815,7 +820,8 @@ public class GameController implements GameListener {
             /** Jerry: I have added a new Thread here so that it can show the playback process of the chess*/
             Thread thread = new Thread(() -> {
                 onPlayerClickResetButton();
-                onAutoPlayback = true;
+                ChessGameFrame.enabled = false;
+
                 for (Move move : moves) {
                     onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
@@ -837,7 +843,7 @@ public class GameController implements GameListener {
                         throw new RuntimeException(e);
                     }
                 }
-                onAutoPlayback = false;
+                ChessGameFrame.enabled = true;
             });
             thread.start();
         }

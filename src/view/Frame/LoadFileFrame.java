@@ -55,7 +55,9 @@ public class LoadFileFrame extends JFrame implements ActionListener {
                 if (file.getName().endsWith(".txt")) {
                     textField.setText(file.getAbsolutePath());
                     // Here you can input the file to the system
+
                     frame.getGameController().onPlayerClickLoadButton(textField.getText());
+
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "ERROR 101: Please select a .txt file.", "Warning", JOptionPane.WARNING_MESSAGE);
