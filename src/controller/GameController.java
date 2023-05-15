@@ -23,8 +23,8 @@ import javax.swing.*;
 public class GameController implements GameListener {
     public static final long animationInterval = 400;
     private static final String USER_FILE_PATH = "Information\\users.txt";
-    private Chessboard model;
-    private Frame view;
+    private final Chessboard model;
+    private final Frame view;
     private ServerThread server;
     private ClientThread client;
     public Timer timer;
@@ -40,8 +40,8 @@ public class GameController implements GameListener {
     public static GameMode gameMode;
 
     // Record all moves on the board.
-    private ArrayList<Move> allMovesOnBoard;
-    private ArrayList<User> allUsers;
+    private final ArrayList<Move> allMovesOnBoard;
+    private final ArrayList<User> allUsers;
 
     // Record whether there is a selected piece before and where
     private ChessboardPoint selectedPoint;
@@ -106,7 +106,6 @@ public class GameController implements GameListener {
                 }
             } catch (IOException e) {
                 System.err.println("Error closing file: " + e.getMessage());
-                return;
             }
         }
         allUsers.sort(Comparator.comparing(User::getScore));
@@ -132,7 +131,6 @@ public class GameController implements GameListener {
                 }
             } catch (IOException e) {
                 System.err.println("Error closing file: " + e.getMessage());
-                return;
             }
         }
         System.out.println("Write users successfully!");
@@ -478,36 +476,32 @@ public class GameController implements GameListener {
         turnCount = 1;
 
         model.reset();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                view.resetChessBoardComponent();
+        Thread thread = new Thread(() -> {
+            view.resetChessBoardComponent();
 
-                onAutoPlayback = true;
-                for (Move move : allMovesOnBoard) {
-                    onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
+            onAutoPlayback = true;
+            for (Move move : allMovesOnBoard) {
+                onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
-                    try {
-                        Thread.sleep(GameController.animationInterval);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    if(move.isDoesCapture()){
-                        onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
-                    }else{
-                        onPlayerClickCell(move.getToPoint(), currentPlayer);
-                    }
-
-                    try {
-                        Thread.sleep(GameController.animationInterval);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                try {
+                    Thread.sleep(GameController.animationInterval);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-                onAutoPlayback = false;
-                return;
+
+                if(move.isDoesCapture()){
+                    onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
+                }else{
+                    onPlayerClickCell(move.getToPoint(), currentPlayer);
+                }
+
+                try {
+                    Thread.sleep(GameController.animationInterval);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
+            onAutoPlayback = false;
         });
         thread.start();
     }
@@ -550,7 +544,6 @@ public class GameController implements GameListener {
                 } catch (IOException e) {
                     System.out.println("Error closing file: " + filePath);
                     e.printStackTrace();
-                    return;
                 }
             }
         }
@@ -723,7 +716,6 @@ public class GameController implements GameListener {
             } catch (IOException e) {
                 System.out.println("Error closing file: " + filePath);
                 e.printStackTrace();
-                return;
             }
         }
 
@@ -817,34 +809,31 @@ public class GameController implements GameListener {
 
             }*/
             /** Jerry: I have added a new Thread here so that it can show the playback process of the chess*/
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    onPlayerClickResetButton();
-                    onAutoPlayback = true;
-                    for (Move move : moves) {
-                        onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
+            Thread thread = new Thread(() -> {
+                onPlayerClickResetButton();
+                onAutoPlayback = true;
+                for (Move move : moves) {
+                    onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
-                        try {
-                            Thread.sleep(GameController.animationInterval);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        if(move.isDoesCapture()){
-                            onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
-                        }else{
-                            onPlayerClickCell(move.getToPoint(), currentPlayer);
-                        }
-
-                        try {
-                            Thread.sleep(GameController.animationInterval);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                    try {
+                        Thread.sleep(GameController.animationInterval);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
-                    onAutoPlayback = false;
+
+                    if(move.isDoesCapture()){
+                        onPlayerClickChessPiece(move.getToPoint(), currentPlayer);
+                    }else{
+                        onPlayerClickCell(move.getToPoint(), currentPlayer);
+                    }
+
+                    try {
+                        Thread.sleep(GameController.animationInterval);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+                onAutoPlayback = false;
             });
             thread.start();
         }
@@ -1014,13 +1003,5 @@ public class GameController implements GameListener {
     public Frame getView() {
         return view;
     }
-
-    public static GameMode getGameMode() {
-        return gameMode;
-    }
-    public static void setGameMode(GameMode gameMode) {
-        GameController.gameMode = gameMode;
-    }
-
 
 }

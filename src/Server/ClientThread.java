@@ -42,7 +42,7 @@ public class ClientThread extends Thread{
             gameController.setColorOfUser(playerColor);
 
             if(playerColor != PlayerColor.GRAY){
-                if(GameController.getGameMode()!=GameMode.Online_PVP_Server){
+                if(GameController.gameMode !=GameMode.Online_PVP_Server){
                     GameController.gameMode = GameMode.Online_PVP_Client;
                 }
 

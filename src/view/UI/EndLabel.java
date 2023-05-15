@@ -40,7 +40,7 @@ public class EndLabel extends JLabel {
         initResetButton();
 
         initUser1Label(GameController.user1);
-        if (GameController.getGameMode() == GameMode.Local_PVP) {
+        if (GameController.gameMode == GameMode.Local_PVP) {
             initUser2Label(GameController.user2);
         }
 
