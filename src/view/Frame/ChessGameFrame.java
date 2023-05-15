@@ -850,6 +850,7 @@ public class ChessGameFrame extends JFrame {
         layeredPane.repaint();
     }
     public void addWinLabel() {
+        enabled = false;
         winLabel = new EndLabel(frame.getGameController());
         layeredPane.add(winLabel, JLayeredPane.POPUP_LAYER);
         /*for (int i = 0; i < layeredPane.getComponentsInLayer(JLayeredPane.MODAL_LAYER).length; i++) {
@@ -939,13 +940,5 @@ public class ChessGameFrame extends JFrame {
 
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        ChessGameFrame.enabled = enabled;
     }
 }

@@ -161,6 +161,7 @@ public class EndLabel extends JLabel {
         returnButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                ChessGameFrame.enabled = true;
                 gameController.onPlayerExitGameFrame();
                 gameController.getView().playerClickReturnButton(gameController.getView().getChessGameFrame(), gameController.getView().getStartFrame());
                 gameController.getView().getChessGameFrame().removeWinLabel();
@@ -229,6 +230,7 @@ public class EndLabel extends JLabel {
             resetButton.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    ChessGameFrame.enabled = true;
                     gameController.getView().getChessGameFrame().removeWinLabel();
                     gameController.onPlayerClickResetButton();
                 }
@@ -267,7 +269,7 @@ public class EndLabel extends JLabel {
         saveButton.setContentAreaFilled(false);
         saveButton.setFocusPainted(false);
         saveButton.setOpaque(false);
-        saveButton.setBounds((int) (340 * initFrameResize), (int) (450 * initFrameResize), (int) (50 * initFrameResize), (int) (50 * initFrameResize));
+        saveButton.setBounds((int) (340 * initFrameResize), (int) (500 * initFrameResize), (int) (50 * initFrameResize), (int) (50 * initFrameResize));
         saveButton.setIcon(Button_Light_New);
         saveButton.addMouseListener(new MouseListener() {
             @Override
