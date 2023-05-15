@@ -920,7 +920,7 @@ public class GameController implements GameListener {
     public void onPlayerSelectOnlinePVPMode() {
         Socket socket = new Socket();
         try{
-            socket.connect(new InetSocketAddress("localhost", 1234), 1000);
+            socket.connect(new InetSocketAddress("10.27.42.57", 1234), 1000);
             System.out.println("Server found, connected to server");
         }catch (Exception ex){
             server = new ServerThread();
@@ -936,7 +936,7 @@ public class GameController implements GameListener {
             try {
                 Thread.sleep(100);
                 socket = new Socket();
-                socket.connect(new InetSocketAddress("localhost", 1234), 1000);
+                socket.connect(new InetSocketAddress("10.27.42.57", 1234), 1000);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

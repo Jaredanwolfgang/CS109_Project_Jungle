@@ -340,7 +340,6 @@ public class EndLabel extends JLabel {
     public void initUserInformation() {
         ArrayList<User> users = gameController.onPlayerClickRankListButtonByScore();
 
-
         if (GameController.gameMode == GameMode.PVE) {
             int rank = 1;
             for (int i = 0; i < users.size(); i++) {
@@ -353,52 +352,64 @@ public class EndLabel extends JLabel {
                     rank++;
                 }
             }
-        }else{
-            if (winPlayer == PlayerColor.BLUE) {
-                int rank = 1;
-                for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getPlayerType() != PlayerType.AI) {
-                        if (GameController.user1.getUsername().equals(users.get(i).getUsername())) {
-                            userInformation = new RankLabel(GameController.user1, rank, true, true, initFrameResize);
-                            information.add(userInformation);
-                            break;
-                        }
-                        rank++;
+        } else if (GameController.gameMode == GameMode.Local_PVP) {
+            int rank = 1;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getPlayerType() != PlayerType.AI) {
+                    if (GameController.user1.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user1, rank, true, true, initFrameResize);
+                        information.add(userInformation);
                     }
+                    if (GameController.user2.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user2, rank, false, true, initFrameResize);
+                        information.add(userInformation);
+                    }
+                    rank++;
                 }
-                rank = 1;
-                for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getPlayerType() != PlayerType.AI) {
-                        if (GameController.user2.getUsername().equals(users.get(i).getUsername())) {
-                            userInformation = new RankLabel(GameController.user2, rank, false, true, initFrameResize);
-                            information.add(userInformation);
-                            break;
-                        }
-                        rank++;
+            }
+        }else if (GameController.gameMode == GameMode.Online_PVP_Spectator) {
+            int rank = 1;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getPlayerType() != PlayerType.AI) {
+                    if (GameController.user1.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user1, rank, false, true, initFrameResize);
+                        information.add(userInformation);
                     }
+                    if (GameController.user2.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user2, rank, false, true, initFrameResize);
+                        information.add(userInformation);
+                    }
+                    rank++;
                 }
-            } else {
-                int rank = 1;
-                for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getPlayerType() != PlayerType.AI) {
-                        if (GameController.user2.getUsername().equals(users.get(i).getUsername())) {
-                            userInformation = new RankLabel(GameController.user2, rank, true, true, initFrameResize);
-                            information.add(userInformation);
-                            break;
-                        }
-                        rank++;
+            }
+        } else if (GameController.gameMode == GameMode.Online_PVP_Server) {
+            int rank = 1;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getPlayerType() != PlayerType.AI) {
+                    if (GameController.user1.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user1, rank, true, true, initFrameResize);
+                        information.add(userInformation);
                     }
+                    if (GameController.user2.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user2, rank, false, true, initFrameResize);
+                        information.add(userInformation);
+                    }
+                    rank++;
                 }
-                rank = 1;
-                for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getPlayerType() != PlayerType.AI) {
-                        if (GameController.user1.getUsername().equals(users.get(i).getUsername())) {
-                            userInformation = new RankLabel(GameController.user1, rank, false, true, initFrameResize);
-                            information.add(userInformation);
-                            break;
-                        }
-                        rank++;
+            }
+        }else if (GameController.gameMode == GameMode.Online_PVP_Client) {
+            int rank = 1;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getPlayerType() != PlayerType.AI) {
+                    if (GameController.user1.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user1, rank, false, true, initFrameResize);
+                        information.add(userInformation);
                     }
+                    if (GameController.user2.getUsername().equals(users.get(i).getUsername())) {
+                        userInformation = new RankLabel(GameController.user2, rank, true, true, initFrameResize);
+                        information.add(userInformation);
+                    }
+                    rank++;
                 }
             }
         }
