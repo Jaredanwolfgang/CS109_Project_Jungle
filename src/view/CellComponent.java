@@ -1,6 +1,7 @@
 package view;
 
 import listener.HoverListener;
+import view.Frame.ChessGameFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,22 +35,24 @@ public class CellComponent extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (hoverListener != null) {
+                if (ChessGameFrame.enabled && hoverListener != null) {
                     hoverListener.onHovered(CellComponent.this);
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (hoverListener != null) {
+                if (ChessGameFrame.enabled && hoverListener != null) {
                     hoverListener.onExited(CellComponent.this);
                 }
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                // Trigger the click event in ChessboardComponent
-                getParent().dispatchEvent(new MouseEvent(getParent(), e.getID(), e.getWhen(), e.getModifiersEx(), getLocation().x + e.getX(), getLocation().y + e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+                if(ChessGameFrame.enabled){
+                    // Trigger the click event in ChessboardComponent
+                    getParent().dispatchEvent(new MouseEvent(getParent(), e.getID(), e.getWhen(), e.getModifiersEx(), getLocation().x + e.getX(), getLocation().y + e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+                }
             }
         });
     }

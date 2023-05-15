@@ -1,0 +1,12 @@
+Leopard,BLUE,2,2,2,3,false
+Elephant,RED,6,0,7,0,false
+Leopard,BLUE,2,3,3,3,false
+Wolf,RED,6,2,7,2,false
+Leopard,BLUE,3,3,4,3,false
+Lion,RED,8,6,7,6,false
+Leopard,BLUE,4,3,5,3,false
+Wolf,RED,7,2,6,2,false
+Leopard,BLUE,5,3,6,3,false
+Rat,RED,6,6,6,5,false
+Leopard,BLUE,6,3,7,3,false
+Elephant,RED,7,0,6,0,false
