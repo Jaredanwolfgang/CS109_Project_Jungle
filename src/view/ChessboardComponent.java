@@ -10,6 +10,7 @@ import model.ChessPieces.ChessPiece;
 import model.Enum.Numbers;
 import model.Enum.Seasons;
 import view.ChessComponent.*;
+import view.Frame.ChessGameFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -188,36 +189,33 @@ public class ChessboardComponent extends JComponent {
     }
 
     public void shine(int remaining, model.Timer.Timer timer) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int[][] shineCellComponent = switch (remaining) {
-                    case 0 -> Numbers.ZERO;
-                    case 1 -> Numbers.ONE;
-                    case 2 -> Numbers.TWO;
-                    case 3 -> Numbers.THREE;
-                    case 4 -> Numbers.FOUR;
-                    case 5 -> Numbers.FIVE;
-                    default -> null;
-                };
-                for (int[] ints : shineCellComponent) {
-                    ChessboardPoint temp = new ChessboardPoint(ints[0], ints[1]);
-                    CellComponent cell = getGridComponentAt(temp);
-                    cell.setTimerMode(true);
-                    repaint();
-                    try {
-                        Thread.sleep(20);
-                    } catch (InterruptedException e) {
-                        // ignore interruptions
-                    }
-                }
+        new Thread(() -> {
+            int[][] shineCellComponent = switch (remaining) {
+                case 0 -> Numbers.ZERO;
+                case 1 -> Numbers.ONE;
+                case 2 -> Numbers.TWO;
+                case 3 -> Numbers.THREE;
+                case 4 -> Numbers.FOUR;
+                case 5 -> Numbers.FIVE;
+                default -> null;
+            };
+            for (int[] ints : shineCellComponent) {
+                ChessboardPoint temp = new ChessboardPoint(ints[0], ints[1]);
+                CellComponent cell = getGridComponentAt(temp);
+                cell.setTimerMode(true);
+                repaint();
                 try {
-                    Thread.sleep(timer.getInterval() - shineCellComponent.length * 20L - 250);
+                    Thread.sleep(20);
                 } catch (InterruptedException e) {
                     // ignore interruptions
                 }
-                refreshGridComponents();
             }
+            try {
+                Thread.sleep(timer.getInterval() - shineCellComponent.length * 20L - 250);
+            } catch (InterruptedException e) {
+                // ignore interruptions
+            }
+            refreshGridComponents();
         }).start();
     }
 
@@ -255,14 +253,16 @@ public class ChessboardComponent extends JComponent {
 
     @Override
     protected void processMouseEvent(MouseEvent e) {
-        if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-            JComponent clickedComponent = (JComponent) getComponentAt(e.getX(), e.getY());
-            if (clickedComponent.getComponentCount() == 0) {
-                System.out.print("None chess here and ");
-                gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()), gameController.getColorOfUser());
-            } else {
-                System.out.print("One chess here and ");
-                gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), gameController.getColorOfUser());
+        if(ChessGameFrame.enabled) {
+            if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+                JComponent clickedComponent = (JComponent) getComponentAt(e.getX(), e.getY());
+                if (clickedComponent.getComponentCount() == 0) {
+                    System.out.print("None chess here and ");
+                    gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()), gameController.getColorOfUser());
+                } else {
+                    System.out.print("One chess here and ");
+                    gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), gameController.getColorOfUser());
+                }
             }
         }
     }
@@ -275,4 +275,11 @@ public class ChessboardComponent extends JComponent {
         this.season = season;
     }
 
+    public void unloadAllListener() {
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                gridComponents[i][j].removeMouseListener(gridComponents[i][j].getMouseListeners()[0]);
+            }
+        }
+    }
 }

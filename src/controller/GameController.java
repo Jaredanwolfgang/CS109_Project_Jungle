@@ -219,11 +219,6 @@ public class GameController implements GameListener {
                 }
                 swapColor();
 
-                /* Here should be code for GUI to swap color (color of which player should perform a move) */
-                /* Here should be code for GUI to update turn count */
-                turnCount++;
-                view.updateTurnAccount(turnCount);
-
                 timer.reset();
             }catch (IllegalArgumentException e){
                 //Print error message.
@@ -258,6 +253,11 @@ public class GameController implements GameListener {
                 view.getChessGameFrame().addWinLabel();
                 return;
             }else{
+                /* Here should be code for GUI to swap color (color of which player should perform a move) */
+                /* Here should be code for GUI to update turn count */
+                turnCount++;
+                view.updateTurnAccount(turnCount);
+
                 if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback) {
                     try {
                         Thread.sleep(100);
@@ -357,10 +357,6 @@ public class GameController implements GameListener {
                             this.swapUser();
                         }
                         swapColor();
-                        turnCount++;
-
-                        //NOT NECESSARY: Here should be code for GUI to update turn count */
-                        view.updateTurnAccount(turnCount);
 
                         timer.reset();
                     }catch (IllegalArgumentException e){
@@ -396,6 +392,10 @@ public class GameController implements GameListener {
                         view.getChessGameFrame().addWinLabel();
                         return;
                     }else{
+                        //NOT NECESSARY: Here should be code for GUI to update turn count */
+                        turnCount++;
+                        view.updateTurnAccount(turnCount);
+
                         if((gameMode == GameMode.Online_PVP_Client || gameMode == GameMode.Online_PVP_Server || gameMode == GameMode.Online_PVP_Spectator) && !onAutoPlayback){
                             try {
                                 Thread.sleep(100);
@@ -440,9 +440,13 @@ public class GameController implements GameListener {
             System.out.println("No move to undo");
             return false;
         }
+        //Here should be code for GUI to remove all possible moves of the previous selected piece */
+        if (selectedPoint != null) {
+            ArrayList<Move> Moves = model.getChessPieceAt(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol())).getAvailableMoves(new ChessboardPoint(selectedPoint.getRow(),selectedPoint.getCol()),model.getGrid());
+            view.removeAllPossibleMoves(Moves);
+        }
         selectedPoint = null;
 
-        //Here should be code for GUI to remove all possible moves of the previous selected piece */
         for (int i = 0; i < numberOfLoop; i++) {
             Move lastMove = allMovesOnBoard.remove(allMovesOnBoard.size() - 1);
 

@@ -56,6 +56,7 @@ public class ChessGameFrame extends JFrame {
     private String Address = "Background\\Spring.gif";
     private ChessboardComponent chessboardComponent;
     private EndLabel winLabel;
+    public static boolean enabled = true;
 
     public ChessGameFrame(Frame frame) {
         this.frame = frame;
@@ -130,6 +131,8 @@ public class ChessGameFrame extends JFrame {
 
             setSize((int) (gameFrameResize * screenSize.getWidth()), (int) (gameFrameResize * screenSize.getHeight()));
             add(layeredPane);
+            revalidate();
+            repaint();
         });
         addComponentListener(new ComponentListener() {
             @Override
@@ -170,7 +173,6 @@ public class ChessGameFrame extends JFrame {
     //Init Methods
     //These are the buttons below the chessboard.
     public void initResetButton() {
-        resetButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RestartButton_Light.png").getScaledInstance((int) (gameFrameResize * 50), (int) (gameFrameResize * 50), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RestartButton_Dark.png").getScaledInstance((int) (gameFrameResize * 50), (int) (gameFrameResize * 50), Image.SCALE_SMOOTH));
 
@@ -180,6 +182,9 @@ public class ChessGameFrame extends JFrame {
         resetButton.setOpaque(false);
         resetButton.setBounds((int) (gameFrameResize * 25), (int) (gameFrameResize * 585), (int) (gameFrameResize * 50), (int) (gameFrameResize * 50));
 
+        for (MouseListener mouseListener : resetButton.getMouseListeners()) {
+            resetButton.removeMouseListener(mouseListener);
+        }
         if (GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator) {
             resetButton.setIcon(Button_Dark_New);
             resetButton.addMouseListener(new MouseListener() {
@@ -199,13 +204,17 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Unavailable in current game mode");
+                    if(enabled){
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        loadButton.setToolTipText("Unavailable in current game mode");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    loadButton.setToolTipText(null);
+                    if(enabled){
+                        loadButton.setToolTipText(null);
+                    }
                 }
             });
         } else {
@@ -213,7 +222,9 @@ public class ChessGameFrame extends JFrame {
             resetButton.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    frame.getGameController().onPlayerClickResetButton();
+                    if(enabled){
+                        frame.getGameController().onPlayerClickResetButton();
+                    }
                 }
 
                 @Override
@@ -226,22 +237,25 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    resetButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    resetButton.setToolTipText("Reset the chess game");
+                    if(enabled){
+                        resetButton.setIcon(Button_Dark_New);
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        resetButton.setToolTipText("Reset the chess game");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    resetButton.setIcon(Button_Light_New);
-                    resetButton.setToolTipText(null);
+                    if(enabled){
+                        resetButton.setIcon(Button_Light_New);
+                        resetButton.setToolTipText(null);
+                    }
                 }
             });
         }
         layeredPane.add(resetButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initUndoButton() {
-        undoButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\RegretButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -250,6 +264,10 @@ public class ChessGameFrame extends JFrame {
         undoButton.setFocusPainted(false);
         undoButton.setOpaque(false);
         undoButton.setBounds((int) (95 * gameFrameResize), (int) (585 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
+
+        for(MouseListener mouseListener : undoButton.getMouseListeners()){
+            undoButton.removeMouseListener(mouseListener);
+        }
 
         if (GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator) {
             undoButton.setIcon(Button_Dark_New);
@@ -271,13 +289,17 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Unavailable in current game mode");
+                    if(enabled){
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        loadButton.setToolTipText("Unavailable in current game mode");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    loadButton.setToolTipText(null);
+                    if(enabled){
+                        loadButton.setToolTipText(null);
+                    }
                 }
             });
         } else {
@@ -285,7 +307,9 @@ public class ChessGameFrame extends JFrame {
             undoButton.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    frame.getGameController().onPlayerClickUndoButton();
+                    if(enabled){
+                        frame.getGameController().onPlayerClickUndoButton();
+                    }
                 }
 
                 @Override
@@ -298,22 +322,25 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    undoButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    undoButton.setToolTipText("Undo move(s)");
+                    if(enabled){
+                        undoButton.setIcon(Button_Dark_New);
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        undoButton.setToolTipText("Undo move(s)");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    undoButton.setIcon(Button_Light_New);
-                    undoButton.setToolTipText(null);
+                    if(enabled) {
+                        undoButton.setIcon(Button_Light_New);
+                        undoButton.setToolTipText(null);
+                    }
                 }
             });
         }
         layeredPane.add(undoButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initSaveButton() {
-        saveButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\SaveButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -323,10 +350,15 @@ public class ChessGameFrame extends JFrame {
         saveButton.setOpaque(false);
         saveButton.setBounds((int) (165 * gameFrameResize), (int) (585 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
         saveButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : saveButton.getMouseListeners()) {
+            saveButton.removeMouseListener(mouseListener);
+        }
         saveButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.playerClickSaveButton();
+                if(enabled){
+                    frame.playerClickSaveButton();
+                }
             }
 
             @Override
@@ -339,21 +371,24 @@ public class ChessGameFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                saveButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                saveButton.setToolTipText("Save chess game to local .txt file");
+                if(enabled){
+                    saveButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    saveButton.setToolTipText("Save chess game to local .txt file");
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                saveButton.setIcon(Button_Light_New);
-                saveButton.setToolTipText(null);
+                if(enabled){
+                    saveButton.setIcon(Button_Light_New);
+                    saveButton.setToolTipText(null);
+                }
             }
         });
         layeredPane.add(saveButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initLoadButton() {
-        loadButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\LoadButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -362,6 +397,9 @@ public class ChessGameFrame extends JFrame {
         loadButton.setFocusPainted(false);
         loadButton.setOpaque(false);
         loadButton.setBounds((int) (235 * gameFrameResize), (int) (585 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
+        for (MouseListener mouseListener : loadButton.getMouseListeners()) {
+            loadButton.removeMouseListener(mouseListener);
+        }
         if (GameController.gameMode != GameMode.Local_PVP) {
             loadButton.setIcon(Button_Dark_New);
             loadButton.addMouseListener(new MouseListener() {
@@ -382,13 +420,17 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Unavailable in current game mode");
+                    if(enabled){
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        loadButton.setToolTipText("Unavailable in current game mode");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    loadButton.setToolTipText(null);
+                    if(enabled){
+                        loadButton.setToolTipText(null);
+                    }
                 }
             });
         } else {
@@ -396,7 +438,9 @@ public class ChessGameFrame extends JFrame {
             loadButton.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    frame.playerClickLoadButton();
+                    if(enabled){
+                        frame.playerClickLoadButton();
+                    }
                 }
 
                 @Override
@@ -409,22 +453,25 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    loadButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Load a chess game from local .txt file");
+                    if(enabled){
+                        loadButton.setIcon(Button_Dark_New);
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        loadButton.setToolTipText("Load a chess game from local .txt file");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    loadButton.setIcon(Button_Light_New);
-                    loadButton.setToolTipText(null);
+                    if(enabled){
+                        loadButton.setIcon(Button_Light_New);
+                        loadButton.setToolTipText(null);
+                    }
                 }
             });
         }
         layeredPane.add(loadButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initPlayBackButton() {
-        playbackButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\PlaybackButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\GameFrame\\PlaybackButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -435,9 +482,15 @@ public class ChessGameFrame extends JFrame {
 
         playbackButton.setBounds((int) (305 * gameFrameResize), (int) (585 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
         playbackButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : playbackButton.getMouseListeners()){
+            playbackButton.removeMouseListener(mouseListener);
+        }
         playbackButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(enabled){
+                    frame.getGameController().onPlayerClickPlayBackButton();
+                }
             }
 
             @Override
@@ -450,24 +503,26 @@ public class ChessGameFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                playbackButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                playbackButton.setToolTipText("Auto playback the game");
+                if(enabled){
+                    playbackButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    playbackButton.setToolTipText("Auto playback the game");
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                playbackButton.setIcon(Button_Light_New);
-                playbackButton.setToolTipText(null);
+                if(enabled){
+                    playbackButton.setIcon(Button_Light_New);
+                    playbackButton.setToolTipText(null);
+                }
             }
         });
-        playbackButton.addActionListener((actionEvent) -> frame.getGameController().onPlayerClickPlayBackButton());
         layeredPane.add(playbackButton, JLayeredPane.PALETTE_LAYER);
     }
 
     //These are the buttons above the chessboard.
     public void initBackgroundButton() {
-        backgroundButton = new JButton();
 //        System.out.println("ChessGameFrame button BackgroundButton is initializing...");
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\BackgroundButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\BackgroundButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
@@ -478,12 +533,17 @@ public class ChessGameFrame extends JFrame {
         backgroundButton.setOpaque(false);
         backgroundButton.setBounds((int) (195 * gameFrameResize), (int) (25 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
         backgroundButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : backgroundButton.getMouseListeners()){
+            backgroundButton.removeMouseListener(mouseListener);
+        }
         backgroundButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                seasons = (seasons + 1) % 4;
-                changeBackground();
-                changeChessBoard();
+                if(enabled){
+                    seasons = (seasons + 1) % 4;
+                    changeBackground();
+                    changeChessBoard();
+                }
             }
 
             @Override
@@ -496,21 +556,24 @@ public class ChessGameFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                backgroundButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                returnButton.setToolTipText("Change the background and the chessboard.");
+                if(enabled){
+                    backgroundButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    returnButton.setToolTipText("Change the background and the chessboard.");
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                backgroundButton.setIcon(Button_Light_New);
-                returnButton.setToolTipText(null);
+                if(enabled){
+                    backgroundButton.setIcon(Button_Light_New);
+                    returnButton.setToolTipText(null);
+                }
             }
         });
         layeredPane.add(backgroundButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initReturnButton() {
-        returnButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\AllFrame\\ReturnButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\AllFrame\\ReturnButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -518,8 +581,10 @@ public class ChessGameFrame extends JFrame {
         returnButton.setContentAreaFilled(false);
         returnButton.setFocusPainted(false);
         returnButton.setOpaque(false);
-
         returnButton.setBounds((int) (265 * gameFrameResize), (int) (25 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
+        for (MouseListener mouseListener : returnButton.getMouseListeners()){
+            returnButton.removeMouseListener(mouseListener);
+        }
         if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator){
             returnButton.setIcon(Button_Dark_New);
             returnButton.addMouseListener(new MouseListener() {
@@ -537,13 +602,17 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    returnButton.setToolTipText("Unavailable in current game mode");
+                    if(enabled){
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        returnButton.setToolTipText("Unavailable in current game mode");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    returnButton.setToolTipText(null);
+                    if(enabled){
+                        returnButton.setToolTipText(null);
+                    }
                 }
             });
         }else{
@@ -551,9 +620,11 @@ public class ChessGameFrame extends JFrame {
             returnButton.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    frame.getGameController().onPlayerExitGameFrame();
-                    frame.resetChessBoardComponent();
-                    frame.playerClickReturnButton(frame.getChessGameFrame(), frame.getStartFrame());
+                    if(enabled){
+                        frame.getGameController().onPlayerExitGameFrame();
+                        frame.resetChessBoardComponent();
+                        frame.playerClickReturnButton(frame.getChessGameFrame(), frame.getStartFrame());
+                    }
                 }
 
                 @Override
@@ -566,22 +637,25 @@ public class ChessGameFrame extends JFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    returnButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    returnButton.setToolTipText("Return to mode choosing frame");
+                    if(enabled){
+                        returnButton.setIcon(Button_Dark_New);
+                        ToolTipManager.sharedInstance().setInitialDelay(0);
+                        returnButton.setToolTipText("Return to mode choosing frame");
+                    }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    returnButton.setIcon(Button_Light_New);
-                    returnButton.setToolTipText(null);
+                    if(enabled){
+                        returnButton.setIcon(Button_Light_New);
+                        returnButton.setToolTipText(null);
+                    }
                 }
             });
         }
         layeredPane.add(returnButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initMusicButton() {
-        musicButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -592,10 +666,15 @@ public class ChessGameFrame extends JFrame {
 
         musicButton.setBounds((int) (335 * gameFrameResize), (int) (25 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
         musicButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : musicButton.getMouseListeners()){
+            musicButton.removeMouseListener(mouseListener);
+        }
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                frame.playerClickMusicButton();
+                if(enabled){
+                    frame.playerClickMusicButton();
+                }
             }
 
             @Override
@@ -608,21 +687,24 @@ public class ChessGameFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                musicButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                musicButton.setToolTipText("Music Player");
+                if(enabled){
+                    musicButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    musicButton.setToolTipText("Music Player");
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                musicButton.setIcon(Button_Light_New);
-                musicButton.setToolTipText(null);
+                if(enabled){
+                    musicButton.setIcon(Button_Light_New);
+                    musicButton.setToolTipText(null);
+                }
             }
         });
         layeredPane.add(musicButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initExitButton() {
-        exitButton = new JButton();
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance((int) (50 * gameFrameResize), (int) (50 * gameFrameResize), Image.SCALE_SMOOTH));
 
@@ -633,10 +715,15 @@ public class ChessGameFrame extends JFrame {
 
         exitButton.setBounds((int) (405 * gameFrameResize), (int) (25 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
         exitButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : exitButton.getMouseListeners()){
+            exitButton.removeMouseListener(mouseListener);
+        }
         exitButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.exit(0);
+                if(enabled){
+                    System.exit(0);
+                }
             }
 
             @Override
@@ -649,15 +736,19 @@ public class ChessGameFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                exitButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                exitButton.setToolTipText("Exit the game");
+                if(enabled){
+                    exitButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    exitButton.setToolTipText("Exit the game");
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                exitButton.setIcon(Button_Light_New);
-                exitButton.setToolTipText(null);
+                if(enabled){
+                    exitButton.setIcon(Button_Light_New);
+                    exitButton.setToolTipText(null);
+                }
             }
         });
         layeredPane.add(exitButton, JLayeredPane.PALETTE_LAYER);
@@ -748,11 +839,13 @@ public class ChessGameFrame extends JFrame {
         layeredPane.remove(resetButton);
         layeredPane.remove(undoButton);
         layeredPane.remove(saveButton);
+        layeredPane.remove(returnButton);
         initPlayBackButton();
         initLoadButton();
         initResetButton();
         initUndoButton();
         initSaveButton();
+        initReturnButton();
         layeredPane.revalidate();
         layeredPane.repaint();
     }
@@ -777,7 +870,6 @@ public class ChessGameFrame extends JFrame {
         layeredPane.remove(winLabel);
         winLabel = new EndLabel(frame.getGameController());
         layeredPane.add(winLabel, JLayeredPane.POPUP_LAYER);
-        repaint();
     }
 
     //Change Methods
@@ -849,4 +941,11 @@ public class ChessGameFrame extends JFrame {
         return chessboardComponent;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        ChessGameFrame.enabled = enabled;
+    }
 }

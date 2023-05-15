@@ -96,7 +96,7 @@ public class RankFrame extends JFrame {
                 if(this.sortByScore){
                     sortByScore = true;
                 }
-                RankLabel rankLabel = new RankLabel(users.get(i),rank,isCurrentUser,sortByScore);
+                RankLabel rankLabel = new RankLabel(users.get(i),rank,isCurrentUser,sortByScore,1.0);
                 rankPanel.add(rankLabel);
                 rank++;
             }

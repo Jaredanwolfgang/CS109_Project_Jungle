@@ -96,7 +96,6 @@ public class InitFrame extends JFrame{
     //3. 按钮的目标大小（在方法当中有resize按钮的大小）
     public void initLoginButton() {
 //        System.out.println("Login button is initializing...");
-        loginButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Light.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Dark.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
@@ -108,6 +107,9 @@ public class InitFrame extends JFrame{
 
         loginButton.setBounds((int) (initFrameResize * 100), (int) (initFrameResize * 430), (int) (initFrameResize * 160), (int) (initFrameResize * 90));
         loginButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : loginButton.getMouseListeners()) {
+            loginButton.removeMouseListener(mouseListener);
+        }
         loginButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -130,7 +132,6 @@ public class InitFrame extends JFrame{
     }
     public void initRegisterButton() {
 //        System.out.println("Register button is initializing...");
-        registerButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Light.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Dark.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
@@ -142,6 +143,9 @@ public class InitFrame extends JFrame{
 
         registerButton.setBounds((int) (initFrameResize * 540), (int) (initFrameResize * 430), (int) (initFrameResize * 160), (int) (initFrameResize * 90));
         registerButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : registerButton.getMouseListeners()) {
+            registerButton.removeMouseListener(mouseListener);
+        }
         registerButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -162,7 +166,6 @@ public class InitFrame extends JFrame{
     }
     public void initMusicButton() {
 //        System.out.println("Music button is initializing...");
-        musicButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance((int) (initFrameResize * 50), (int) (initFrameResize * 50), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance((int) (initFrameResize * 50), (int) (initFrameResize * 50), Image.SCALE_SMOOTH));
@@ -174,6 +177,9 @@ public class InitFrame extends JFrame{
 
         musicButton.setBounds((int) (initFrameResize * 650), (int) (initFrameResize * 20), (int) (initFrameResize * 50), (int) (initFrameResize * 50));
         musicButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : musicButton.getMouseListeners()) {
+            musicButton.removeMouseListener(mouseListener);
+        }
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -217,6 +223,9 @@ public class InitFrame extends JFrame{
 
         exitButton.setBounds((int) (initFrameResize * 710), (int) (initFrameResize * 20), (int) (initFrameResize * 50), (int) (initFrameResize * 50));
         exitButton.setIcon(Button_Light_New);
+        for (MouseListener mouseListener : exitButton.getMouseListeners()) {
+            exitButton.removeMouseListener(mouseListener);
+        }
         exitButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

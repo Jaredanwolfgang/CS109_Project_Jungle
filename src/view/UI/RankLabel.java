@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class RankLabel extends JLabel {
+    private double initFrameResize = 1.0;
     private final Color backgroundColor = new Color(246, 240, 226);
     private final Color currentUserBackgroundColor = new Color(202, 236, 212);
     private final Color borderColor = new Color(0,0,0);
@@ -18,10 +19,8 @@ public class RankLabel extends JLabel {
     private boolean isCurrentUser;
     private boolean sortByScore;
 
-    public RankLabel(){
-
-    }
-    public RankLabel(User user, int rank, boolean isCurrentUser, boolean sortByScore) {
+    public RankLabel(User user, int rank, boolean isCurrentUser, boolean sortByScore, double initFrameResize) {
+        this.initFrameResize = initFrameResize;
         this.user = user;
         this.rank = rank;
         this.isCurrentUser =isCurrentUser;
@@ -29,31 +28,31 @@ public class RankLabel extends JLabel {
 
         JLabel rankLabel = new JLabel(String.valueOf(rank));
         rankLabel.setForeground(Color.BLACK);
-        rankLabel.setBounds(0,0,50,50);
-        rankLabel.setFont(new Font("Britannic Bold", Font.BOLD, 18));
+        rankLabel.setBounds(0,0,(int)(50 * initFrameResize),(int)(50 * initFrameResize));
+        rankLabel.setFont(new Font("Britannic Bold", Font.BOLD, (int)(18 * initFrameResize)));
         rankLabel.setHorizontalAlignment(CENTER);
         rankLabel.setOpaque(false);
 
         JLabel usernameLabel = new JLabel(this.user.getUsername());
         usernameLabel.setForeground(Color.BLACK);
-        usernameLabel.setBounds(50,0,150,50);
-        usernameLabel.setFont(new Font("Britannic Bold", Font.BOLD, 18));
+        usernameLabel.setBounds((int)(50 * initFrameResize),0,(int)(150 * initFrameResize),(int)(50 * initFrameResize));
+        usernameLabel.setFont(new Font("Britannic Bold", Font.BOLD, (int)(18 * initFrameResize)));
         usernameLabel.setHorizontalAlignment(LEFT);
 
         JLabel scoreLabel = new JLabel(String.format("%.2f", this.user.getScore()));
         scoreLabel.setForeground(Color.BLACK);
-        scoreLabel.setBounds(200,0,100,50);
+        scoreLabel.setBounds((int)(200 * initFrameResize),0,(int)(100 * initFrameResize),(int)(50 * initFrameResize));
         //To set the score bold when ranking by scores.
-        if(sortByScore){scoreLabel.setFont(new Font("Britannic Bold", Font.BOLD, 18));}
-        else{scoreLabel.setFont(new Font("Calibri", Font.PLAIN, 18));}
+        if(sortByScore){scoreLabel.setFont(new Font("Britannic Bold", Font.BOLD, (int)(18 * initFrameResize)));}
+        else{scoreLabel.setFont(new Font("Calibri", Font.PLAIN, (int)(18 * initFrameResize)));}
         scoreLabel.setHorizontalAlignment(CENTER);
 
         JLabel winrateLabel = new JLabel(String.format("%.2f",this.user.getWinRate()));
         winrateLabel.setForeground(Color.BLACK);
-        winrateLabel.setBounds(300,0,100,50);
+        winrateLabel.setBounds((int)(300 * initFrameResize),0,(int)(100 * initFrameResize),(int)(50 * initFrameResize));
         //To set the win rate bold when ranking by win rate.
-        if(!sortByScore){winrateLabel.setFont(new Font("Britannic Bold", Font.BOLD, 18));}
-        else{winrateLabel.setFont(new Font("Calibri", Font.PLAIN, 18));}
+        if(!sortByScore){winrateLabel.setFont(new Font("Britannic Bold", Font.BOLD, (int)(18 * initFrameResize)));}
+        else{winrateLabel.setFont(new Font("Calibri", Font.PLAIN, (int)(18 * initFrameResize)));}
         winrateLabel.setHorizontalAlignment(CENTER);
 
         add(rankLabel);
@@ -61,7 +60,6 @@ public class RankLabel extends JLabel {
         add(scoreLabel);
         add(winrateLabel);
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {
