@@ -3,6 +3,8 @@ package Server;
 import model.ChessBoard.Move;
 import model.Enum.PlayerColor;
 import model.User.User;
+import view.Dialog.WaitingDialog;
+import view.Frame.ChessGameFrame;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -37,8 +39,16 @@ public class ServerThread extends Thread{
             player1Output = new ObjectOutputStream(player1Socket.getOutputStream());
             player1Input = new ObjectInputStream(player1Socket.getInputStream());
             System.out.println("Server: Waiting for player2 to connect......");
+
+            WaitingDialog waitingDialog = new WaitingDialog();
+            ChessGameFrame.enabled = false;
+
             player2Socket = serverSocket.accept();
             System.out.println("Server: Player2 connected");
+
+            waitingDialog.dispose();
+            ChessGameFrame.enabled = true;
+
             player2Output = new ObjectOutputStream(player2Socket.getOutputStream());
             player2Input = new ObjectInputStream(player2Socket.getInputStream());
         }catch (IOException e) {
