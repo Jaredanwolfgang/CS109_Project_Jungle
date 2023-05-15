@@ -12,10 +12,10 @@ public class InitFrame extends JFrame{
     public static double initFrameResize = 1.0;
     private final Dimension screenSize = new Dimension(800,600);
 
-    private final JButton loginButton = new JButton();
-    private final JButton registerButton = new JButton();
-    private final JButton musicButton = new JButton();
-    private final JButton exitButton = new JButton();
+    private JButton loginButton = new JButton();
+    private JButton registerButton = new JButton();
+    private JButton musicButton = new JButton();
+    private JButton exitButton = new JButton();
     private final Frame frame;
 
     public InitFrame(Frame frame) {
@@ -96,7 +96,7 @@ public class InitFrame extends JFrame{
     //3. 按钮的目标大小（在方法当中有resize按钮的大小）
     public void initLoginButton() {
 //        System.out.println("Login button is initializing...");
-
+        loginButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Light.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Login_Dark.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
@@ -130,7 +130,7 @@ public class InitFrame extends JFrame{
     }
     public void initRegisterButton() {
 //        System.out.println("Register button is initializing...");
-
+        registerButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Light.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\InitFrame\\Register_Dark.png").getScaledInstance((int) (initFrameResize * 160), (int) (initFrameResize * 90), Image.SCALE_SMOOTH));
@@ -162,7 +162,7 @@ public class InitFrame extends JFrame{
     }
     public void initMusicButton() {
 //        System.out.println("Music button is initializing...");
-
+        musicButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Light.png").getScaledInstance((int) (initFrameResize * 50), (int) (initFrameResize * 50), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\MusicButton_Dark.png").getScaledInstance((int) (initFrameResize * 50), (int) (initFrameResize * 50), Image.SCALE_SMOOTH));
@@ -205,7 +205,7 @@ public class InitFrame extends JFrame{
     }
     public void initExitButton() {
 //        System.out.println("Exit button is initializing...");
-
+        exitButton = new JButton();
         /* To get the scaled Image */
         ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Light.png").getScaledInstance((int) (initFrameResize * 50), (int) (initFrameResize * 50), Image.SCALE_SMOOTH));
         ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("image\\AllFrame\\ExitButton_Dark.png").getScaledInstance((int) (initFrameResize * 50), (int) (initFrameResize * 50), Image.SCALE_SMOOTH));
