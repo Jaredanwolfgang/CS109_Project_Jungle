@@ -200,7 +200,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Unavailable in this game mode");
+                    loadButton.setToolTipText("Unavailable in current game mode");
                 }
 
                 @Override
@@ -272,7 +272,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Unavailable in this game mode");
+                    loadButton.setToolTipText("Unavailable in current game mode");
                 }
 
                 @Override
@@ -383,7 +383,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     ToolTipManager.sharedInstance().setInitialDelay(0);
-                    loadButton.setToolTipText("Unavailable in this game mode");
+                    loadButton.setToolTipText("Unavailable in current game mode");
                 }
 
                 @Override
@@ -520,36 +520,64 @@ public class ChessGameFrame extends JFrame {
         returnButton.setOpaque(false);
 
         returnButton.setBounds((int) (265 * gameFrameResize), (int) (25 * gameFrameResize), (int) (50 * gameFrameResize), (int) (50 * gameFrameResize));
-        returnButton.setIcon(Button_Light_New);
-        returnButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                frame.getGameController().onPlayerExitGameFrame();
-                frame.resetChessBoardComponent();
-                frame.playerClickReturnButton(frame.getChessGameFrame(), frame.getStartFrame());
-            }
+        if(GameController.gameMode == GameMode.Online_PVP_Server || GameController.gameMode == GameMode.Online_PVP_Client || GameController.gameMode == GameMode.Online_PVP_Spectator){
+            returnButton.setIcon(Button_Dark_New);
+            returnButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                returnButton.setIcon(Button_Dark_New);
-                ToolTipManager.sharedInstance().setInitialDelay(0);
-                returnButton.setToolTipText("Return to mode choosing frame");
-            }
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    returnButton.setToolTipText("Unavailable in current game mode");
+                }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                returnButton.setIcon(Button_Light_New);
-                returnButton.setToolTipText(null);
-            }
-        });
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    returnButton.setToolTipText(null);
+                }
+            });
+        }else{
+            returnButton.setIcon(Button_Light_New);
+            returnButton.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    frame.getGameController().onPlayerExitGameFrame();
+                    frame.resetChessBoardComponent();
+                    frame.playerClickReturnButton(frame.getChessGameFrame(), frame.getStartFrame());
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    returnButton.setIcon(Button_Dark_New);
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    returnButton.setToolTipText("Return to mode choosing frame");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    returnButton.setIcon(Button_Light_New);
+                    returnButton.setToolTipText(null);
+                }
+            });
+        }
         layeredPane.add(returnButton, JLayeredPane.PALETTE_LAYER);
     }
     public void initMusicButton() {
