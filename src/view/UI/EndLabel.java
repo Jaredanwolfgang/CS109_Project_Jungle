@@ -1,9 +1,9 @@
 package view.UI;
 
 import controller.GameController;
+import model.Enum.AIDifficulty;
 import model.Enum.GameMode;
 import model.Enum.PlayerColor;
-import model.User.User;
 import view.Frame.ChessGameFrame;
 
 import javax.swing.*;
@@ -18,8 +18,8 @@ public class EndLabel extends JLabel {
     private JButton exitButton = new JButton();
     private JButton resetButton = new JButton();
     private JLabel winInformation;
-    private JLabel user1Information;
-    private JLabel user2Information;
+    private JLabel winnerInformation;
+    private JLabel AIInformation;
     private GameController gameController;
     private PlayerColor winPlayer;
     private JLabel background;
@@ -39,9 +39,9 @@ public class EndLabel extends JLabel {
         initReturnButton();
         initResetButton();
 
-        initUser1Label(GameController.user1);
-        if (GameController.gameMode == GameMode.Local_PVP) {
-            initUser2Label(GameController.user2);
+        initWinnerLabel();
+        if(GameController.gameMode == GameMode.PVE) {
+            initAIInformation();
         }
 
         background = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/ColorLabel.png").getScaledInstance((int) (500 * initFrameResize), (int) (729 * initFrameResize), Image.SCALE_DEFAULT)));
@@ -217,28 +217,36 @@ public class EndLabel extends JLabel {
         winInformation.repaint();
         this.add(winInformation);
     }
-    public void initUser1Label(User user1) {
-        user1Information = new JLabel();
-        user1Information.setBounds((int) (initFrameResize * 100), (int) (initFrameResize * 250), (int) (initFrameResize * 300), (int) (initFrameResize * 100));
-        user1Information.setFont(new Font("Britannic Bold", Font.BOLD, (int) (initFrameResize * 14)));
-        user1Information.setForeground(Color.WHITE);
-        user1Information.setText(String.format("Player:%s  Score:%.2f  Win-rate:%.2f", user1.getUsername(), user1.getScore(), user1.getWinRate()));
-
-        user1Information.setHorizontalAlignment(SwingConstants.CENTER);
-        user1Information.setVerticalAlignment(SwingConstants.CENTER);
-        user1Information.repaint();
-        this.add(user1Information);
+    public void initWinnerLabel() {
+        winnerInformation = new JLabel();
+        winnerInformation.setBounds((int) (initFrameResize * 100), (int) (initFrameResize * 250), (int) (initFrameResize * 300), (int) (initFrameResize * 100));
+        winnerInformation.setFont(new Font("Britannic Bold", Font.BOLD, (int) (initFrameResize * 14)));
+        winnerInformation.setForeground(Color.WHITE);
+        if(winPlayer == PlayerColor.BLUE){
+            winnerInformation.setText(String.format("Blue Player %s wins the game in %d turns!", GameController.user1.getUsername(), GameController.turnCount - 1));
+        }else{
+            winnerInformation.setText(String.format("Red Player %s wins the game in %d turns!", GameController.user2.getUsername(), GameController.turnCount - 1));
+        }
+        winnerInformation.setHorizontalAlignment(SwingConstants.CENTER);
+        winnerInformation.setVerticalAlignment(SwingConstants.CENTER);
+        winnerInformation.repaint();
+        this.add(winnerInformation);
     }
-    public void initUser2Label(User user2) {
-        user2Information = new JLabel();
-        user2Information.setBounds((int) (initFrameResize * 100), (int) (initFrameResize * 350), (int) (initFrameResize * 300), (int) (initFrameResize * 100));
-        user2Information.setFont(new Font("Britannic Bold", Font.BOLD, (int) (initFrameResize * 14)));
-        user2Information.setForeground(Color.WHITE);
-        user2Information.setText(String.format("Player:%s  Score:%.2f  Win-rate:%.2f ", user2.getUsername(), user2.getScore(), user2.getWinRate()));
-
-        user2Information.setHorizontalAlignment(SwingConstants.CENTER);
-        user2Information.setVerticalAlignment(SwingConstants.CENTER);
-        user2Information.repaint();
-        this.add(user2Information);
+    public void initAIInformation() {
+        AIInformation = new JLabel();
+        AIInformation.setBounds((int) (initFrameResize * 100), (int) (initFrameResize * 350), (int) (initFrameResize * 300), (int) (initFrameResize * 100));
+        AIInformation.setFont(new Font("Britannic Bold", Font.BOLD, (int) (initFrameResize * 14)));
+        AIInformation.setForeground(Color.WHITE);
+        if(GameController.aiDifficulty == AIDifficulty.EASY){
+            AIInformation.setText(String.format("You beat the easy AI!(Score: %.2f Win rate: %.2f)", GameController.user2.getScore(), GameController.user2.getWinRate()));
+        }else if (GameController.aiDifficulty == AIDifficulty.MEDIUM){
+            AIInformation.setText(String.format("You beat the medium AI!(Score: %.2f Win rate: %.2f)", GameController.user2.getScore(), GameController.user2.getWinRate()));
+        }else{
+            AIInformation.setText(String.format("You beat the hard AI!(Score: %.2f Win rate: %.2f)", GameController.user2.getScore(), GameController.user2.getWinRate()));
+        }
+        AIInformation.setHorizontalAlignment(SwingConstants.CENTER);
+        AIInformation.setVerticalAlignment(SwingConstants.CENTER);
+        AIInformation.repaint();
+        this.add(AIInformation);
     }
 }
