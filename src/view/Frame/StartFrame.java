@@ -16,6 +16,9 @@ public class StartFrame extends JFrame {
     private final JButton musicButton = new JButton();
     private final JButton exitButton = new JButton();
     private final JButton returnButton = new JButton();
+    private final JButton ruleButton = new JButton();
+    private JLayeredPane layeredPane = new JLayeredPane();
+    private JLabel rulesLabel;
     private final Frame frame;
 
     public StartFrame(Frame frame) {
@@ -29,9 +32,12 @@ public class StartFrame extends JFrame {
         initMusicButton();
         initExitButton();
         initReturnButton();
+        initRuleButton();
+        initRulesLabel();
         initLabel();
         initBackground();
 
+        this.add(layeredPane);
         this.setVisible(false);
     }
 
@@ -45,6 +51,9 @@ public class StartFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
+
+        layeredPane.setBounds(0,0,500,729);
+        layeredPane.setLayout(null);
     }
 
     //Initialize the background image
@@ -52,7 +61,7 @@ public class StartFrame extends JFrame {
 //        System.out.println("StartFrame background is initializing...");
         JLabel background = new JLabel(new ImageIcon("Background\\Spring.gif"));
         background.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
-        this.getContentPane().add(background);
+        layeredPane.add(background,JLayeredPane.DEFAULT_LAYER);
     }
     //Initialize the Label(Title)
     public void initLabel() {
@@ -62,7 +71,7 @@ public class StartFrame extends JFrame {
         JLabel label = new JLabel(newIcon);
         label.setPreferredSize(new Dimension(newIcon.getIconWidth(), newIcon.getIconHeight()));
         label.setBounds(150, 60, newIcon.getIconWidth(), newIcon.getIconHeight());
-        this.getContentPane().add(label);
+        layeredPane.add(label,JLayeredPane.DEFAULT_LAYER);
     }
 
     //Initialize the Buttons
@@ -104,7 +113,7 @@ public class StartFrame extends JFrame {
                 localButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(localButton);
+        layeredPane.add(localButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initNetPVPButton() {
 //        System.out.println("Net PVP Button is initializing...");
@@ -146,7 +155,7 @@ public class StartFrame extends JFrame {
                 netButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(netButton);
+        layeredPane.add(netButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initMusicButton() {
 //        System.out.println("Music button is initializing...");
@@ -181,7 +190,7 @@ public class StartFrame extends JFrame {
                 musicButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(musicButton);
+        layeredPane.add(musicButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initExitButton() {
 //        System.out.println("Exit button is initializing...");
@@ -216,7 +225,7 @@ public class StartFrame extends JFrame {
                 exitButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(exitButton);
+        layeredPane.add(exitButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initReturnButton(){
 //        System.out.println("Return button is initializing...");
@@ -252,7 +261,7 @@ public class StartFrame extends JFrame {
                 returnButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(returnButton);
+        layeredPane.add(returnButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initPVEButton() {
 //        System.out.println("PVE Button is initializing...");
@@ -292,7 +301,7 @@ public class StartFrame extends JFrame {
                 aiButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(aiButton);
+        layeredPane.add(aiButton,JLayeredPane.PALETTE_LAYER);
     }
     public void initRankButton(){
 //        System.out.println("Rank Button is initializing...");
@@ -332,6 +341,84 @@ public class StartFrame extends JFrame {
                 rankButton.setToolTipText(null);
             }
         });
-        this.getContentPane().add(rankButton);
+        layeredPane.add(rankButton,JLayeredPane.PALETTE_LAYER);
+    }
+    public void initRuleButton() {
+//        System.out.println("Music button is initializing...");
+
+        /* To get the scaled Image */
+        ImageIcon Button_Small_New = new ImageIcon(getDefaultToolkit().getImage("Image/StartFrame/RulesButton_Small.png").getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+        ImageIcon Button_Big_New = new ImageIcon(getDefaultToolkit().getImage("Image/StartFrame/RulesButton_Big.png").getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+        ruleButton.setBorderPainted(false);
+        ruleButton.setContentAreaFilled(false);
+        ruleButton.setFocusPainted(false);
+        ruleButton.setOpaque(false);
+
+        ruleButton.setBounds(20, 20, 40, 40);
+        ruleButton.setIcon(Button_Small_New);
+        ruleButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addRulesLabel();
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                ruleButton.setIcon(Button_Big_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                ruleButton.setToolTipText("See the rules");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                ruleButton.setIcon(Button_Small_New);
+                ruleButton.setToolTipText(null);
+            }
+        });
+        layeredPane.add(ruleButton,JLayeredPane.PALETTE_LAYER);
+    }
+
+    public void initRulesLabel(){
+        rulesLabel= new JLabel(new ImageIcon("Image/StartFrame/Rules.png"));
+        rulesLabel.setBounds(0, 0, 500, 729);
+
+        JButton closeButton = new JButton();
+        ImageIcon Button_Light_New = new ImageIcon(getDefaultToolkit().getImage("Image/StartFrame/CloseButton_Light.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(getDefaultToolkit().getImage("Image/StartFrame/CloseButton_Dark.png").getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        closeButton.setBorderPainted(false);
+        closeButton.setContentAreaFilled(false);
+        closeButton.setFocusPainted(false);
+        closeButton.setOpaque(false);
+
+        closeButton.setBounds(400, 50, 50, 50);
+        closeButton.setIcon(Button_Light_New);
+        closeButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                removeRulesLabel();
+            }
+            @Override public void mousePressed(MouseEvent e) {}
+            @Override public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                closeButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                closeButton.setToolTipText("Return to Start Frame");
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                closeButton.setIcon(Button_Light_New);
+                closeButton.setToolTipText(null);
+            }
+        });
+        rulesLabel.add(closeButton);
+    }
+    public void addRulesLabel(){
+        layeredPane.add(rulesLabel,JLayeredPane.POPUP_LAYER);
+    }
+    public void removeRulesLabel(){
+        layeredPane.remove(rulesLabel);
     }
 }

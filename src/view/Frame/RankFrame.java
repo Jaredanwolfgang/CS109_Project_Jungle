@@ -84,18 +84,16 @@ public class RankFrame extends JFrame {
         rankPanel.setBounds(50, 150, 400, 500);
         rankPanel.setOpaque(false);
         rankPanel.add(new HeadLabel());
+
         int rank = 1;
-        for (int i = 0; i < Math.min(users.size(), 19); i++) {
+        for (int i = 0; i < Math.min(users.size(), 9); i++) {
             if (users.get(i).getPlayerType()!= PlayerType.AI) {
                 boolean isCurrentUser = false;
-                boolean sortByScore = false;
 
                 if (users.get(i).getUsername().equals(GameController.user1.getUsername())) {
                     isCurrentUser = true;
                 }
-                if(this.sortByScore){
-                    sortByScore = true;
-                }
+
                 RankLabel rankLabel = new RankLabel(users.get(i),rank,isCurrentUser,sortByScore,1.0);
                 rankPanel.add(rankLabel);
                 rank++;
