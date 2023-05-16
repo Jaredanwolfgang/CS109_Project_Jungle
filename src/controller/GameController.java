@@ -485,7 +485,7 @@ public class GameController implements GameListener {
             view.resetChessBoardComponent();
 
             onAutoPlayback = true;
-            ChessGameFrame.enabled = true;
+            ChessGameFrame.enabled = false;
             for (Move move : allMovesOnBoard) {
                 onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
@@ -508,7 +508,7 @@ public class GameController implements GameListener {
                 }
             }
             onAutoPlayback = false;
-            ChessGameFrame.enabled = false;
+            ChessGameFrame.enabled = true;
         });
         thread.start();
     }
