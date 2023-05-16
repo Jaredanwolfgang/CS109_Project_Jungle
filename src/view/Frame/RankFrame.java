@@ -1,6 +1,7 @@
 package view.Frame;
 
 import controller.GameController;
+import model.Enum.GameMode;
 import model.Enum.PlayerType;
 import model.User.User;
 import view.UI.HeadLabel;
@@ -86,16 +87,21 @@ public class RankFrame extends JFrame {
         rankPanel.add(new HeadLabel());
 
         int rank = 1;
-        for (int i = 0; i < Math.min(users.size(), 9); i++) {
+        for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getPlayerType()!= PlayerType.AI) {
                 boolean isCurrentUser = false;
-
                 if (users.get(i).getUsername().equals(GameController.user1.getUsername())) {
                     isCurrentUser = true;
                 }
-
-                RankLabel rankLabel = new RankLabel(users.get(i),rank,isCurrentUser,sortByScore,1.0);
-                rankPanel.add(rankLabel);
+                if (rank <= 9) {
+                    RankLabel rankLabel = new RankLabel(users.get(i),rank,isCurrentUser,sortByScore,1.0);
+                    rankPanel.add(rankLabel);
+                }else{
+                    if(isCurrentUser){
+                        rankPanel.remove(9);
+                        rankPanel.add(new RankLabel(users.get(i),rank,isCurrentUser,sortByScore,1.0),9);
+                    }
+                }
                 rank++;
             }
         }
