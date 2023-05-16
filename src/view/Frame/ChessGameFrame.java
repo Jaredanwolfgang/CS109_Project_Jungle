@@ -490,6 +490,7 @@ public class ChessGameFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
                     frame.getGameController().onPlayerClickPlayBackButton();
+                    playbackButton.setIcon(Button_Light_New);
                 }
             }
 
