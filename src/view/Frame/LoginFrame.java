@@ -4,6 +4,7 @@ import controller.GameController;
 import model.User.User;
 import view.Dialog.FailDialog;
 import view.Dialog.SuccessDialog;
+import view.UI.ChessClick;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -155,6 +156,7 @@ public class LoginFrame extends JFrame implements ActionListener{
     }
     //ActionListener, the method will call the method in Game Controller.
     public void actionPerformed(ActionEvent e) {
+        new ChessClick();
         if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
             if (GameController.user2 == null) {
                 this.setVisible(false);

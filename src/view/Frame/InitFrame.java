@@ -1,5 +1,7 @@
 package view.Frame;
 
+import view.UI.ChessClick;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -113,6 +115,7 @@ public class InitFrame extends JFrame{
         loginButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 frame.playerClickLoginButton();
             }
 
@@ -149,6 +152,7 @@ public class InitFrame extends JFrame{
         registerButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 frame.playerClickRegisterButton();
             }
             @Override public void mousePressed(MouseEvent e) {}
@@ -183,6 +187,7 @@ public class InitFrame extends JFrame{
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 frame.playerClickMusicButton();
             }
 
@@ -229,6 +234,7 @@ public class InitFrame extends JFrame{
         exitButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 System.exit(0);
             }
             @Override public void mousePressed(MouseEvent e) {}

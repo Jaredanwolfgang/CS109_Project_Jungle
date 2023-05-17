@@ -4,6 +4,7 @@ import controller.GameController;
 import model.Enum.GameMode;
 import model.Enum.PlayerType;
 import model.User.User;
+import view.UI.ChessClick;
 import view.UI.HeadLabel;
 import view.UI.RankLabel;
 
@@ -134,6 +135,7 @@ public class RankFrame extends JFrame {
         sortByScoreButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 if (!sortByScore) {
                     sortByScore = true;
                     users = frame.getGameController().onPlayerClickRankListButtonByScore();
@@ -173,6 +175,7 @@ public class RankFrame extends JFrame {
         sortByWinrateButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 if (sortByScore) {
                     sortByScore = false;
                     users = frame.getGameController().onPlayerClickRankListButtonByWinRate();

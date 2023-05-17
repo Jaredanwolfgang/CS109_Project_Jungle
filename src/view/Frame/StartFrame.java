@@ -1,5 +1,7 @@
 package view.Frame;
 
+import view.UI.ChessClick;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -93,6 +95,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     frame.playerClickLocalPVPButton();
                 }
             }
@@ -139,6 +142,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     frame.getGameController().onPlayerSelectOnlinePVPMode();
                     frame.getChessGameFrame().initFunctionalButtons();
                     frame.playerClickNetPVPButton();
@@ -188,6 +192,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     frame.playerClickMusicButton();
                 }
             }
@@ -229,6 +234,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     System.exit(0);
                 }
             }
@@ -270,6 +276,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     frame.playerClickReturnButton(frame.getStartFrame(),frame.getInitFrame());
                     frame.getGameController().onPlayerClickLogoutButton();
                 }
@@ -311,6 +318,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     frame.playerClickPVEButton();
                 }
             }
@@ -357,6 +365,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     frame.playerClickRankButton();
                 }
             }
@@ -404,6 +413,7 @@ public class StartFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (enabled) {
+                    new ChessClick();
                     addRulesLabel();
                 }
             }
@@ -446,6 +456,7 @@ public class StartFrame extends JFrame {
         closeButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                new ChessClick();
                 removeRulesLabel();
             }
             @Override public void mousePressed(MouseEvent e) {}

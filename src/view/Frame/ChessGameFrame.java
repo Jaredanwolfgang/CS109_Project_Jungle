@@ -7,6 +7,7 @@ import model.Enum.PlayerColor;
 import model.Enum.Seasons;
 import view.ChessComponent.*;
 import view.ChessboardComponent;
+import view.UI.ChessClick;
 import view.UI.EndLabel;
 import view.UI.ColorBoard;
 
@@ -223,6 +224,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if(enabled){
+                        new ChessClick();
                         frame.getGameController().onPlayerClickResetButton();
                     }
                 }
@@ -308,6 +310,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if(enabled){
+                        new ChessClick();
                         frame.getGameController().onPlayerClickUndoButton();
                     }
                 }
@@ -357,6 +360,7 @@ public class ChessGameFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
+                    new ChessClick();
                     frame.playerClickSaveButton();
                 }
             }
@@ -439,6 +443,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if(enabled){
+                        new ChessClick();
                         frame.playerClickLoadButton();
                     }
                 }
@@ -489,6 +494,7 @@ public class ChessGameFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
+                    new ChessClick();
                     frame.getGameController().onPlayerClickPlayBackButton();
                     playbackButton.setIcon(Button_Light_New);
                 }
@@ -541,6 +547,7 @@ public class ChessGameFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
+                    new ChessClick();
                     seasons = (seasons + 1) % 4;
                     changeBackground();
                     changeChessBoard();
@@ -622,6 +629,7 @@ public class ChessGameFrame extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if(enabled){
+                        new ChessClick();
                         frame.getGameController().onPlayerExitGameFrame();
                         frame.resetChessBoardComponent();
                         frame.playerClickReturnButton(frame.getChessGameFrame(), frame.getStartFrame());
@@ -674,6 +682,7 @@ public class ChessGameFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
+                    new ChessClick();
                     frame.playerClickMusicButton();
                 }
             }
@@ -723,6 +732,7 @@ public class ChessGameFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(enabled){
+                    new ChessClick();
                     System.exit(0);
                 }
             }

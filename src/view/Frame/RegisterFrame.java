@@ -2,6 +2,7 @@ package view.Frame;
 
 import view.Dialog.FailDialog;
 import view.Dialog.SuccessDialog;
+import view.UI.ChessClick;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -173,6 +174,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        new ChessClick();
         if(!passwordField.getText().equals(passwordCheckField.getText())){
             new FailDialog("The passwords do not match.");
             return;
