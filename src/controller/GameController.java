@@ -1,25 +1,33 @@
 package controller;
 
+import Server.ClientThread;
+import Server.ServerThread;
 import listener.GameListener;
-import model.AI.*;
+import model.AI.AIThread;
+import model.ChessBoard.Chessboard;
+import model.ChessBoard.ChessboardPoint;
+import model.ChessBoard.Move;
 import model.ChessPieces.*;
-import model.Enum.*;
-import model.ChessBoard.*;
-import model.User.User;
+import model.Enum.AIDifficulty;
+import model.Enum.GameMode;
+import model.Enum.PlayerColor;
+import model.Enum.PlayerType;
 import model.Timer.Timer;
-import view.*;
-import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Comparator;
-import Server.*;
+import model.User.User;
 import view.ChessComponent.ChessComponent;
+import view.ChessboardComponent;
+import view.Dialog.FailDialog;
 import view.Frame.ChessGameFrame;
 import view.Frame.Frame;
 import view.UI.ChessClick;
 
 import javax.swing.*;
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class GameController implements GameListener {
     public static final long animationInterval = 400;
@@ -580,7 +588,7 @@ public class GameController implements GameListener {
                 if(parts.length < 7){
                     throw new IllegalArgumentException("ERROR 106: Invalid input format: " + line);
                 }
-                
+
                 String movingPieceName = parts[0];
                 String movingPieceOwner = parts[1];
                 ChessPiece movingPiece;
@@ -704,7 +712,7 @@ public class GameController implements GameListener {
 
             /** NOT NECESSARY: Here should be a pop-up window to show the error message.
              * (I don't think the three other exceptions below need this)
-            */
+             */
             JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } catch (FileNotFoundException e) {
@@ -739,7 +747,7 @@ public class GameController implements GameListener {
                         throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not exist)");
                     }
                     if(model.getChessPieceAt(move.getFromPoint()).getCategory() != move.getMovingPiece().getCategory() || model.getChessPieceAt(move.getToPoint()).getCategory() != move.getCapturedPiece().getCategory()
-                        || model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || model.getChessPieceAt(move.getToPoint()).getOwner() != move.getCapturedPiece().getOwner()){
+                            || model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner() || model.getChessPieceAt(move.getToPoint()).getOwner() != move.getCapturedPiece().getOwner()){
                         throw new IllegalArgumentException("ERROR 105: Invalid move(piece does not match)");
                     }
                     if(model.getChessPieceAt(move.getFromPoint()).getOwner() != move.getMovingPiece().getOwner()){
@@ -918,31 +926,27 @@ public class GameController implements GameListener {
         timer = new Timer(this,view,1000);
         timer.start();
     }
-
     @Override
-    public void onPlayerSelectOnlinePVPMode() {
+    public void onPlayerCreateServer() {
+        gameMode = GameMode.Online_PVP_Server;
+
+        server = new ServerThread();
         Socket socket = new Socket();
+        System.out.println("Starting a new server");
+
         try{
+            server.start();
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("Server thread started successfully");
+
+        try {
+            Thread.sleep(100);
             socket.connect(new InetSocketAddress("localhost", 1234), 1000);
-            System.out.println("Server found, connected to server");
-        }catch (Exception ex){
-            server = new ServerThread();
-            System.out.println("No server found, starting a new server");
-            try{
-                server.start();
-            }catch (IllegalArgumentException e){
-                System.out.println(e.getMessage());
-                return;
-            }
-            System.out.println("Server thread started successfully");
-            gameMode = GameMode.Online_PVP_Server;
-            try {
-                Thread.sleep(100);
-                socket = new Socket();
-                socket.connect(new InetSocketAddress("localhost", 1234), 1000);
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         try {
@@ -953,6 +957,33 @@ public class GameController implements GameListener {
             return;
         }
         System.out.println("Client thread started successfully");
+    }
+
+    @Override
+    public void onPlayerJoinServer(String ipAddress) {
+        Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress(ipAddress, 1234), 500);
+        } catch (SocketTimeoutException e){
+            JOptionPane.showMessageDialog(view.getSelectOnlinePVPFrame(),"Server not found","Error",JOptionPane.WARNING_MESSAGE);
+            return;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        gameMode = GameMode.Online_PVP_Client;
+
+        try {
+            client = new ClientThread(socket,this);
+            client.start();
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("Client thread started successfully");
+
+        view.getSelectOnlinePVPFrame().setVisible(false);
+        view.getChessGameFrame().setVisible(true);
     }
 
     @Override
@@ -990,6 +1021,8 @@ public class GameController implements GameListener {
         gameMode = null;
         colorOfUser = null;
     }
+
+
 
     //Getter and Setter
     public void setColorOfUser(PlayerColor colorOfUser) {

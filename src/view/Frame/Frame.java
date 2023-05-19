@@ -20,7 +20,8 @@ public class Frame {
     private StartFrame startFrame = new StartFrame(this);
     private ChessGameFrame chessGameFrame = new ChessGameFrame(this);
     private MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame(this);
-    private SelectPVEModeFrame selectFrame = new SelectPVEModeFrame(this);
+    private SelectPVEModeFrame selectPVEFrame = new SelectPVEModeFrame(this);
+    private SelectOnlinePVPModeFrame selectOnlinePVPFrame = new SelectOnlinePVPModeFrame(this);
     private RankFrame rankFrame;
     private SaveFileFrame saveFileFrame;
     private LoadFileFrame loadFileFrame;
@@ -52,18 +53,13 @@ public class Frame {
     }
 
     public void playerClickNetPVPButton() {
-        chessGameFrame.setVisible(true);
+        selectOnlinePVPFrame.setVisible(true);
         startFrame.setVisible(false);
     }
 
     public void playerClickPVEButton() {
-        selectFrame.setVisible(true);
+        selectPVEFrame.setVisible(true);
         startFrame.setVisible(false);
-    }
-
-    public void playerClickModesButton() {
-        chessGameFrame.setVisible(true);
-        selectFrame.setVisible(false);
     }
 
     public void playerClickReturnButton(JFrame fromFrame, JFrame toFrame) {
@@ -179,9 +175,12 @@ public class Frame {
         return musicPlayerFrame;
     }
     public SelectPVEModeFrame getSelectPVEModeFrame() {
-        return selectFrame;
+        return selectPVEFrame;
     }
     public RankFrame getRankFrame() {
         return rankFrame;
+    }
+    public SelectOnlinePVPModeFrame getSelectOnlinePVPFrame() {
+        return selectOnlinePVPFrame;
     }
 }

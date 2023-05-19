@@ -20,7 +20,6 @@ public class StartFrame extends JFrame {
     private JLayeredPane layeredPane = new JLayeredPane();
     private JLabel rulesLabel;
     private final Frame frame;
-    public static boolean enabled = true;
 
     public StartFrame(Frame frame) {
         this.frame = frame;
@@ -92,9 +91,7 @@ public class StartFrame extends JFrame {
         localButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    frame.playerClickLocalPVPButton();
-                }
+                frame.playerClickLocalPVPButton();
             }
 
             @Override
@@ -105,19 +102,15 @@ public class StartFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    localButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    localButton.setToolTipText("Local PVP mode");
-                }
+                localButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                localButton.setToolTipText("Local PVP mode");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    localButton.setIcon(Button_Light_New);
-                    localButton.setToolTipText(null);
-                }
+                localButton.setIcon(Button_Light_New);
+                localButton.setToolTipText(null);
             }
         });
         layeredPane.add(localButton,JLayeredPane.PALETTE_LAYER);
@@ -138,11 +131,7 @@ public class StartFrame extends JFrame {
         netButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    frame.getGameController().onPlayerSelectOnlinePVPMode();
-                    frame.getChessGameFrame().initFunctionalButtons();
-                    frame.playerClickNetPVPButton();
-                }
+                frame.playerClickNetPVPButton();
             }
 
             @Override
@@ -153,19 +142,15 @@ public class StartFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    netButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    netButton.setToolTipText("Online PVP mode");
-                }
+                netButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                netButton.setToolTipText("Online PVP mode");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    netButton.setIcon(Button_Light_New);
-                    netButton.setToolTipText(null);
-                }
+                netButton.setIcon(Button_Light_New);
+                netButton.setToolTipText(null);
             }
         });
         layeredPane.add(netButton,JLayeredPane.PALETTE_LAYER);
@@ -187,26 +172,20 @@ public class StartFrame extends JFrame {
         musicButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    frame.playerClickMusicButton();
-                }
+                frame.playerClickMusicButton();
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    musicButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    musicButton.setToolTipText("Music Player");
-                }
+                musicButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                musicButton.setToolTipText("Music Player");
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    musicButton.setIcon(Button_Light_New);
-                    musicButton.setToolTipText(null);
-                }
+                musicButton.setIcon(Button_Light_New);
+                musicButton.setToolTipText(null);
             }
         });
         layeredPane.add(musicButton,JLayeredPane.PALETTE_LAYER);
@@ -228,26 +207,20 @@ public class StartFrame extends JFrame {
         exitButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    System.exit(0);
-                }
+                System.exit(0);
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    exitButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    exitButton.setToolTipText("Exit the game");
-                }
+                exitButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                exitButton.setToolTipText("Exit the game");
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    exitButton.setIcon(Button_Light_New);
-                    exitButton.setToolTipText(null);
-                }
+                exitButton.setIcon(Button_Light_New);
+                exitButton.setToolTipText(null);
             }
         });
         layeredPane.add(exitButton,JLayeredPane.PALETTE_LAYER);
@@ -269,27 +242,21 @@ public class StartFrame extends JFrame {
         returnButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    frame.playerClickReturnButton(frame.getStartFrame(),frame.getInitFrame());
-                    frame.getGameController().onPlayerClickLogoutButton();
-                }
+                frame.playerClickReturnButton(frame.getStartFrame(),frame.getInitFrame());
+                frame.getGameController().onPlayerClickLogoutButton();
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    returnButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    returnButton.setToolTipText("Return to the beginning frame");
-                }
+                returnButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                returnButton.setToolTipText("Return to the beginning frame");
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    returnButton.setIcon(Button_Light_New);
-                    returnButton.setToolTipText(null);
-                }
+                returnButton.setIcon(Button_Light_New);
+                returnButton.setToolTipText(null);
             }
         });
         layeredPane.add(returnButton,JLayeredPane.PALETTE_LAYER);
@@ -310,9 +277,7 @@ public class StartFrame extends JFrame {
         aiButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    frame.playerClickPVEButton();
-                }
+                frame.playerClickPVEButton();
             }
 
             @Override
@@ -323,19 +288,15 @@ public class StartFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    aiButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    aiButton.setToolTipText("AI mode");
-                }
+                aiButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                aiButton.setToolTipText("AI mode");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    aiButton.setIcon(Button_Light_New);
-                    aiButton.setToolTipText(null);
-                }
+                aiButton.setIcon(Button_Light_New);
+                aiButton.setToolTipText(null);
             }
         });
         layeredPane.add(aiButton,JLayeredPane.PALETTE_LAYER);
@@ -356,9 +317,7 @@ public class StartFrame extends JFrame {
         rankButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    frame.playerClickRankButton();
-                }
+                frame.playerClickRankButton();
             }
 
             @Override
@@ -369,19 +328,15 @@ public class StartFrame extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    rankButton.setIcon(Button_Dark_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    rankButton.setToolTipText("Rank");
-                }
+                rankButton.setIcon(Button_Dark_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                rankButton.setToolTipText("Rank");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    rankButton.setIcon(Button_Light_New);
-                    rankButton.setToolTipText(null);
-                }
+                rankButton.setIcon(Button_Light_New);
+                rankButton.setToolTipText(null);
             }
         });
         layeredPane.add(rankButton,JLayeredPane.PALETTE_LAYER);
@@ -403,26 +358,20 @@ public class StartFrame extends JFrame {
         ruleButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) {
-                    addRulesLabel();
-                }
+                addRulesLabel();
             }
             @Override public void mousePressed(MouseEvent e) {}
             @Override public void mouseReleased(MouseEvent e) {}
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (enabled) {
-                    ruleButton.setIcon(Button_Big_New);
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    ruleButton.setToolTipText("See the rules");
-                }
+                ruleButton.setIcon(Button_Big_New);
+                ToolTipManager.sharedInstance().setInitialDelay(0);
+                ruleButton.setToolTipText("See the rules");
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                if (enabled) {
-                    ruleButton.setIcon(Button_Small_New);
-                    ruleButton.setToolTipText(null);
-                }
+                ruleButton.setIcon(Button_Small_New);
+                ruleButton.setToolTipText(null);
             }
         });
         layeredPane.add(ruleButton,JLayeredPane.PALETTE_LAYER);
@@ -465,12 +414,9 @@ public class StartFrame extends JFrame {
         rulesLabel.add(closeButton);
     }
     public void addRulesLabel(){
-        enabled = false;
-        ruleButton.setIcon(new ImageIcon(getDefaultToolkit().getImage("Image/StartFrame/RulesButton_Small.png").getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
         layeredPane.add(rulesLabel,JLayeredPane.POPUP_LAYER);
     }
     public void removeRulesLabel(){
-        enabled = true;
         layeredPane.remove(rulesLabel);
     }
 }

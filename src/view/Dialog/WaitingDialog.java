@@ -1,30 +1,62 @@
 package view.Dialog;
 
 import javax.swing.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class WaitingDialog extends JDialog{
+    private JButton copyButton;
+    private JLabel label1;
+    private JLabel label2;
     public WaitingDialog(){
 
         initLabel();
         initDialog();
-
+        initCopyButton();
 
         this.setVisible(true);
     }
+
+    private void initCopyButton() {
+        copyButton = new JButton("Copy Address");
+        copyButton.setBounds(90,90,140,30);
+        copyButton.setFocusPainted(false);
+        copyButton.addActionListener(e -> {
+            StringSelection stringSelection = new StringSelection(InetAddress.getLoopbackAddress().getHostAddress());
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+            new Thread(() -> {
+                copyButton.setText("Copied!");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+                copyButton.setText("Copy Address");
+            }).start();
+        });
+        this.getContentPane().add(copyButton);
+    }
+
     public void initDialog(){
-        this.setSize(320,180);
-        this.setTitle("Waiting for player...");
-        this.setAlwaysOnTop(true);
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.setResizable(false);
-        this.setLayout(null);
+        setSize(320,180);
+        setTitle("Waiting for player...");
+        setAlwaysOnTop(true);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
+        setLayout(null);
     }
     public void initLabel(){
-        JLabel label = new JLabel("Waiting for online player...");
-        label.setBounds(60,10,200,80);
-        this.add(label);
+        label1 = new JLabel("Waiting for player to join...");
+        label1.setBounds(60,20,200,30);
+        label1.setFont(new Font("Arial",Font.BOLD,14));
+        this.getContentPane().add(label1);
+
+        label2 = new JLabel("Your IP Address is: " + InetAddress.getLoopbackAddress().getHostAddress());
+        label2.setBounds(60,50,200,30);
+        label2.setFont(new Font("Arial",Font.BOLD,14));
+        this.getContentPane().add(label2);
     }
 }

@@ -42,10 +42,6 @@ public class ClientThread extends Thread{
             gameController.setColorOfUser(playerColor);
 
             if(playerColor != PlayerColor.GRAY){
-                if(GameController.gameMode !=GameMode.Online_PVP_Server){
-                    GameController.gameMode = GameMode.Online_PVP_Client;
-                }
-
                 outPut.writeObject(GameController.user1);
                 outPut.flush();
                 System.out.println("Client: Sent local user profile to server");
