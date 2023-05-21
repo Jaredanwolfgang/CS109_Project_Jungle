@@ -295,14 +295,30 @@ public class Chessboard {
                 if(board[i][j].getPiece() != null){
                     Category category = board[i][j].getPiece().getCategory();
                     switch (category) {
-                        case ELEPHANT -> newBoard[i][j].setPiece(new ElephantChessPiece(board[i][j].getPiece().getOwner()));
-                        case LION -> newBoard[i][j].setPiece(new LionChessPiece(board[i][j].getPiece().getOwner()));
-                        case TIGER -> newBoard[i][j].setPiece(new TigerChessPiece(board[i][j].getPiece().getOwner()));
-                        case LEOPARD -> newBoard[i][j].setPiece(new LeopardChessPiece(board[i][j].getPiece().getOwner()));
-                        case WOLF -> newBoard[i][j].setPiece(new WolfChessPiece(board[i][j].getPiece().getOwner()));
-                        case DOG -> newBoard[i][j].setPiece(new DogChessPiece(board[i][j].getPiece().getOwner()));
-                        case CAT -> newBoard[i][j].setPiece(new CatChessPiece(board[i][j].getPiece().getOwner()));
-                        case RAT -> newBoard[i][j].setPiece(new RatChessPiece(board[i][j].getPiece().getOwner()));
+                        case ELEPHANT:
+                            newBoard[i][j].setPiece(new ElephantChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case LION:
+                            newBoard[i][j].setPiece(new LionChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case TIGER:
+                            newBoard[i][j].setPiece(new TigerChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case LEOPARD:
+                            newBoard[i][j].setPiece(new LeopardChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case WOLF:
+                            newBoard[i][j].setPiece(new WolfChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case DOG:
+                            newBoard[i][j].setPiece(new DogChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case CAT:
+                            newBoard[i][j].setPiece(new CatChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
+                        case RAT:
+                            newBoard[i][j].setPiece(new RatChessPiece(board[i][j].getPiece().getOwner()));
+                            break;
                     }
                 }
             }

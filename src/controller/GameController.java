@@ -601,19 +601,34 @@ public class GameController implements GameListener {
                 }else{
                     throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal moving chess piece color): " + line);
                 }
-
-                movingPiece = switch (movingPieceName) {
-                    case "Elephant" -> new ElephantChessPiece(movingPieceOwnerColor);
-                    case "Lion" -> new LionChessPiece(movingPieceOwnerColor);
-                    case "Tiger" -> new TigerChessPiece(movingPieceOwnerColor);
-                    case "Leopard" -> new LeopardChessPiece(movingPieceOwnerColor);
-                    case "Wolf" -> new WolfChessPiece(movingPieceOwnerColor);
-                    case "Dog" -> new DogChessPiece(movingPieceOwnerColor);
-                    case "Cat" -> new CatChessPiece(movingPieceOwnerColor);
-                    case "Rat" -> new RatChessPiece(movingPieceOwnerColor);
-                    default ->
-                            throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal moving chess piece type): " + line);
-                };
+                switch (movingPieceName){
+                    case "Elephant":
+                        movingPiece = new ElephantChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Lion":
+                        movingPiece = new LionChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Tiger":
+                        movingPiece = new TigerChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Leopard":
+                        movingPiece = new LeopardChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Wolf":
+                        movingPiece = new WolfChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Dog":
+                        movingPiece = new DogChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Cat":
+                        movingPiece = new CatChessPiece(movingPieceOwnerColor);
+                        break;
+                    case "Rat":
+                        movingPiece = new RatChessPiece(movingPieceOwnerColor);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal moving chess piece type): " + line);
+                }
 
                 int fromRow;
                 try{
@@ -684,18 +699,34 @@ public class GameController implements GameListener {
                     }else{
                         throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal captured chess piece color): " + line);
                     }
-                    capturedPiece = switch (capturedPieceName) {
-                        case "Elephant" -> new ElephantChessPiece(capturedPieceOwnerColor);
-                        case "Lion" -> new LionChessPiece(capturedPieceOwnerColor);
-                        case "Tiger" -> new TigerChessPiece(capturedPieceOwnerColor);
-                        case "Leopard" -> new LeopardChessPiece(capturedPieceOwnerColor);
-                        case "Wolf" -> new WolfChessPiece(capturedPieceOwnerColor);
-                        case "Dog" -> new DogChessPiece(capturedPieceOwnerColor);
-                        case "Cat" -> new CatChessPiece(capturedPieceOwnerColor);
-                        case "Rat" -> new RatChessPiece(capturedPieceOwnerColor);
-                        default ->
-                                throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal captured piece type): " + line);
-                    };
+                    switch (capturedPieceName){
+                        case "Elephant":
+                            capturedPiece = new ElephantChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Lion":
+                            capturedPiece = new LionChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Tiger":
+                            capturedPiece = new TigerChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Leopard":
+                            capturedPiece = new LeopardChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Wolf":
+                            capturedPiece = new WolfChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Dog":
+                            capturedPiece = new DogChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Cat":
+                            capturedPiece = new CatChessPiece(capturedPieceOwnerColor);
+                            break;
+                        case "Rat":
+                            capturedPiece = new RatChessPiece(capturedPieceOwnerColor);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("ERROR 103: Invalid input format(illegal captured chess piece type): " + line);
+                    }
                     move = new Move(movingPiece, fromPoint, toPoint, true, capturedPiece);
                 }else{
 

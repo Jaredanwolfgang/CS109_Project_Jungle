@@ -909,33 +909,24 @@ public class ChessGameFrame extends JFrame {
     //Getters
     public ChessComponent getChessComponent(ChessPiece chessPiece) {
         switch (chessPiece.getCategory()) {
-            case CAT -> {
+            case CAT:
                 return new CatChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case DOG -> {
+            case DOG:
                 return new DogChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case ELEPHANT -> {
+            case ELEPHANT:
                 return new ElephantChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case LEOPARD -> {
+            case LEOPARD:
                 return new LeopardChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case LION -> {
+            case LION:
                 return new LionChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case TIGER -> {
+            case TIGER:
                 return new TigerChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case WOLF -> {
+            case WOLF:
                 return new WolfChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            case RAT -> {
+            case RAT:
                 return new RatChessComponent(chessPiece.getOwner(), (int) (50 * gameFrameResize));
-            }
-            default -> {
+            default:
                 return null;
-            }
         }
     }
 

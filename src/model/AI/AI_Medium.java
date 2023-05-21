@@ -134,10 +134,12 @@ public class AI_Medium {
         }
         //Evaluate special circumstances
         switch (moveNode.move.getMovingPiece().getCategory()) {
-            case LION, TIGER ->
+            case LION:
+            case TIGER:
                     moveNode.value += Chessboard.getDistance(moveNode.move.getFromPoint(), moveNode.move.getToPoint()) - 1;
-
-            case CAT, DOG -> {
+                    break;
+            case CAT:
+            case DOG:
                 if (moveNode.move.getMovingPiece().getOwner().getColor() == Color.BLUE) {
                     moveNode.value += (Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(0, 2))
                             + Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(0, 4))
@@ -153,8 +155,8 @@ public class AI_Medium {
                             + Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(8, 4))
                             + Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(7, 2)));
                 }
-            }
-            case RAT -> {
+                break;
+            case RAT:
                 for (int i = 0; i < 9; i++) {
                     for (int j = 0; j < 7; j++) {
                         if (board[i][j].getPiece() !=null && board[i][j].getPiece().getCategory() == Category.ELEPHANT) {
@@ -162,9 +164,6 @@ public class AI_Medium {
                         }
                     }
                 }
-
-            }
-
         }
         return moveNode.value;
     }
