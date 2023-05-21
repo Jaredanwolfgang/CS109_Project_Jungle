@@ -48,7 +48,7 @@ public class Frame {
 
     public void playerClickLocalPVPButton() {
         loginFrame.setVisible(true);
-        new SuccessDialog("Please log in User 2");
+        new SuccessDialog("Please log in User 2",loginFrame);
         startFrame.setVisible(false);
     }
 

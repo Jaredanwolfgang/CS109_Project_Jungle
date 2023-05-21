@@ -713,7 +713,7 @@ public class GameController implements GameListener {
             /** NOT NECESSARY: Here should be a pop-up window to show the error message.
              * (I don't think the three other exceptions below need this)
              */
-            JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return;
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filePath);
@@ -787,7 +787,7 @@ public class GameController implements GameListener {
                 isValidFile = false;
                 System.out.println(e.getMessage() + ": " + move);
 
-                JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(view.getChessGameFrame(), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 break;
             }
@@ -800,29 +800,7 @@ public class GameController implements GameListener {
             System.out.println("File Check Passed: Valid file.");
 
             //NOT NECESSARY: Here should be a pop-up window to show file reads successfully. */
-            /*this.onPlayerClickResetButton();
-            for(Move move : moves){
-                this.onPlayerClickChessPiece(move.getFromPoint(),currentPlayer);
 
-                try {
-                    Thread.sleep(GameController.animationInterval);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                if(move.isDoesCapture()){
-                    this.onPlayerClickChessPiece(move.getToPoint(),currentPlayer);
-                }else{
-                    this.onPlayerClickCell(move.getToPoint(),currentPlayer);
-                }
-
-                try {
-                    Thread.sleep(GameController.animationInterval);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }*/
             /** Jerry: I have added a new Thread here so that it can show the playback process of the chess*/
             Thread thread = new Thread(() -> {
                 onPlayerClickResetButton();

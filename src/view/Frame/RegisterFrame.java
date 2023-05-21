@@ -70,7 +70,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
             @Override
             public void focusLost(FocusEvent e) {
                 if (userText.getText().equals("")) {
-                    userText.setText("Create your Username here");
+                    userText.setText("Enter your Username here");
                     userText.setFont(new Font("Calibri", Font.ITALIC, 12));
                 }
             }
@@ -128,7 +128,7 @@ public class RegisterFrame extends JFrame implements ActionListener {
             @Override
             public void focusLost(FocusEvent e) {
                 if (passwordCheckField.getText().equals("")) {
-                    passwordCheckField.setText("Enter your Password here");
+                    passwordCheckField.setText("Confirm your Password here");
                     passwordCheckField.setFont(new Font("Calibri", Font.ITALIC, 12));
                     passwordCheckField.setEchoChar('\0');
                 }
@@ -173,17 +173,32 @@ public class RegisterFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(!passwordField.getText().equals(passwordCheckField.getText())){
-            new FailDialog("The passwords do not match.");
+        if(userText.getText().equals("Enter your Username here") || userText.getText().equals("")){
+            new FailDialog("Please enter your username.",frame.getRegisterFrame());
             return;
         }
-        if(frame.getGameController().onPlayerClickRegisterButton(userText.getText(),passwordField.getText())){
-            this.setVisible(false);
-            frame.getLoginFrame().setVisible(true);
-            new SuccessDialog("Successfully registered!");
-        }else{
-            new FailDialog("The username has been used.");
+        if(passwordField.getText().equals("Enter your Password here") || passwordField.getText().equals("")){
+            new FailDialog("Please enter your password.",frame.getRegisterFrame());
+            return;
         }
+        if(passwordCheckField.getText().equals("Confirm your Password here") || passwordCheckField.getText().equals("")){
+            new FailDialog("Please confirm your password.",frame.getRegisterFrame());
+            return;
+        }
+        if(!passwordField.getText().equals(passwordCheckField.getText())){
+            new FailDialog("The passwords do not match.",frame.getRegisterFrame());
+            return;
+        }
+        if(!frame.getGameController().onPlayerClickRegisterButton(userText.getText(),passwordField.getText())){
+            new FailDialog("The username has been used.",frame.getRegisterFrame());
+            return;
+        }
+        this.setVisible(false);
+        frame.getLoginFrame().setVisible(true);
+        new SuccessDialog("Successfully registered!",frame.getLoginFrame());
+        userText.setText("Enter your Username here");
+        passwordField.setText("Enter your Password here");
+        passwordCheckField.setText("Confirm your Password here");
     }
 
 
