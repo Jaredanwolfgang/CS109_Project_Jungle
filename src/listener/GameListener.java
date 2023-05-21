@@ -77,6 +77,6 @@ public interface GameListener {
 
     void onPlayerCreateServer();
 
-    void onPlayerJoinServer(String ipAddress);
+    boolean onPlayerJoinServer(String ipAddress);
 
 }

@@ -54,7 +54,11 @@ public class WaitingDialog extends JDialog{
         label1.setFont(new Font("Arial",Font.BOLD,14));
         this.getContentPane().add(label1);
 
-        label2 = new JLabel("Your IP Address is: " + InetAddress.getLoopbackAddress().getHostAddress());
+        try {
+            label2 = new JLabel("Your IP Address is: " + InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
         label2.setBounds(60,50,200,30);
         label2.setFont(new Font("Arial",Font.BOLD,14));
         this.getContentPane().add(label2);

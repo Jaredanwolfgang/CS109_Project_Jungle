@@ -105,7 +105,12 @@ public class SelectOnlinePVPModeFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String ipAddress = JOptionPane.showInputDialog(frame.getSelectOnlinePVPFrame(), "Please input the IP address of the server you want to join:", "Input IP Address", JOptionPane.PLAIN_MESSAGE);
-                frame.getGameController().onPlayerJoinServer(ipAddress);
+                boolean result = frame.getGameController().onPlayerJoinServer(ipAddress);
+                if(result){
+                    setVisible(false);
+                    frame.getChessGameFrame().setVisible(true);
+                    frame.getChessGameFrame().initFunctionalButtons();
+                }
             }
 
             @Override public void mousePressed(MouseEvent e) {}

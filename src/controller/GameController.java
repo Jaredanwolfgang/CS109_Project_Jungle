@@ -960,13 +960,13 @@ public class GameController implements GameListener {
     }
 
     @Override
-    public void onPlayerJoinServer(String ipAddress) {
+    public boolean onPlayerJoinServer(String ipAddress) {
         Socket socket = new Socket();
         try {
             socket.connect(new InetSocketAddress(ipAddress, 1234), 500);
         } catch (SocketTimeoutException e){
             JOptionPane.showMessageDialog(view.getSelectOnlinePVPFrame(),"Server not found","Error",JOptionPane.WARNING_MESSAGE);
-            return;
+            return false;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -978,12 +978,11 @@ public class GameController implements GameListener {
             client.start();
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
-            return;
+            return false;
         }
         System.out.println("Client thread started successfully");
 
-        view.getSelectOnlinePVPFrame().setVisible(false);
-        view.getChessGameFrame().setVisible(true);
+        return true;
     }
 
     @Override
