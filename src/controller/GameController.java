@@ -56,7 +56,7 @@ public class GameController implements GameListener {
     private ChessboardPoint selectedPoint;
 
     //If this variable is true, it means the controller is doing playback.
-    private boolean onAutoPlayback;
+    public static boolean onAutoPlayback;
     public static AIDifficulty aiDifficulty;
     public static int turnCount;
 
@@ -228,7 +228,9 @@ public class GameController implements GameListener {
                 }
                 swapColor();
 
-                timer.reset();
+                if (!onAutoPlayback) {
+                    timer.reset();
+                }
             }catch (IllegalArgumentException e){
                 //Print error message.
                 System.out.println(e.getMessage());
@@ -367,7 +369,9 @@ public class GameController implements GameListener {
                         }
                         swapColor();
 
-                        timer.reset();
+                        if (!onAutoPlayback) {
+                            timer.reset();
+                        }
                     }catch (IllegalArgumentException e){
                         //Print error message.
                         System.out.println(e.getMessage());
@@ -490,10 +494,10 @@ public class GameController implements GameListener {
 
         model.reset();
         Thread thread = new Thread(() -> {
-            view.resetChessBoardComponent();
-
             onAutoPlayback = true;
             ChessGameFrame.enabled = false;
+            view.resetChessBoardComponent();
+
             for (Move move : allMovesOnBoard) {
                 onPlayerClickChessPiece(move.getFromPoint(), currentPlayer);
 
