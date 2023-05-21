@@ -1,19 +1,13 @@
 package view.Frame;
 
 import controller.GameController;
-import model.User.User;
 import view.Dialog.FailDialog;
 import view.Dialog.SuccessDialog;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class LoginFrame extends JFrame implements ActionListener{
     private final Dimension screenSize = new Dimension(300,250);

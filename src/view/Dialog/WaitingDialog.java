@@ -24,7 +24,12 @@ public class WaitingDialog extends JDialog{
         copyButton.setBounds(90,90,140,30);
         copyButton.setFocusPainted(false);
         copyButton.addActionListener(e -> {
-            StringSelection stringSelection = new StringSelection(InetAddress.getLoopbackAddress().getHostAddress());
+            StringSelection stringSelection = null;
+            try {
+                stringSelection = new StringSelection(InetAddress.getLocalHost().getHostAddress());
+            } catch (UnknownHostException ex) {
+                throw new RuntimeException(ex);
+            }
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
             new Thread(() -> {
                 copyButton.setText("Copied!");
