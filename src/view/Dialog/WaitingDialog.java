@@ -50,7 +50,7 @@ public class WaitingDialog extends JDialog{
     }
     public void initLabel(){
         label1 = new JLabel("Waiting for player to join...");
-        label1.setBounds(60,20,200,30);
+        label1.setBounds(20,20,280,30);
         label1.setFont(new Font("Arial",Font.BOLD,14));
         this.getContentPane().add(label1);
 
@@ -59,7 +59,7 @@ public class WaitingDialog extends JDialog{
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
-        label2.setBounds(60,50,200,30);
+        label2.setBounds(20,50,280,30);
         label2.setFont(new Font("Arial",Font.BOLD,14));
         this.getContentPane().add(label2);
     }

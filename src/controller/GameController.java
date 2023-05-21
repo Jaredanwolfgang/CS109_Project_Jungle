@@ -868,26 +868,29 @@ public class GameController implements GameListener {
     }
 
     @Override
-    public boolean onPlayerClickLoginButton(String username, String password) {
+    public int onPlayerClickLoginButton(String username, String password) {
         if(user1 == null){
             for (User user : allUsers) {
                 if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
                     user1 = user;
                     System.out.println("User 1 successfully log in.");
-                    return true;
+                    return 1;
                 }
             }
         }else{
             for (User user : allUsers) {
-                if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI && user != user1){
-                    user2 = user;
-                    System.out.println("User 2 successfully log in.");
-                    return true;
+                if(user.getUsername().equals(username) && user.validatePassword(password) && user.getPlayerType() != PlayerType.AI){
+                    if (user !=user1) {
+                        user2 = user;
+                        System.out.println("User 2 successfully log in.");
+                        return 1;
+                    }else{
+                        return 2;
+                    }
                 }
             }
         }
-
-        return false;
+        return 3;
     }
 
     @Override

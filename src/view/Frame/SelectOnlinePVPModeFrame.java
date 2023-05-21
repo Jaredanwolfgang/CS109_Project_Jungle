@@ -56,15 +56,15 @@ public class SelectOnlinePVPModeFrame extends JFrame {
     }
     public void initCreateButton() {
         /* To get the scaled Image */
-        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\EasyButton_Light.png").getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\EasyButton_Dark.png").getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/GameFrame/CreateButton_Light.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image/GameFrame/CreateButton_Dark.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
 
         createButton.setBorderPainted(false);
         createButton.setContentAreaFilled(false);
         createButton.setFocusPainted(false);
         createButton.setOpaque(false);
 
-        createButton.setBounds(270, 120, 80, 80);
+        createButton.setBounds(400, 80, 160, 90);
         createButton.setIcon(Button_Light_New);
         createButton.addMouseListener(new MouseListener() {
             @Override
@@ -91,15 +91,15 @@ public class SelectOnlinePVPModeFrame extends JFrame {
     }
     public void initJoinButton() {
         /* To get the scaled Image */
-        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\MediumButton_Light.png").getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\MediumButton_Dark.png").getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon Button_Light_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\JoinButton_Light.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
+        ImageIcon Button_Dark_New = new ImageIcon(Toolkit.getDefaultToolkit().getImage("Image\\GameFrame\\JoinButton_Dark.png").getScaledInstance(160, 90, Image.SCALE_SMOOTH));
 
         joinButton.setBorderPainted(false);
         joinButton.setContentAreaFilled(false);
         joinButton.setFocusPainted(false);
         joinButton.setOpaque(false);
 
-        joinButton.setBounds(400, 120, 80, 80);
+        joinButton.setBounds(400, 190, 160,90);
         joinButton.setIcon(Button_Light_New);
         joinButton.addMouseListener(new MouseListener() {
             @Override

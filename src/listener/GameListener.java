@@ -41,7 +41,7 @@ public interface GameListener {
 
     //call this method when player click login button
     //return true if user logins successfully
-    boolean onPlayerClickLoginButton(String username, String password);
+    int onPlayerClickLoginButton(String username, String password);
 
     //call this method when player click register button
     //return true if register success

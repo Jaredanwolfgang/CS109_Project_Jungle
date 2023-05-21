@@ -155,7 +155,7 @@ public class LoginFrame extends JFrame implements ActionListener{
     }
     //ActionListener, the method will call the method in Game Controller.
     public void actionPerformed(ActionEvent e) {
-        if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())){
+        if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())==1){
             if (GameController.user2 == null) {
                 this.setVisible(false);
                 frame.getStartFrame().setVisible(true);
@@ -181,8 +181,16 @@ public class LoginFrame extends JFrame implements ActionListener{
                 passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
                 passwordField.setEchoChar('\0');
             }
-        }else{
+        }else if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())==3){
             new FailDialog("Incorrect username or password",frame.getLoginFrame());
+            //Initialize the UserText and PasswordField
+            userText.setText("Enter your Username here");
+            userText.setFont(new Font("Calibri", Font.ITALIC, 12));
+            passwordField.setText("Enter your Password here");
+            passwordField.setFont(new Font("Calibri", Font.ITALIC, 12));
+            passwordField.setEchoChar('\0');
+        }else if(frame.getGameController().onPlayerClickLoginButton(userText.getText(),passwordField.getText())==2){
+            new FailDialog("Already logged in",frame.getLoginFrame());
             //Initialize the UserText and PasswordField
             userText.setText("Enter your Username here");
             userText.setFont(new Font("Calibri", Font.ITALIC, 12));

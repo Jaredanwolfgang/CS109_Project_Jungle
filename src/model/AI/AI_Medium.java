@@ -14,18 +14,18 @@ import java.util.*;
 public class AI_Medium {
     public static Move findBestOneMove(Cell[][] board, Color player) {
         MoveGraph moveGraph = new MoveGraph(board, player);
-        alphaBeta(board, player, 4, moveGraph.startMoveNode, true, Integer.MIN_VALUE, Integer.MAX_VALUE);//从startMoveMode开始遍历，初始化了startMoveMode的children
+        int value = alphaBeta(board, player, 4, moveGraph.startMoveNode, true, Integer.MIN_VALUE, Integer.MAX_VALUE);//从startMoveMode开始遍历，初始化了startMoveMode的children
+        System.out.println("value:"+ value);
         Collections.sort(moveGraph.startMoveNode.children);
-        Collections.reverse(moveGraph.startMoveNode.children);
         for (int i = 0; i < moveGraph.startMoveNode.children.size(); i++) {
-            System.out.println(moveGraph.startMoveNode.children.get(i).move.toString()+" "+ moveGraph.startMoveNode.children.get(i).value);
+            System.out.println(moveGraph.startMoveNode.children.get(i).move.toString() + " " + moveGraph.startMoveNode.children.get(i).value);
         }
         return moveGraph.startMoveNode.children.get(0).move;
     }
 
     public static int alphaBeta(Cell[][] board, Color player, int depth, MoveNode moveNode, boolean maximizingPlayer, int alpha, int beta) {
         System.out.println("------------------------------------------------------");
-        System.out.println("This is depth "+ depth);
+        System.out.println("This is depth " + depth);
         //判断是不是到了底层，判断是不是棋局已经胜利
         if (depth == 0 || GameSimulator.checkStatus(board, player) != GameSimulator.GAME_CONTINUES) {
             moveNode.value = evaluateGameState(board, player, moveNode);
@@ -37,7 +37,7 @@ public class AI_Medium {
         moveNode.beta = beta;
         //判断是否是max节点
         if (maximizingPlayer) {
-            System.out.println("Maximizer"+depth+": MoveNode before now has value "+moveNode.value);
+            System.out.println("Maximizer" + depth + ": MoveNode before now has value " + moveNode.value);
             //max节点
             int bestValue = moveNode.value;//获取到该节点本来的大小
             //遍历节点的每一个子节点
@@ -64,10 +64,10 @@ public class AI_Medium {
                 }
             }
             moveNode.value = bestValue;
-            System.out.println("Maximizer"+depth+": MoveNode after now has value "+moveNode.value);
+            System.out.println("Maximizer" + depth + ": MoveNode after now has value " + moveNode.value);
             return bestValue;
         } else {
-            System.out.println("Minimizer"+depth+": MoveNode before now has value "+ moveNode.value);
+            System.out.println("Minimizer" + depth + ": MoveNode before now has value " + moveNode.value);
             int bestValue = Integer.MAX_VALUE;
             for (MoveNode moveChildrenNode : moveNode.children) {
                 //克隆棋盘
@@ -92,7 +92,7 @@ public class AI_Medium {
                 }
             }
             moveNode.value = bestValue;
-            System.out.println("Minimizer"+depth+": MoveNode after now has value "+ moveNode.value);
+            System.out.println("Minimizer" + depth + ": MoveNode after now has value " + moveNode.value);
             return bestValue;
         }
     }
@@ -144,14 +144,14 @@ public class AI_Medium {
                     moveNode.value += (Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(0, 2))
                             + Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(0, 4))
                             + Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(1, 2)))
-                            -(Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(0, 2))
+                            - (Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(0, 2))
                             + Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(0, 4))
                             + Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(1, 2)));
                 } else {
-                    moveNode.value +=  (Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(8, 2))
+                    moveNode.value += (Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(8, 2))
                             + Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(8, 4))
                             + Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(7, 2)))
-                            -(Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(8, 2))
+                            - (Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(8, 2))
                             + Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(8, 4))
                             + Chessboard.getDistance(moveNode.move.getToPoint(), new ChessboardPoint(7, 2)));
                 }
@@ -159,7 +159,7 @@ public class AI_Medium {
             case RAT:
                 for (int i = 0; i < 9; i++) {
                     for (int j = 0; j < 7; j++) {
-                        if (board[i][j].getPiece() !=null && board[i][j].getPiece().getCategory() == Category.ELEPHANT) {
+                        if (board[i][j].getPiece() != null && board[i][j].getPiece().getCategory() == Category.ELEPHANT) {
                             moveNode.value += 16 - Chessboard.getDistance(moveNode.move.getFromPoint(), new ChessboardPoint(i, j));
                         }
                     }
@@ -199,6 +199,7 @@ class MoveNode implements Comparable<MoveNode> {
     Cell[][] board;
     Move move;
     Color player;
+    private static Random random = new Random();
 
     public MoveNode(Color player, MoveNode parent, Move move, Cell[][] board) {
         this.player = player;
@@ -217,7 +218,12 @@ class MoveNode implements Comparable<MoveNode> {
 
     @Override
     public int compareTo(MoveNode o) {
-        return Integer.compare(this.value, o.value);//如果当前节点大于下一个节点那么返回1，如果小于下一个节点返回2，如果相等就返回0
+        if (this.value != o.value) {
+            return Integer.compare(this.value, o.value);
+        } else {
+            // Randomly sort when values are the same
+            return random.nextInt(3) - 1;
+        }
     }
 }
 
