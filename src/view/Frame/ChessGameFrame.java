@@ -206,14 +206,14 @@ public class ChessGameFrame extends JFrame {
                 public void mouseEntered(MouseEvent e) {
                     if(enabled){
                         ToolTipManager.sharedInstance().setInitialDelay(0);
-                        loadButton.setToolTipText("Unavailable in current game mode");
+                        resetButton.setToolTipText("Unavailable in current game mode");
                     }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     if(enabled){
-                        loadButton.setToolTipText(null);
+                        resetButton.setToolTipText(null);
                     }
                 }
             });
@@ -291,14 +291,14 @@ public class ChessGameFrame extends JFrame {
                 public void mouseEntered(MouseEvent e) {
                     if(enabled){
                         ToolTipManager.sharedInstance().setInitialDelay(0);
-                        loadButton.setToolTipText("Unavailable in current game mode");
+                        undoButton.setToolTipText("Unavailable in current game mode");
                     }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     if(enabled){
-                        loadButton.setToolTipText(null);
+                        undoButton.setToolTipText(null);
                     }
                 }
             });
