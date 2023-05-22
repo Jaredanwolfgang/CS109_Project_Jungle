@@ -2,17 +2,22 @@ package view;
 
 
 import controller.GameController;
+import listener.HoverListener;
 import model.ChessBoard.Cell;
 import model.ChessBoard.Chessboard;
 import model.ChessBoard.ChessboardPoint;
 import model.ChessPieces.ChessPiece;
-import view.ChessComponent.ElephantChessComponent;
+import model.Enum.Numbers;
+import model.Enum.Seasons;
+import view.ChessComponent.*;
+import view.Frame.ChessGameFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 
 import static model.Enum.Constant.CHESSBOARD_COL_SIZE;
 import static model.Enum.Constant.CHESSBOARD_ROW_SIZE;
@@ -22,10 +27,12 @@ import static model.Enum.Constant.CHESSBOARD_ROW_SIZE;
  */
 public class ChessboardComponent extends JComponent {
     private final CellComponent[][] gridComponents = new CellComponent[CHESSBOARD_ROW_SIZE.getNum()][CHESSBOARD_COL_SIZE.getNum()];
-    private final int CHESS_SIZE;
+    private int CHESS_SIZE;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
-
+    private final Set<ChessboardPoint> trapCell = new HashSet<>();
+    private final Set<ChessboardPoint> densCell = new HashSet<>();
     private GameController gameController;
+    private Seasons season = Seasons.SPRING;
 
     public ChessboardComponent(int chessSize) {
         CHESS_SIZE = chessSize;
@@ -34,96 +41,234 @@ public class ChessboardComponent extends JComponent {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);// Allow mouse events to occur
         setLayout(null); // Use absolute layout.
         setSize(width, height);
-        System.out.printf("chessboard width, height = [%d : %d], chess size = %d\n", width, height, CHESS_SIZE);
+        //System.out.printf("chessboard width, height = [%d : %d], chess size = %d\n", width, height, CHESS_SIZE);
 
+        initSet();
         initiateGridComponents();
     }
-
 
     /**
      * This method represents how to initiate ChessComponent
      * according to Chessboard information
      */
+    public void registerGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
+    public void initSet() {
+        riverCell.add(new ChessboardPoint(3, 1));
+        riverCell.add(new ChessboardPoint(3, 2));
+        riverCell.add(new ChessboardPoint(4, 1));
+        riverCell.add(new ChessboardPoint(4, 2));
+        riverCell.add(new ChessboardPoint(5, 1));
+        riverCell.add(new ChessboardPoint(5, 2));
+
+        riverCell.add(new ChessboardPoint(3, 4));
+        riverCell.add(new ChessboardPoint(3, 5));
+        riverCell.add(new ChessboardPoint(4, 4));
+        riverCell.add(new ChessboardPoint(4, 5));
+        riverCell.add(new ChessboardPoint(5, 4));
+        riverCell.add(new ChessboardPoint(5, 5));
+
+        trapCell.add(new ChessboardPoint(0, 2));
+        trapCell.add(new ChessboardPoint(0, 4));
+        trapCell.add(new ChessboardPoint(1, 3));
+
+        trapCell.add(new ChessboardPoint(8, 2));
+        trapCell.add(new ChessboardPoint(8, 4));
+        trapCell.add(new ChessboardPoint(7, 3));
+
+        densCell.add(new ChessboardPoint(0, 3));
+        densCell.add(new ChessboardPoint(8, 3));
+    }
     public void initiateChessComponent(Chessboard chessboard) {
         Cell[][] grid = chessboard.getGrid();
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
-                // TODO: Implement the initialization checkerboard
-
+                //Implement the initialization checkerboard
                 if (grid[i][j].getPiece() != null) {
                     ChessPiece chessPiece = grid[i][j].getPiece();
-                    System.out.println(chessPiece.getOwner());
-                    gridComponents[i][j].add(
-                            new ElephantChessComponent(
-                                    chessPiece.getOwner(),
-                                    CHESS_SIZE));
+                    switch (chessPiece.getCategory()) {
+                        case ELEPHANT:
+                                gridComponents[i][j].add(new ElephantChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                                break;
+                        case LION:
+                                gridComponents[i][j].add(new LionChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                                break;
+                        case TIGER:
+                                gridComponents[i][j].add(new TigerChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                                break;
+                        case LEOPARD:
+                                gridComponents[i][j].add(new LeopardChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                                break;
+                        case WOLF:
+                                gridComponents[i][j].add(new WolfChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                                break;
+                        case DOG:
+                            gridComponents[i][j].add(new DogChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                            break;
+                        case CAT:
+                            gridComponents[i][j].add(new CatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                            break;
+                        case RAT:
+                            gridComponents[i][j].add(new RatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                            break;
+                    }
                 }
             }
         }
-
     }
-
     public void initiateGridComponents() {
-
-        riverCell.add(new ChessboardPoint(3,1));
-        riverCell.add(new ChessboardPoint(3,2));
-        riverCell.add(new ChessboardPoint(4,1));
-        riverCell.add(new ChessboardPoint(4,2));
-        riverCell.add(new ChessboardPoint(5,1));
-        riverCell.add(new ChessboardPoint(5,2));
-
-        riverCell.add(new ChessboardPoint(3,4));
-        riverCell.add(new ChessboardPoint(3,5));
-        riverCell.add(new ChessboardPoint(4,4));
-        riverCell.add(new ChessboardPoint(4,5));
-        riverCell.add(new ChessboardPoint(5,4));
-        riverCell.add(new ChessboardPoint(5,5));
-
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
-                    cell = new CellComponent(Color.CYAN, calculatePoint(i, j), CHESS_SIZE);
-                    this.add(cell);
+                    cell = new CellComponent(season.getColors()[1], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
+                } else if (trapCell.contains(temp)) {
+                    cell = new CellComponent(season.getColors()[2], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
+                } else if (densCell.contains(temp)) {
+                    cell = new CellComponent(season.getColors()[3], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
                 } else {
-                    cell = new CellComponent(Color.LIGHT_GRAY, calculatePoint(i, j), CHESS_SIZE);
-                    this.add(cell);
+                    cell = new CellComponent(season.getColors()[0], season.getColors()[5], season.getColors()[4], calculatePoint(i, j), CHESS_SIZE);
                 }
+                this.add(cell);
                 gridComponents[i][j] = cell;
+                cell.setHoverListener(new HoverListener() {
+                    @Override
+                    public void onHovered(CellComponent cellComponent) {
+                        // Handle hover event here
+                        cell.setHovered(true);
+                        repaint();
+                    }
+
+                    @Override
+                    public void onExited(CellComponent cellComponent) {
+                        // Handle exit event here
+                        cell.setHovered(false);
+                        repaint();
+                    }
+                });
             }
         }
     }
 
-    public void registerController(GameController gameController) {
-        this.gameController = gameController;
+    public void refreshGridComponents() {
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                ChessboardPoint temp = new ChessboardPoint(i, j);
+                CellComponent cell = getGridComponentAt(temp);
+                cell.setTimerMode(false);
+                if (riverCell.contains(temp)) {
+                    cell.setBackground(season.getColors()[1], season.getColors()[5], season.getColors()[4]);
+                } else if (trapCell.contains(temp)) {
+                    cell.setBackground(season.getColors()[2], season.getColors()[5], season.getColors()[4]);
+                } else if (densCell.contains(temp)) {
+                    cell.setBackground(season.getColors()[3], season.getColors()[5], season.getColors()[4]);
+                } else {
+                    cell.setBackground(season.getColors()[0], season.getColors()[5], season.getColors()[4]);
+                }
+                repaint();
+                cell.setHoverListener(new HoverListener() {
+                    @Override
+                    public void onHovered(CellComponent cellComponent) {
+                        // Handle hover event here
+                        cell.setHovered(true);
+                        repaint();
+                    }
+
+                    @Override
+                    public void onExited(CellComponent cellComponent) {
+                        // Handle exit event here
+                        cell.setHovered(false);
+                        repaint();
+                    }
+                });
+            }
+        }
     }
 
-    public void setChessComponentAtGrid(ChessboardPoint point, ElephantChessComponent chess) {
+    public void changeSize (int chessSize){
+        removeAll();
+        CHESS_SIZE = chessSize;
+        setSize(CHESS_SIZE * 7, CHESS_SIZE * 9);
+        Chessboard chessboard = gameController.getModel();
+
+        initiateGridComponents();
+        initiateChessComponent(chessboard);
+        revalidate();
+        repaint();
+    }
+
+    public void shine(int remaining, model.Timer.Timer timer) {
+        new Thread(() -> {
+            int[][] shineCellComponent;
+            switch (remaining){
+                case 0:
+                    shineCellComponent = Numbers.ZERO;
+                    break;
+                case 1:
+                    shineCellComponent = Numbers.ONE;
+                    break;
+                case 2:
+                    shineCellComponent = Numbers.TWO;
+                    break;
+                case 3:
+                    shineCellComponent = Numbers.THREE;
+                    break;
+                case 4:
+                    shineCellComponent = Numbers.FOUR;
+                    break;
+                case 5:
+                    shineCellComponent = Numbers.FIVE;
+                    break;
+                default:
+                    shineCellComponent = null;
+            }
+            for (int[] ints : shineCellComponent) {
+                ChessboardPoint temp = new ChessboardPoint(ints[0], ints[1]);
+                CellComponent cell = getGridComponentAt(temp);
+                cell.setTimerMode(true);
+                repaint();
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    // ignore interruptions
+                }
+            }
+            try {
+                Thread.sleep(timer.getInterval() - shineCellComponent.length * 20L - 250);
+            } catch (InterruptedException e) {
+                // ignore interruptions
+            }
+            refreshGridComponents();
+        }).start();
+    }
+
+    public void setChessComponentAtGrid(ChessboardPoint point, ChessComponent chess) {
         getGridComponentAt(point).add(chess);
     }
 
-    public ElephantChessComponent removeChessComponentAtGrid(ChessboardPoint point) {
+    public ChessComponent removeChessComponentAtGrid(ChessboardPoint point) {
         // Note re-validation is required after remove / removeAll.
-        ElephantChessComponent chess = (ElephantChessComponent) getGridComponentAt(point).getComponents()[0];
+        ChessComponent chess = (ChessComponent) getGridComponentAt(point).getComponents()[0];
         getGridComponentAt(point).removeAll();
         getGridComponentAt(point).revalidate();
         chess.setSelected(false);
         return chess;
     }
 
-    private CellComponent getGridComponentAt(ChessboardPoint point) {
+    public CellComponent getGridComponentAt(ChessboardPoint point) {
         return gridComponents[point.getRow()][point.getCol()];
     }
 
     private ChessboardPoint getChessboardPoint(Point point) {
-        System.out.println("[" + point.y/CHESS_SIZE +  ", " +point.x/CHESS_SIZE + "] Clicked");
-        return new ChessboardPoint(point.y/CHESS_SIZE, point.x/CHESS_SIZE);
+//        System.out.println("[" + point.y / CHESS_SIZE + ", " + point.x / CHESS_SIZE + "] Clicked");
+        return new ChessboardPoint(point.y / CHESS_SIZE, point.x / CHESS_SIZE);
     }
+
     private Point calculatePoint(int row, int col) {
         return new Point(col * CHESS_SIZE, row * CHESS_SIZE);
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -133,14 +278,32 @@ public class ChessboardComponent extends JComponent {
 
     @Override
     protected void processMouseEvent(MouseEvent e) {
-        if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-            JComponent clickedComponent = (JComponent) getComponentAt(e.getX(), e.getY());
-            if (clickedComponent.getComponentCount() == 0) {
-                System.out.print("None chess here and ");
-                gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()), (CellComponent) clickedComponent);
-            } else {
-                System.out.print("One chess here and ");
-                gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), (ElephantChessComponent) clickedComponent.getComponents()[0]);
+        if(ChessGameFrame.enabled) {
+            if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+                JComponent clickedComponent = (JComponent) getComponentAt(e.getX(), e.getY());
+                if (clickedComponent.getComponentCount() == 0) {
+                    System.out.print("None chess here and ");
+                    gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()), gameController.getColorOfUser());
+                } else {
+                    System.out.print("One chess here and ");
+                    gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), gameController.getColorOfUser());
+                }
+            }
+        }
+    }
+
+    public Seasons getSeason() {
+        return season;
+    }
+
+    public void setSeason(Seasons season) {
+        this.season = season;
+    }
+
+    public void unloadAllListener() {
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                gridComponents[i][j].removeMouseListener(gridComponents[i][j].getMouseListeners()[0]);
             }
         }
     }

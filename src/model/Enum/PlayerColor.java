@@ -7,7 +7,7 @@ import java.awt.*;
  * the ownership of the piece and the current player.
  */
 public enum PlayerColor {
-    BLUE(Color.BLUE), RED(Color.RED);
+    BLUE(Color.BLUE), RED(Color.RED), GRAY(Color.GRAY);
 
     private final Color color;
 
@@ -19,6 +19,4 @@ public enum PlayerColor {
     public Color getColor() {
         return color;
     }
-
-
 }
