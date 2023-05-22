@@ -67,7 +67,7 @@ public class GameController implements GameListener {
         this.allMovesOnBoard = new ArrayList<>();
         this.allUsers = new ArrayList<>();
         this.selectedPoint = null;
-        this.onAutoPlayback = false;
+        onAutoPlayback = false;
         aiDifficulty = AIDifficulty.EASY;
         turnCount = 1;
         this.readUsers();
